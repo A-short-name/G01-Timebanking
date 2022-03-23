@@ -39,8 +39,16 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun editProfile() {
         val i = Intent(this, EditProfileActivity::class.java)
-        i.putExtra("it.polito.mad.g01_timebanking.nome","MODIFICAMI PLS")
-        startActivity(i)
+        val putExtra = i.putExtra("it.polito.mad.g01_timebanking.nome", "MODIFICAMI PLS")
+        startActivityForResult(i,1)
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        println("I've the result")
+        val b = data?.getStringExtra("myK")
+        println(b)
 
     }
 }
