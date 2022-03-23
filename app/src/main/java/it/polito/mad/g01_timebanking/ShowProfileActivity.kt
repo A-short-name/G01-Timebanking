@@ -1,5 +1,6 @@
 package it.polito.mad.g01_timebanking
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -28,14 +29,18 @@ class ShowProfileActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
             R.id.editButton -> {
-                // TODO: call intent
-                // val intent = Intent(this, MyActivity::class.java)
-                // startActivity(intent)
-                println("Button clicked")
+                editProfile()
                 true
             }
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun editProfile() {
+        val i = Intent(this, EditProfileActivity::class.java)
+        i.putExtra("it.polito.mad.g01_timebanking.nome","MODIFICAMI PLS")
+        startActivity(i)
+
     }
 }
