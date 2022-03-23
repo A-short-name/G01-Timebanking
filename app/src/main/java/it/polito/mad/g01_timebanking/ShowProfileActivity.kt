@@ -1,5 +1,6 @@
 package it.polito.mad.g01_timebanking
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,13 +10,14 @@ import android.view.MenuItem
 import android.widget.TextView
 
 class ShowProfileActivity : AppCompatActivity() {
-    private val fullName = "Matti"
+    lateinit var tv:TextView
+    private val fullNamePlaceholder = "No name"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
-        val tmpName = findViewById<TextView>(R.id.name)
-        tmpName.text = fullName
+        tv = findViewById<TextView>(R.id.name)
+        tv.text = fullNamePlaceholder
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -39,16 +41,15 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun editProfile() {
         val i = Intent(this, EditProfileActivity::class.java)
-        val putExtra = i.putExtra("it.polito.mad.g01_timebanking.nome", "MODIFICAMI PLS")
-        startActivityForResult(i,1)
+        val putExtra = i.putExtra("it.polito.mad.g01_timebanking.fullName", tv.text)
+        startActivityForResult(i, 0)
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        println("I've the result")
-        val b = data?.getStringExtra("myK")
-        println(b)
-
+        val b = data?.getStringExtra("fullName")
+        tv.text = b
+        //TODO: prendere tutti i nomi ritornati dal result
     }
 }
