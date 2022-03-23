@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">G01-Timebanking</string>
+    <string name="name">Full Name</string>
+    <string name="nickname">Nickname</string>
+    <string name="email">email@address</string>
+    <string name="location">Location</string>
+    <string name="skills">Skills:</string>
+    <string name="skill1">Skill1</string>
+    <string name="skill2">Skill2</string>
+    <string name="skill3">Skill3</string>
 </resources>

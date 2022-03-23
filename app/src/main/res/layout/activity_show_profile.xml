@@ -8,50 +8,71 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <LinearLayout
-            android:id="@+id/showProfileLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="200dp"
+                android:layout_gravity="center"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/imageCard"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="10dp"
+                android:layout_height="200dp"
+                >
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/avatar"
+                    />
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Full Name" />
+                android:layout_marginBottom="16dp"
+                android:text="@string/name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <TextView
                 android:id="@+id/nickname"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nickname" />
+                android:layout_marginBottom="16dp"
+                android:text="@string/nickname"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
                 android:id="@+id/email"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="email@address" />
+                android:layout_marginBottom="16dp"
+                android:text="@string/email"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
                 android:id="@+id/location"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location" />
+                android:layout_marginBottom="16dp"
+                android:text="@string/location"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
                 android:id="@+id/skill_group_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#EDFEFD"
-                android:text="skills:" />
+                android:text="@string/skills" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/skillgroup"
@@ -63,19 +84,19 @@
                     android:id="@+id/skill1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="skill1" />
+                    android:text="@string/skill1" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/skill2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="skill2" />
+                    android:text="@string/skill2" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/skill3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="skill3" />
+                    android:text="@string/skill3" />
             </com.google.android.material.chip.ChipGroup>
 
             <TextView
@@ -83,7 +104,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Alla fiera dell'est, per due soldi, un topolino mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne il gatto, che si mangiò il topo, che al mercato mio padre comprò E venne il gatto, che si mangiò il topo, che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne il cane, che morse il gatto, che si mangiò il topo Che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne il bastone, che picchiò il cane, che morse il gatto Che si mangiò il topo, che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne il fuoco, che bruciò il bastone, che picchiò il cane Che morse il gatto, che si mangiò il topo che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne l'acqua, che spense il fuoco, che bruciò il bastone, che picchiò il cane Che morse il gatto, che si mangiò il topo che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne il toro, che bevve l'acqua, che spense il fuoco Che bruciò il bastone, che picchiò il cane Che morse il gatto, che si mangiò il topo, che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E venne il macellaio, che uccise il toro, che bevve l'acqua Che spense il fuoco, che bruciò il bastone, che picchiò il cane Che morse il gatto, che si mangiò il topo, che al mercato mio padre comprò E l'angelo della morte, sul macellaio, che uccise il toro, che bevve l'acqua Che spense il fuoco, che bruciò il bastone, che picchiò il cane Che morse il gatto, che si mangiò il topo che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò E infine il Signore, sull'angelo della morte, sul macellaio Che uccise il toro, che bevve l'acqua, che spense il fuoco Che bruciò il bastone, che picchiò il cane, che morse il gatto Che si mangiò il topo che al mercato mio padre comprò E infine il Signore, sull'angelo della morte, sul macellaio Che uccise il toro, che bevve l'acqua, che spense il fuoco Che bruciò il bastone, che picchiò il cane, che morse il gatto Che si mangiò il topo che al mercato mio padre comprò Alla fiera dell'est, per due soldi, un topolino mio padre comprò" />
-
         </LinearLayout>
+
+
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
