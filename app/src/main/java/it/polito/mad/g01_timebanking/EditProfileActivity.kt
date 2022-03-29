@@ -9,8 +9,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -43,8 +46,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
         profilePicture = findViewById(R.id.profilePictureButton)
-        //profilePicture.setOnClickListener { dispatchTakePictureIntent() }
-        profilePicture.setOnClickListener { dispatchTakePictureIntent() }
+        profilePicture.setOnClickListener { showPopup(profilePicture) }
         val i = intent
         ivFullName.setText(i.getStringExtra("it.polito.mad.g01_timebanking.fullName"))
         ivNickname.setText(i.getStringExtra("it.polito.mad.g01_timebanking.nickname"))
@@ -117,27 +119,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-/*    private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-        } catch (e: ActivityNotFoundException) {
-            // display error state to the user
-        }
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        /*if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            profilePicture.setImageBitmap(imageBitmap)
-        }*/
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val photoURI = data?.extras?.get(android.provider.MediaStore.EXTRA_OUTPUT) as URI
-            //println("Sono tornato dalla fotocamera \n ${photoURI.toString()}")
-            galleryAddPic()
-        }
-    }*/
-
     //Add the photo to a gallery
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
@@ -152,14 +133,13 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            PICK_IMAGE_REQUEST -> {
+            PICK_IMAGE_REQUEST -> { //For Image Gallery
                 if (resultCode == RESULT_OK && data != null && data.data != null) {
-                    //For Image Gallery
+
                 }
                 return
             }
-            CAPTURE_IMAGE_REQUEST -> if (resultCode == RESULT_OK) {
-                //For CAMERA
+            CAPTURE_IMAGE_REQUEST -> if (resultCode == RESULT_OK) { //For CAMERA
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
                 // by this point we have the camera photo on disk
@@ -173,4 +153,28 @@ class EditProfileActivity : AppCompatActivity() {
             }
             }
         }
+
+    fun showPopup(v: View) {
+        val popup = PopupMenu(this, v)
+        //Set on click listener for the menu
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item -> onMenuItemClick(item) })
+        popup.inflate(R.menu.edit_profile_picture_menu)
+        popup.show()
+
     }
+
+    fun onMenuItemClick(item: MenuItem): Boolean {
+        Toast.makeText(this, "Selected Item: " + item.title, Toast.LENGTH_SHORT).show()
+        return when (item.itemId) {
+            R.id.gallery ->                 // do your code
+                true
+            R.id.camera ->                 // do your code
+            {
+                dispatchTakePictureIntent()
+                return true
+            }
+            else -> false
+        }
+    }
+}
+
