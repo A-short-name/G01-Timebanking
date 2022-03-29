@@ -14,55 +14,72 @@
             android:id="@+id/showProfileLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageCard"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="MODIFICAMI" />
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/avatar" />
+            </androidx.cardview.widget.CardView>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputFullName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Full Name" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/nickname"
+            <EditText
+                android:id="@+id/editTextFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nickname" />
+                android:ems="10"
+                android:hint="Full Name"
+                android:inputType="textPersonName"
+                android:minHeight="48dp" />
 
-            <TextView
-                android:id="@+id/email"
+            <EditText
+                android:id="@+id/editTextNickname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="email@address" />
+                android:ems="10"
+                android:hint="Nickname"
+                android:inputType="textPersonName"
+                android:minHeight="48dp" />
 
-            <TextView
-                android:id="@+id/location"
+            <EditText
+                android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Location" />
+                android:ems="10"
+                android:hint="Email address"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp" />
+
+            <EditText
+                android:id="@+id/editTextLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Location"
+                android:inputType="textPostalAddress"
+                android:minHeight="48dp" />
 
             <TextView
                 android:id="@+id/skill_group_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#EDFEFD"
-                android:text="skills:" />
+                android:text="Skills:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/skillgroup"
@@ -74,6 +91,7 @@
                     android:id="@+id/skill1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checkable="true"
                     android:text="skill1" />
 
                 <com.google.android.material.chip.Chip
@@ -86,6 +104,7 @@
                     android:id="@+id/skill3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checkable="true"
                     android:text="skill3" />
             </com.google.android.material.chip.ChipGroup>
 
