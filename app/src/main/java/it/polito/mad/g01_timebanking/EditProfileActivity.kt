@@ -60,11 +60,10 @@ class EditProfileActivity : AppCompatActivity() {
         ivEmail.setText(i.getStringExtra(UserKey.EMAIL_EXTRA_ID))
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
         profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
+        if (profilePicturePath is String)
+            readImage()
 
-        if (profilePicturePath is String) {
-            val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
-            profilePicture.setImageBitmap(bitMapProfilePicture)
-        }
+
     }
 
     override fun onBackPressed() {
