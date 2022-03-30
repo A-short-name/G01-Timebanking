@@ -7,13 +7,15 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 class ShowProfileActivity : AppCompatActivity() {
     private lateinit var tvFullName:TextView
@@ -21,11 +23,13 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var tvEmail:TextView
     private lateinit var tvLocation:TextView
     private lateinit var ivProfilePicture:ImageView
+    private lateinit var skillGroup:ChipGroup
 
     private lateinit var fullName:String
     private lateinit var nickName:String
     private lateinit var email:String
     private lateinit var location:String
+    private var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
     private var profilePicturePath:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +49,8 @@ class ShowProfileActivity : AppCompatActivity() {
         email = UserKey.EMAIL_PLACEHOLDER
         location = UserKey.LOCATION_PLACEHOLDER
 
+        //TODO: skills = ...
+
         val sharedPref = this?.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
@@ -58,6 +64,15 @@ class ShowProfileActivity : AppCompatActivity() {
         tvEmail = findViewById(R.id.email)
         tvLocation = findViewById(R.id.location)
         ivProfilePicture = findViewById(R.id.profilePicture)
+        skillGroup = findViewById(R.id.skillgroup)
+
+        // TEMPORARY
+        skills.forEach{
+            val chip = Chip(this)
+            chip.text = it
+            skillGroup.addView(chip)
+        }
+
     }
 
     private fun updateView() {
