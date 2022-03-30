@@ -23,7 +23,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var nickName:String
     private lateinit var email:String
     private lateinit var location:String
-    private var profilePicturePath:String? = null
+    private lateinit var profilePicturePath:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +35,13 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun initializeData() {
-        //TODO: initialize the variables reading from file
-        //fullName = UserKey.FULL_NAME_PLACEHOLDER
-        //nickName = UserKey.NICKNAME_PLACEHOLDER
-        //email = UserKey.EMAIL_PLACEHOLDER
-        //location = UserKey.LOCATION_PLACEHOLDER
+        //initialize the variables reading from file
 
         var gson = Gson()
-        val sharedPref = this?.getSharedPreferences(
+        val sharedPref = this.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
-        val s: String? = sharedPref.getString(getString(R.string.user_info), "" )
+        val s: String = sharedPref.getString(getString(R.string.user_info), "" ) ?: ""
 
         var u =  if(s!="") gson.fromJson(s,UserInfo::class.java) else UserInfo()
 
@@ -121,6 +117,6 @@ class ShowProfileActivity : AppCompatActivity() {
         nickName = data?.getStringExtra(UserKey.NICKNAME_EXTRA_ID) ?: UserKey.NICKNAME_PLACEHOLDER
         email = data?.getStringExtra(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
         location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
-        profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
+        profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
     }
 }

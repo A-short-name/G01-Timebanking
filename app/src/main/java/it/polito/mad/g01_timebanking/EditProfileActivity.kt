@@ -32,7 +32,7 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
-    var profilePicturePath: String? = null
+    lateinit var profilePicturePath: String
 
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
@@ -60,7 +60,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivNickname.setText(i.getStringExtra(UserKey.NICKNAME_EXTRA_ID))
         ivEmail.setText(i.getStringExtra(UserKey.EMAIL_EXTRA_ID))
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
-        profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
+        profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
         if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
             val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
@@ -83,11 +83,11 @@ class EditProfileActivity : AppCompatActivity() {
             ivNickname.text.toString(),
             ivEmail.text.toString(),
             ivLocation.text.toString(),
-            profilePicturePath?:UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+            profilePicturePath
         )
 
-        var gson : Gson = Gson();
-        var serializedUser: String = gson.toJson(u)
+        val gson : Gson = Gson();
+        val serializedUser: String = gson.toJson(u)
 
         val sharedPref =
             this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
