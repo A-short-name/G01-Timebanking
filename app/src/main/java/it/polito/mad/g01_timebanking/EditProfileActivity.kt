@@ -20,6 +20,7 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -29,12 +30,13 @@ import java.util.*
 class EditProfileActivity : AppCompatActivity() {
 
     lateinit var profilePicture:ImageButton
+    var fullName: String = ""
     lateinit var ivFullName: EditText
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
+    lateinit var profilePicturePath: String
 
-    var profilePicturePath: String? = null
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
 
@@ -59,8 +61,9 @@ class EditProfileActivity : AppCompatActivity() {
         ivNickname.setText(i.getStringExtra(UserKey.NICKNAME_EXTRA_ID))
         ivEmail.setText(i.getStringExtra(UserKey.EMAIL_EXTRA_ID))
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
-        profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
-        if (profilePicturePath is String)
+        profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
+
+        if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
             readImage()
 
 
@@ -70,14 +73,30 @@ class EditProfileActivity : AppCompatActivity() {
         val i2 = Intent()
         prepareResult(i2)
         setResult(Activity.RESULT_OK,i2)
-        val sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
-            println("In edit")
-            putString(getString(R.string.name), ivFullName.text.toString())
-            apply()
-        }
+        updatePreferences()
         //TODO: Salva in un file tutti i campi
         super.onBackPressed() //finish is inside the onBackPressed()
+    }
+
+    private fun updatePreferences() {
+        val u = UserInfo (
+            ivFullName.text.toString(),
+            ivNickname.text.toString(),
+            ivEmail.text.toString(),
+            ivLocation.text.toString(),
+            profilePicturePath
+        )
+
+        val gson : Gson = Gson();
+        val serializedUser: String = gson.toJson(u)
+
+        val sharedPref =
+            this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+                ?: return
+        with(sharedPref.edit()) {
+            putString(getString(R.string.user_info), serializedUser)
+            apply()
+        }
     }
 
     private fun prepareResult(i2: Intent) {
@@ -143,7 +162,7 @@ class EditProfileActivity : AppCompatActivity() {
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
-            if(profilePicturePath is String) {
+            if(profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
                 val f = File(profilePicturePath)
                 println(f.absolutePath)
                 mediaScanIntent.data = Uri.fromFile(f)
@@ -164,7 +183,7 @@ class EditProfileActivity : AppCompatActivity() {
             CAPTURE_IMAGE_REQUEST -> if (resultCode == RESULT_OK) { //For CAMERA
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
-                    if(profilePicturePath is String) {                // by this point we have the camera photo on disk
+                    if(profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {                // by this point we have the camera photo on disk
                         readImage()
                         galleryAddPic()
                     } else println("result: profilePicturePath is null")               // RESIZE BITMAP, see section below
