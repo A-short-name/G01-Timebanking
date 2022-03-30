@@ -1,6 +1,5 @@
 package it.polito.mad.g01_timebanking
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +39,7 @@ class ShowProfileActivity : AppCompatActivity() {
         fullName = UserKey.FULL_NAME_PLACEHOLDER
         nickName = UserKey.NICKNAME_PLACEHOLDER
         email = UserKey.EMAIL_PLACEHOLDER
-        location = UserKey.LOCATION_PLACEHOLED
+        location = UserKey.LOCATION_PLACEHOLDER
 
         val sharedPref = this?.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
@@ -113,7 +112,7 @@ class ShowProfileActivity : AppCompatActivity() {
         fullName = data?.getStringExtra(UserKey.FULL_NAME_EXTRA_ID) ?: UserKey.FULL_NAME_PLACEHOLDER
         nickName = data?.getStringExtra(UserKey.NICKNAME_EXTRA_ID) ?: UserKey.NICKNAME_PLACEHOLDER
         email = data?.getStringExtra(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
-        location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLED
+        location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
         profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
     }
 }

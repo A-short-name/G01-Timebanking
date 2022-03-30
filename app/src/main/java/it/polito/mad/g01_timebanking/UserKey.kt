@@ -15,7 +15,7 @@ object UserKey {
     const val FULL_NAME_PLACEHOLDER = "No name"
     const val NICKNAME_PLACEHOLDER = "No nick"
     const val EMAIL_PLACEHOLDER = "No email"
-    const val LOCATION_PLACEHOLED = "No loc"
+    const val LOCATION_PLACEHOLDER = "No loc"
 
 
 }
