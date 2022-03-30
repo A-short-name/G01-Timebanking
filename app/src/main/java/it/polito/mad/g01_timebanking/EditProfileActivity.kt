@@ -73,8 +73,8 @@ class EditProfileActivity : AppCompatActivity() {
         val i2 = Intent()
         prepareResult(i2)
         setResult(Activity.RESULT_OK,i2)
+        //Salva in un file tutti i campi
         updatePreferences()
-        //TODO: Salva in un file tutti i campi
         super.onBackPressed() //finish is inside the onBackPressed()
     }
 
