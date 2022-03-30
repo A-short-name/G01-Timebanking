@@ -42,6 +42,11 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        initializeView()
+
+    }
+
+    private fun initializeView() {
         ivFullName = findViewById(R.id.editTextFullName)
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
@@ -50,29 +55,21 @@ class EditProfileActivity : AppCompatActivity() {
 
         profilePicture.setOnClickListener { showPopup(profilePicture) }
         val i = intent
-        ivFullName.setText(i.getStringExtra("it.polito.mad.g01_timebanking.fullName"))
-        ivNickname.setText(i.getStringExtra("it.polito.mad.g01_timebanking.nickname"))
-        ivEmail.setText(i.getStringExtra("it.polito.mad.g01_timebanking.email"))
-        ivLocation.setText(i.getStringExtra("it.polito.mad.g01_timebanking.location"))
-
-        //TODO: Take path of the profile picture from the intent
-        profilePicturePath = i.getStringExtra("it.polito.mad.g01_timebanking.profilePicturePath")
+        ivFullName.setText(i.getStringExtra(UserKey.FULL_NAME_EXTRA_ID))
+        ivNickname.setText(i.getStringExtra(UserKey.NICKNAME_EXTRA_ID))
+        ivEmail.setText(i.getStringExtra(UserKey.EMAIL_EXTRA_ID))
+        ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
+        profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
 
         if (profilePicturePath is String) {
             val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
             profilePicture.setImageBitmap(bitMapProfilePicture)
         }
-
     }
 
     override fun onBackPressed() {
-        //TODO: riempire il result con i valori di tutti i campi
         val i2 = Intent()
-        //i2.putExtra("fullName", ivFullName.text.toString())
-        i2.putExtra("nickname", ivNickname.text.toString())
-        i2.putExtra("email", ivEmail.text.toString())
-        i2.putExtra("location", ivLocation.text.toString())
-        i2.putExtra("profilePicturePath",profilePicturePath)
+        prepareResult(i2)
         setResult(Activity.RESULT_OK,i2)
         val sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE) ?: return
         with (sharedPref.edit()) {
@@ -82,6 +79,14 @@ class EditProfileActivity : AppCompatActivity() {
         }
         //TODO: Salva in un file tutti i campi
         super.onBackPressed() //finish is inside the onBackPressed()
+    }
+
+    private fun prepareResult(i2: Intent) {
+        i2.putExtra(UserKey.FULL_NAME_EXTRA_ID, ivFullName.text.toString())
+        i2.putExtra(UserKey.NICKNAME_EXTRA_ID, ivNickname.text.toString())
+        i2.putExtra(UserKey.EMAIL_EXTRA_ID, ivEmail.text.toString())
+        i2.putExtra(UserKey.LOCATION_EXTRA_ID, ivLocation.text.toString())
+        i2.putExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID, profilePicturePath)
     }
 
 
@@ -139,10 +144,12 @@ class EditProfileActivity : AppCompatActivity() {
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
-            val f = File(profilePicturePath)
-            println(f.absolutePath)
-            mediaScanIntent.data = Uri.fromFile(f)
-            sendBroadcast(mediaScanIntent)
+            if(profilePicturePath is String) {
+                val f = File(profilePicturePath)
+                println(f.absolutePath)
+                mediaScanIntent.data = Uri.fromFile(f)
+                sendBroadcast(mediaScanIntent)
+            } else println("galleryAddPict: profilePicturePath is null")
         }
     }
 
@@ -158,19 +165,19 @@ class EditProfileActivity : AppCompatActivity() {
             CAPTURE_IMAGE_REQUEST -> if (resultCode == RESULT_OK) { //For CAMERA
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
-                // by this point we have the camera photo on disk
-                val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-                profilePicture.setImageBitmap(takenImage)
-                galleryAddPic()
-                // RESIZE BITMAP, see section below
+                    if(profilePicturePath is String) {                // by this point we have the camera photo on disk
+                        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
+                        profilePicture.setImageBitmap(takenImage)
+                        galleryAddPic()
+                    } else println("result: profilePicturePath is null")               // RESIZE BITMAP, see section below
                 //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
             } else { // Result was a failure
-                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
             }
             }
         }
 
-    fun showPopup(v: View) {
+    private fun showPopup(v: View) {
         val popup = PopupMenu(this, v)
         //Set on click listener for the menu
         popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item -> onMenuItemClick(item) })
@@ -179,7 +186,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
-    fun onMenuItemClick(item: MenuItem): Boolean {
+    private fun onMenuItemClick(item: MenuItem): Boolean {
         Toast.makeText(this, "Selected Item: " + item.title, Toast.LENGTH_SHORT).show()
         return when (item.itemId) {
             R.id.gallery ->                 // do your code
