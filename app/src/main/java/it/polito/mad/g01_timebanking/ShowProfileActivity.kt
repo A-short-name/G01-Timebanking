@@ -13,6 +13,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -29,6 +30,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var nickName:String
     private lateinit var email:String
     private lateinit var location:String
+    // TODO: read from file
     private var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
     private var profilePicturePath:String? = null
 
@@ -66,10 +68,12 @@ class ShowProfileActivity : AppCompatActivity() {
         ivProfilePicture = findViewById(R.id.profilePicture)
         skillGroup = findViewById(R.id.skillgroup)
 
-        // TEMPORARY
+        // TODO: TEMPORARY
         skills.forEach{
             val chip = Chip(this)
             chip.text = it
+            chip.isCheckable = false
+            chip.isClickable = true
             skillGroup.addView(chip)
         }
 

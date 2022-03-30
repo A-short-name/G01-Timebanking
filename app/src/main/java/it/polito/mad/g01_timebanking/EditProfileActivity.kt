@@ -20,6 +20,8 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -33,7 +35,10 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
+    lateinit var skillGroup: ChipGroup
 
+    // TODO: read from file
+    var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
     var profilePicturePath: String? = null
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
@@ -52,6 +57,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
         profilePicture = findViewById(R.id.profilePictureButton)
+        skillGroup = findViewById(R.id.skillgroup)
 
         profilePicture.setOnClickListener { showPopup(profilePicture) }
         val i = intent
@@ -64,6 +70,17 @@ class EditProfileActivity : AppCompatActivity() {
         if (profilePicturePath is String) {
             val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
             profilePicture.setImageBitmap(bitMapProfilePicture)
+        }
+
+        // TODO: TEMPORARY
+        skills.forEach{
+            val chip = Chip(this)
+            chip.isCloseIconVisible = true;
+            chip.text = it
+            chip.isCheckable = false
+            chip.isClickable = false
+            chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
+            skillGroup.addView(chip)
         }
     }
 
