@@ -16,6 +16,6 @@ data class UserInfo(
         UserKey.EMAIL_PLACEHOLDER,
         UserKey.LOCATION_PLACEHOLDER,
         UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER,
-        mutableSetOf("No skills")      //TODO check this
+        mutableSetOf<String>()      //TODO check this
     )
 }

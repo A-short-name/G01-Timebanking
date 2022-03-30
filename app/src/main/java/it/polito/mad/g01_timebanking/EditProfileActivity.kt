@@ -72,17 +72,15 @@ class EditProfileActivity : AppCompatActivity() {
 
         if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
             readImage()
-        val gson = Gson()
-        skills = gson.fromJson(i.getStringExtra("it.polito.ciaaaao"), MutableSet::class.java) as MutableSet<String>
-        skills.forEach{
-            val chip = Chip(this)
-            chip.isCloseIconVisible = true;
-            chip.text = it
-            chip.isCheckable = false
-            chip.isClickable = false
-            chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
-            skillGroup.addView(chip)
-        }
+
+        //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
+        //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
+        populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
+
+        //TODO rimuovere skill generata automaticamente dopo aver implementato aggiunta skill
+        //val tmp1 = Math.random()
+        //skillGroup.addView(Chip(this).apply{text="Nuovo $tmp1"; isClickable = false; isCheckable = false; isCloseIconVisible = true;setOnClickListener{ skills.remove(tmp1.toString()); skillGroup.removeView(this) }})
+        //skills.add(tmp1.toString())
     }
 
     override fun onBackPressed() {
@@ -124,7 +122,7 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID, profilePicturePath)
         val gson = Gson();
         val serializedSkills: String = gson.toJson(skills)
-        i2.putExtra("it.polito.ciaaaao", serializedSkills)
+        i2.putExtra(UserKey.SKILLS_EXTRA_ID, serializedSkills)
     }
 
 
@@ -273,13 +271,37 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
+        val gson = Gson();
+        val serializedSkills: String = gson.toJson(skills)
+        outState.putString(UserKey.SKILLS_EXTRA_ID, serializedSkills)
+        //alternativa, credo perdo l'ordine
+        //outState.putStringArray(UserKey.SKILLS_EXTRA_ID, skills.toTypedArray())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+        populateSkillGroup(savedInstanceState.getString(UserKey.SKILLS_EXTRA_ID))
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
 
+
         readImage()
+    }
+
+    private fun populateSkillGroup(serializedJson: String?) {
+        val gson = Gson()
+        //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
+        //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
+                //as? MutableSet<String> ?: mutableSetOf<String>()
+        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+        skills.forEach {
+            val chip = Chip(this)
+            chip.isCloseIconVisible = true;
+            chip.text = it
+            chip.isCheckable = false
+            chip.isClickable = false
+            chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
+            skillGroup.addView(chip)
+        }
     }
 }
 

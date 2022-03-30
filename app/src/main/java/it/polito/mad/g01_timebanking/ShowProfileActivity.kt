@@ -71,13 +71,13 @@ class ShowProfileActivity : AppCompatActivity() {
         ivProfilePicture = findViewById(R.id.profilePicture)
         skillGroup = findViewById(R.id.skillgroup)
 
-        // TODO: TEMPORARY
-        skills.forEach{
-            val chip = Chip(this)
-            chip.text = it
-            chip.isCheckable = false
-            chip.isClickable = true
-            skillGroup.addView(chip)
+        if(!skills.isEmpty())
+            skills.forEach {
+                val chip = Chip(this)
+                chip.text = it
+                chip.isCheckable = false
+                chip.isClickable = true
+                skillGroup.addView(chip)
         }
 
     }
@@ -89,6 +89,14 @@ class ShowProfileActivity : AppCompatActivity() {
         tvLocation.text = location
         if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
             readImage()
+        }
+        skillGroup.removeAllViews()
+        skills.forEach{
+            val chip = Chip(this)
+            chip.text = it
+            chip.isCheckable = false
+            chip.isClickable = true
+            skillGroup.addView(chip)
         }
     }
 
@@ -122,7 +130,7 @@ class ShowProfileActivity : AppCompatActivity() {
             UserKey.EMAIL_EXTRA_ID to tvEmail.text,
             UserKey.LOCATION_EXTRA_ID to tvLocation.text,
             UserKey.PROFILE_PICTURE_PATH_EXTRA_ID to profilePicturePath,
-            "it.polito.ciaaaao" to serializedSkills
+            UserKey.SKILLS_EXTRA_ID to serializedSkills
             )
 
         i.putExtras(b)
@@ -145,7 +153,7 @@ class ShowProfileActivity : AppCompatActivity() {
         location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
         profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
         val gson = Gson()
-        skills = gson.fromJson(data?.getStringExtra("it.polito.ciaaaao"), MutableSet::class.java) as MutableSet<String>
+        skills = gson.fromJson(data?.getStringExtra(UserKey.SKILLS_EXTRA_ID), MutableSet::class.java) as MutableSet<String>
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -156,6 +164,8 @@ class ShowProfileActivity : AppCompatActivity() {
         outState.putString(UserKey.EMAIL_EXTRA_ID, email)
         outState.putString(UserKey.LOCATION_EXTRA_ID, location)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
+
+        //TODO mancano le skills.. ma in realtà non serve nulla di questo perché tanto rilegge da file adesso
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
