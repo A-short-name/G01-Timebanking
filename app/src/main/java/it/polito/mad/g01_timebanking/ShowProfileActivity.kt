@@ -2,11 +2,13 @@ package it.polito.mad.g01_timebanking
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 
@@ -15,6 +17,7 @@ class ShowProfileActivity : AppCompatActivity() {
     lateinit var tvNickname:TextView
     lateinit var tvEmail:TextView
     lateinit var tvLocation:TextView
+    lateinit var ivProfilePicture:ImageView
 
     private val fullNamePlaceholder = "No name"
     private val nicknamePlaceholder = "No nick"
@@ -30,6 +33,8 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickname = findViewById<TextView>(R.id.nickname)
         tvEmail = findViewById<TextView>(R.id.email)
         tvLocation = findViewById<TextView>(R.id.location)
+        ivProfilePicture = findViewById<ImageView>(R.id.profilePicture)
+
 
         val sharedPref = this?.getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE)
@@ -85,6 +90,11 @@ class ShowProfileActivity : AppCompatActivity() {
         tvEmail.text = em
         val loc = data?.getStringExtra("location")
         tvLocation.text = loc
+        val ppp = data?.getStringExtra("profilePicturePath")
+        if (ppp is String) {
+            val bitMapProfilePicture = BitmapFactory.decodeFile(ppp)
+            ivProfilePicture.setImageBitmap(bitMapProfilePicture)
+        }
         //TODO: prendere tutti i nomi ritornati dal result
     }
 }

@@ -31,6 +31,7 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
+    var profilePicturePath: String? = null
 
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
@@ -46,12 +47,22 @@ class EditProfileActivity : AppCompatActivity() {
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
         profilePicture = findViewById(R.id.profilePictureButton)
+
         profilePicture.setOnClickListener { showPopup(profilePicture) }
         val i = intent
         ivFullName.setText(i.getStringExtra("it.polito.mad.g01_timebanking.fullName"))
         ivNickname.setText(i.getStringExtra("it.polito.mad.g01_timebanking.nickname"))
         ivEmail.setText(i.getStringExtra("it.polito.mad.g01_timebanking.email"))
         ivLocation.setText(i.getStringExtra("it.polito.mad.g01_timebanking.location"))
+
+        //TODO: Take path of the profile picture from the intent
+        profilePicturePath = i.getStringExtra("it.polito.mad.g01_timebanking.profilePicturePath")
+
+        if (profilePicturePath is String) {
+            val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
+            profilePicture.setImageBitmap(bitMapProfilePicture)
+        }
+
     }
 
     override fun onBackPressed() {
@@ -61,6 +72,7 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra("nickname", ivNickname.text.toString())
         i2.putExtra("email", ivEmail.text.toString())
         i2.putExtra("location", ivLocation.text.toString())
+        i2.putExtra("profilePicturePath",profilePicturePath)
         setResult(Activity.RESULT_OK,i2)
         val sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE) ?: return
         with (sharedPref.edit()) {
@@ -107,8 +119,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    lateinit var currentPhotoPath: String
-
     //@Throws(IOException::class)
     private fun createImageFile(context: Context): File {
         // Create an image file name
@@ -121,7 +131,7 @@ class EditProfileActivity : AppCompatActivity() {
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             //eg. /storage/emulated/0/Android/data/it.polito.mad.g01_timebanking/files/Pictures/JPEG_20220329_123453_7193664665067830656.jpg
-            currentPhotoPath = absolutePath
+            profilePicturePath = absolutePath
         }
     }
 
@@ -129,7 +139,7 @@ class EditProfileActivity : AppCompatActivity() {
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
-            val f = File(currentPhotoPath)
+            val f = File(profilePicturePath)
             println(f.absolutePath)
             mediaScanIntent.data = Uri.fromFile(f)
             sendBroadcast(mediaScanIntent)
@@ -149,7 +159,7 @@ class EditProfileActivity : AppCompatActivity() {
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
                 // by this point we have the camera photo on disk
-                val takenImage = BitmapFactory.decodeFile(currentPhotoPath)
+                val takenImage = BitmapFactory.decodeFile(profilePicturePath)
                 profilePicture.setImageBitmap(takenImage)
                 galleryAddPic()
                 // RESIZE BITMAP, see section below
