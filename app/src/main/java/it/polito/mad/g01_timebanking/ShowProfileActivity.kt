@@ -7,7 +7,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
+import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.gson.Gson
 
 class ShowProfileActivity : AppCompatActivity() {
     private lateinit var tvFullName:TextView
@@ -30,13 +31,12 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var nickName:String
     private lateinit var email:String
     private lateinit var location:String
+    private lateinit var profilePicturePath:String
     // TODO: read from file
     private var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
-    private var profilePicturePath:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("hello")
         setContentView(R.layout.activity_show_profile)
 
         initializeView()
@@ -45,19 +45,22 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun initializeData() {
-        //TODO: initialize the variables reading from file
-        fullName = UserKey.FULL_NAME_PLACEHOLDER
-        nickName = UserKey.NICKNAME_PLACEHOLDER
-        email = UserKey.EMAIL_PLACEHOLDER
-        location = UserKey.LOCATION_PLACEHOLDER
+        //initialize the variables reading from file
 
-        //TODO: skills = ...
-
-        val sharedPref = this?.getSharedPreferences(
+        var gson = Gson()
+        val sharedPref = this.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
-        val defaultValue = resources.getString(R.string.name)
-        println(defaultValue)
+        val s: String = sharedPref.getString(getString(R.string.user_info), "" ) ?: ""
+
+        var u =  if(s!="") gson.fromJson(s,UserInfo::class.java) else UserInfo()
+
+        fullName = u.fullName
+        nickName = u.nickname
+        email = u.email
+        location = u.location
+        profilePicturePath = u.profilePicturePath
+        //TODO: skills = .
     }
 
     private fun initializeView() {
@@ -84,7 +87,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickname.text = nickName
         tvEmail.text = email
         tvLocation.text = location
-        if (profilePicturePath is String) {
+        if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
             readImage()
         }
     }
@@ -135,7 +138,7 @@ class ShowProfileActivity : AppCompatActivity() {
         nickName = data?.getStringExtra(UserKey.NICKNAME_EXTRA_ID) ?: UserKey.NICKNAME_PLACEHOLDER
         email = data?.getStringExtra(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
         location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
-        profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
+        profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -154,7 +157,7 @@ class ShowProfileActivity : AppCompatActivity() {
         nickName = savedInstanceState.getString(UserKey.NICKNAME_EXTRA_ID) ?: UserKey.NICKNAME_PLACEHOLDER
         email = savedInstanceState.getString(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
         location = savedInstanceState.getString(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
-        profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
+        profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
         updateView()
     }

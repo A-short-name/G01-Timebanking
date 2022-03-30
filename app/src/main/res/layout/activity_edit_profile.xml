@@ -33,8 +33,7 @@
                     android:layout_height="200dp"
                     android:padding="0px"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/avatar"
-                />
+                    android:src="@drawable/avatar" />
             </androidx.cardview.widget.CardView>
 
 
