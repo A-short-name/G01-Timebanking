@@ -4,7 +4,10 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -163,8 +166,7 @@ class EditProfileActivity : AppCompatActivity() {
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
                     if(profilePicturePath is String) {                // by this point we have the camera photo on disk
-                        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-                        profilePicture.setImageBitmap(takenImage)
+                        readImage()
                         galleryAddPic()
                     } else println("result: profilePicturePath is null")               // RESIZE BITMAP, see section below
                 //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
@@ -173,6 +175,30 @@ class EditProfileActivity : AppCompatActivity() {
             }
             }
         }
+
+    private fun readImage() {
+        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
+
+        val ei = ExifInterface(profilePicturePath!!)
+        val orientation: Int = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
+
+        var rotatedBitmap: Bitmap? = null
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap =
+                rotateImage(takenImage, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
+                rotateImage(takenImage, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap =
+                rotateImage(takenImage, 270)
+            ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = takenImage
+            else -> rotatedBitmap = takenImage
+        }
+
+        profilePicture.setImageBitmap(rotatedBitmap)
+    }
 
     private fun showPopup(v: View) {
         val popup = PopupMenu(this, v)
@@ -197,6 +223,15 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle.toFloat())
+        return Bitmap.createBitmap(
+            source, 0, 0, source.width, source.height,
+            matrix, true
+        )
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
@@ -206,8 +241,7 @@ class EditProfileActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
 
-        val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
-        profilePicture.setImageBitmap(bitMapProfilePicture)
+        readImage()
     }
 }
 

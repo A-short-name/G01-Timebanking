@@ -1,7 +1,10 @@
 package it.polito.mad.g01_timebanking
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -63,8 +66,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvEmail.text = email
         tvLocation.text = location
         if (profilePicturePath is String) {
-            val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
-            ivProfilePicture.setImageBitmap(bitMapProfilePicture)
+            readImage()
         }
     }
 
@@ -136,5 +138,38 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID)
 
         updateView()
+    }
+
+    private fun readImage() {
+        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
+
+        val ei = ExifInterface(profilePicturePath!!)
+        val orientation: Int = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
+
+        var rotatedBitmap: Bitmap? = null
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap =
+                rotateImage(takenImage, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
+                rotateImage(takenImage, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap =
+                rotateImage(takenImage, 270)
+            ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = takenImage
+            else -> rotatedBitmap = takenImage
+        }
+
+        ivProfilePicture.setImageBitmap(rotatedBitmap)
+    }
+
+    fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle.toFloat())
+        return Bitmap.createBitmap(
+            source, 0, 0, source.width, source.height,
+            matrix, true
+        )
     }
 }
