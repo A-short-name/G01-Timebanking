@@ -57,11 +57,17 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onBackPressed() {
         //TODO: riempire il result con i valori di tutti i campi
         val i2 = Intent()
-        i2.putExtra("fullName", ivFullName.text.toString())
+        //i2.putExtra("fullName", ivFullName.text.toString())
         i2.putExtra("nickname", ivNickname.text.toString())
         i2.putExtra("email", ivEmail.text.toString())
         i2.putExtra("location", ivLocation.text.toString())
         setResult(Activity.RESULT_OK,i2)
+        val sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            println("In edit")
+            putString(getString(R.string.name), ivFullName.text.toString())
+            apply()
+        }
         //TODO: Salva in un file tutti i campi
         super.onBackPressed() //finish is inside the onBackPressed()
     }

@@ -1,5 +1,6 @@
 package it.polito.mad.g01_timebanking
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,6 +23,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("hello")
         setContentView(R.layout.activity_show_profile)
 
         tvFullName = findViewById<TextView>(R.id.fullname)
@@ -29,7 +31,12 @@ class ShowProfileActivity : AppCompatActivity() {
         tvEmail = findViewById<TextView>(R.id.email)
         tvLocation = findViewById<TextView>(R.id.location)
 
-        tvFullName.text = fullNamePlaceholder
+        val sharedPref = this?.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val defaultValue = resources.getString(R.string.name)
+        println(defaultValue)
+        //tvFullName.text = fullNamePlaceholder
+        tvFullName.text = defaultValue
         tvNickname.text = nicknamePlaceholder
         tvEmail.text = emailPlaceholder
         tvLocation.text = locationPlaceholder
