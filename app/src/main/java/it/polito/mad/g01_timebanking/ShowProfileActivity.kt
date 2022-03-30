@@ -60,7 +60,7 @@ class ShowProfileActivity : AppCompatActivity() {
         email = u.email
         location = u.location
         profilePicturePath = u.profilePicturePath
-        //TODO: skills = .
+        skills = u.skills       //TODO: print messaggio quando set vuoto
     }
 
     private fun initializeView() {
@@ -112,14 +112,19 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun editProfile() {
+        val gson = Gson();
+        val serializedSkills: String = gson.toJson(skills)
+
         val i = Intent(this, EditProfileActivity::class.java)
         val b : Bundle = bundleOf(
             UserKey.FULL_NAME_EXTRA_ID to tvFullName.text,
             UserKey.NICKNAME_EXTRA_ID to tvNickname.text,
             UserKey.EMAIL_EXTRA_ID to tvEmail.text,
             UserKey.LOCATION_EXTRA_ID to tvLocation.text,
-            UserKey.PROFILE_PICTURE_PATH_EXTRA_ID to profilePicturePath
+            UserKey.PROFILE_PICTURE_PATH_EXTRA_ID to profilePicturePath,
+            "it.polito.ciaaaao" to serializedSkills
             )
+
         i.putExtras(b)
 
         startActivityForResult(i, 0)
@@ -139,6 +144,8 @@ class ShowProfileActivity : AppCompatActivity() {
         email = data?.getStringExtra(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
         location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
         profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+        val gson = Gson()
+        skills = gson.fromJson(data?.getStringExtra("it.polito.ciaaaao"), MutableSet::class.java) as MutableSet<String>
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

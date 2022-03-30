@@ -41,7 +41,8 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var profilePicturePath: String
 
     // TODO: read from file
-    var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
+    //var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
+    lateinit var skills : MutableSet<String>
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
 
@@ -71,9 +72,8 @@ class EditProfileActivity : AppCompatActivity() {
 
         if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
             readImage()
-
-
-        // TODO: TEMPORARY
+        val gson = Gson()
+        skills = gson.fromJson(i.getStringExtra("it.polito.ciaaaao"), MutableSet::class.java) as MutableSet<String>
         skills.forEach{
             val chip = Chip(this)
             chip.isCloseIconVisible = true;
@@ -100,7 +100,8 @@ class EditProfileActivity : AppCompatActivity() {
             ivNickname.text.toString(),
             ivEmail.text.toString(),
             ivLocation.text.toString(),
-            profilePicturePath
+            profilePicturePath,
+            skills
         )
 
         val gson : Gson = Gson();
@@ -121,6 +122,9 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra(UserKey.EMAIL_EXTRA_ID, ivEmail.text.toString())
         i2.putExtra(UserKey.LOCATION_EXTRA_ID, ivLocation.text.toString())
         i2.putExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID, profilePicturePath)
+        val gson = Gson();
+        val serializedSkills: String = gson.toJson(skills)
+        i2.putExtra("it.polito.ciaaaao", serializedSkills)
     }
 
 

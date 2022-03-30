@@ -7,7 +7,8 @@ data class UserInfo(
     var nickname: String,
     var email: String,
     var location: String,
-    var profilePicturePath: String
+    var profilePicturePath: String,
+    var skills: MutableSet<String>
 ) {
     constructor() : this(
         UserKey.FULL_NAME_PLACEHOLDER,
@@ -15,5 +16,6 @@ data class UserInfo(
         UserKey.EMAIL_PLACEHOLDER,
         UserKey.LOCATION_PLACEHOLDER,
         UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER,
+        mutableSetOf("No skills")      //TODO check this
     )
 }
