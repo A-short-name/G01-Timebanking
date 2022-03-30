@@ -26,17 +26,14 @@ import java.util.*
 class EditProfileActivity : AppCompatActivity() {
 
     lateinit var profilePicture:ImageButton
-    var fullName: String = ""
     lateinit var ivFullName: EditText
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
-    var profilePicturePath: String? = null
 
+    var profilePicturePath: String? = null
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,6 +195,19 @@ class EditProfileActivity : AppCompatActivity() {
             }
             else -> false
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
+
+        val bitMapProfilePicture = BitmapFactory.decodeFile(profilePicturePath)
+        profilePicture.setImageBitmap(bitMapProfilePicture)
     }
 }
 
