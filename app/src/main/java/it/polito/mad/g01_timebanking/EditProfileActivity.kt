@@ -1,17 +1,22 @@
 package it.polito.mad.g01_timebanking
 
+import android.Manifest
+import android.R.attr
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -20,6 +25,7 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
@@ -39,6 +45,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
+    val PERMISSION_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +70,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
         profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
-        if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
+        if (profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
             readImage()
 
 
@@ -87,7 +94,7 @@ class EditProfileActivity : AppCompatActivity() {
             profilePicturePath
         )
 
-        val gson : Gson = Gson();
+        val gson : Gson = Gson()
         val serializedUser: String = gson.toJson(u)
 
         val sharedPref =
@@ -107,6 +114,15 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID, profilePicturePath)
     }
 
+    private fun dispatchChoosePictureIntent(){
+        val choosePictureIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        choosePictureIntent.type = "image/*"
+        try {
+            startActivityForResult(choosePictureIntent, PICK_IMAGE_REQUEST)
+        }   catch (e: ActivityNotFoundException) {
+            Toast.makeText(this,"Error", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun dispatchTakePictureIntent() {
 
@@ -131,7 +147,10 @@ class EditProfileActivity : AppCompatActivity() {
 
             //Original problem with resolveActivity as in the documentation:
             //This appears to be due to the new restrictions on "package visibility" introduced in Android 11.
-            //Basically, starting with API level 30, if you're targeting that version or higher, your app cannot see, or directly interact with, most external packages without explicitly requesting allowance, either through a blanket QUERY_ALL_PACKAGES permission, or by including an appropriate <queries> element in your manifest.
+            //Basically, starting with API level 30, if you're targeting that version or higher,
+            //your app cannot see, or directly interact with, most external packages without
+            //explicitly requesting allowance, either through a blanket QUERY_ALL_PACKAGES
+            //permission, or by including an appropriate <queries> element in your manifest.
             //https://stackoverflow.com/questions/62535856/intent-resolveactivity-returns-null-in-api-30
             //https://cketti.de/2020/09/03/avoid-intent-resolveactivity/
             try {
@@ -162,7 +181,7 @@ class EditProfileActivity : AppCompatActivity() {
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
-            if(profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
+            if(profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 val f = File(profilePicturePath)
                 println(f.absolutePath)
                 mediaScanIntent.data = Uri.fromFile(f)
@@ -175,47 +194,65 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             PICK_IMAGE_REQUEST -> { //For Image Gallery
-                if (resultCode == RESULT_OK && data != null && data.data != null) {
 
+                if (resultCode == RESULT_OK) {
+                    if(data != null && data.data != null) {
+                        try {
+                            //val fileImage : File = File(data.data.toString())
+                            //profilePicturePath = fileImage.absolutePath
+                            //val takenImage = BitmapFactory.decodeFile(profilePicturePath) //returns null
+                            profilePicturePath = data.data.toString()
+                            profilePicture.setImageURI(profilePicturePath.toUri()) // handle chosen image
+                        } catch (e: IOException) {
+                            Log.i("TAG", "Some exception $e")
+                        }
+                    }
+                    else // handle chosen image
+                    {
+                        println("result: data is null")
+                    }
                 }
+                else Toast.makeText(this, "Picture was not loaded", Toast.LENGTH_SHORT).show()
                 return
             }
             CAPTURE_IMAGE_REQUEST -> if (resultCode == RESULT_OK) { //For CAMERA
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
-                    if(profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {                // by this point we have the camera photo on disk
+                    if(profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {                // by this point we have the camera photo on disk
                         readImage()
                         galleryAddPic()
                     } else println("result: profilePicturePath is null")               // RESIZE BITMAP, see section below
                 //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
             } else { // Result was a failure
-                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Picture was not taken!", Toast.LENGTH_SHORT).show()
             }
             }
         }
 
     private fun readImage() {
-        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-
-        val ei = ExifInterface(profilePicturePath!!)
-        val orientation: Int = ei.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
-
-        var rotatedBitmap: Bitmap? = null
-        when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap =
-                rotateImage(takenImage, 90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
-                rotateImage(takenImage, 180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap =
-                rotateImage(takenImage, 270)
-            ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = takenImage
-            else -> rotatedBitmap = takenImage
+        if(profilePicturePath.startsWith("content://com.google.android.apps.photos.contentprovider/")) {
+            profilePicture.setImageURI(profilePicturePath.toUri())
         }
+        else {
+            val takenImage = BitmapFactory.decodeFile(profilePicturePath)
 
-        profilePicture.setImageBitmap(rotatedBitmap)
+            val ei = ExifInterface(profilePicturePath)
+            val orientation: Int = ei.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
+
+            var rotatedBitmap: Bitmap? = null
+            rotatedBitmap = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
+                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
+                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
+                ExifInterface.ORIENTATION_NORMAL -> takenImage
+                else -> takenImage
+            }
+
+            profilePicture.setImageBitmap(rotatedBitmap)
+        }
     }
 
     private fun showPopup(v: View) {
@@ -231,7 +268,10 @@ class EditProfileActivity : AppCompatActivity() {
         Toast.makeText(this, "Selected Item: " + item.title, Toast.LENGTH_SHORT).show()
         return when (item.itemId) {
             R.id.gallery ->                 // do your code
+            {
+                checkPermissionAndChoose()
                 true
+            }
             R.id.camera ->                 // do your code
             {
                 dispatchTakePictureIntent()
@@ -248,6 +288,43 @@ class EditProfileActivity : AppCompatActivity() {
             source, 0, 0, source.width, source.height,
             matrix, true
         )
+    }
+
+    fun checkPermissionAndChoose(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_DENIED){
+                //permission denied
+                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
+                //show popup to request runtime permission
+                requestPermissions(permissions, PERMISSION_CODE);
+            }
+            else{
+                //permission already granted
+                dispatchChoosePictureIntent();
+            }
+        }
+        else{
+            //system OS is < Marshmallow
+            dispatchChoosePictureIntent();
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            PERMISSION_CODE -> {
+                if (grantResults.size >0 && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED){
+                    //permission from popup granted
+                    dispatchChoosePictureIntent()
+                }
+                else{
+                    //permission from popup denied
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

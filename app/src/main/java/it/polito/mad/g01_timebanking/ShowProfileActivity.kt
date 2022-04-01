@@ -13,6 +13,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import com.google.gson.Gson
 
@@ -69,7 +70,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickname.text = nickName
         tvEmail.text = email
         tvLocation.text = location
-        if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
+        if (profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
             readImage()
         }
     }
@@ -145,27 +146,33 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun readImage() {
-        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-
-        val ei = ExifInterface(profilePicturePath!!)
-        val orientation: Int = ei.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
-
-        var rotatedBitmap: Bitmap? = null
-        when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap =
-                rotateImage(takenImage, 90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
-                rotateImage(takenImage, 180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap =
-                rotateImage(takenImage, 270)
-            ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = takenImage
-            else -> rotatedBitmap = takenImage
+        //onBackPressed uses
+        //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F61/ORIGINAL/NONE/image%2Fjpeg/1251745918
+        //onCreate uses
+        //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F61/ORIGINAL/NONE/image%2Fjpeg/1537179437
+        if(profilePicturePath.startsWith("content://com.google.android.apps.photos.contentprovider/")) {
+            var uriImage = profilePicturePath.toUri()
+            ivProfilePicture.setImageURI(uriImage)
         }
+        else {
+            val takenImage = BitmapFactory.decodeFile(profilePicturePath)
+            val ei = ExifInterface(profilePicturePath!!)
+            val orientation: Int = ei.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
 
-        ivProfilePicture.setImageBitmap(rotatedBitmap)
+            var rotatedBitmap: Bitmap? = null
+            rotatedBitmap = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
+                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
+                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
+                ExifInterface.ORIENTATION_NORMAL -> takenImage
+                else -> takenImage
+            }
+
+            ivProfilePicture.setImageBitmap(rotatedBitmap)
+        }
     }
 
     fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
