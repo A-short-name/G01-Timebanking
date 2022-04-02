@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -30,9 +29,8 @@ import java.util.*
 
 
 class EditProfileActivity : AppCompatActivity() {
-
+    // Views
     lateinit var profilePicture:ImageButton
-    var fullName: String = ""
     lateinit var ivFullName: EditText
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
@@ -42,9 +40,9 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var profilePicturePath: String
     lateinit var noSkills: TextView
 
-    // TODO: read from file
-    //var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
+    // Variables
     lateinit var skills : MutableSet<String>
+
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
 
@@ -57,6 +55,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun initializeView() {
+        // Fetch views
         ivFullName = findViewById(R.id.editTextFullName)
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
@@ -66,7 +65,10 @@ class EditProfileActivity : AppCompatActivity() {
         skillGroup = findViewById(R.id.skillgroup)
         noSkills = findViewById(R.id.noSkillsTextView)
 
+        // Set listener for picture clicks
         profilePicture.setOnClickListener { showPopup(profilePicture) }
+
+        // Initialize values
         val i = intent
         ivFullName.setText(i.getStringExtra(UserKey.FULL_NAME_EXTRA_ID))
         ivNickname.setText(i.getStringExtra(UserKey.NICKNAME_EXTRA_ID))
@@ -74,38 +76,29 @@ class EditProfileActivity : AppCompatActivity() {
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
         profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
-        if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
+        if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
             readImage()
 
+        //TODO: remove this comment
         //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
         //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
         populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
 
+        // Set listener on "add skills" field
         ivSkills.setOnEditorActionListener { v, actionId, event ->
+            // If user presses enter
             if(actionId == EditorInfo.IME_ACTION_DONE){
+                // Add skillText on set
                 skills.add(v.text.toString())
-                skillGroup.addView(Chip(this).apply {
-                    text= v.text;
-                    isClickable = false
-                    isCheckable = false
-                    isCloseIconVisible = true;
-                    setOnClickListener{
-                        skills.remove(it.toString())
-                        skillGroup.removeView(this)
-                    }
-                    if(noSkills.isVisible) noSkills.isVisible = false
-                })
+                // Add Pill
+                addSkillView(v.text.toString())
+                // Reset editText field for new skills
                 v.text = ""
                 true
             } else {
                 false
             }
         }
-
-        //TODO rimuovere skill generata automaticamente dopo aver implementato aggiunta skill
-        //val tmp1 = Math.random()
-        //skillGroup.addView(Chip(this).apply{text="Nuovo $tmp1"; isClickable = false; isCheckable = false; isCloseIconVisible = true;setOnClickListener{ skills.remove(tmp1.toString()); skillGroup.removeView(this) }})
-        //skills.add(tmp1.toString())
     }
 
     override fun onBackPressed() {
@@ -325,15 +318,19 @@ class EditProfileActivity : AppCompatActivity() {
             noSkills.isVisible = true
 
         skills.forEach {
-            val chip = Chip(this)
-            chip.isCloseIconVisible = true;
-            chip.text = it
-            chip.isCheckable = false
-            chip.isClickable = false
-            chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
-            skillGroup.addView(chip)
-            noSkills.isVisible = false
+            addSkillView(it)
         }
+    }
+
+    private fun addSkillView(skillText: String) {
+        val chip = Chip(this)
+        chip.isCloseIconVisible = true;
+        chip.text = skillText
+        chip.isCheckable = false
+        chip.isClickable = false
+        chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
+        skillGroup.addView(chip)
+        noSkills.isVisible = false
     }
 }
 
