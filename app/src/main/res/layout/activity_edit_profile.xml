@@ -52,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/personalData"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/fullNameTitle"
@@ -60,17 +61,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editTextFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:hint="@string/nameHint"
                 android:importantForAutofill="yes"
-                android:autofillHints=""
+                android:inputType="textPersonName"
+                android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
             <TextView
@@ -79,17 +82,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/nickname"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editTextNickname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:hint="@string/nicknameHint"
                 android:importantForAutofill="yes"
-                android:autofillHints=""
+                android:inputType="textPersonName"
+                android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
             <TextView
@@ -98,17 +103,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/email"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
-                android:inputType="textEmailAddress"
                 android:hint="@string/emailHint"
                 android:importantForAutofill="yes"
-                android:autofillHints=""
+                android:inputType="textEmailAddress"
+                android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
             <TextView
@@ -117,17 +124,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/location"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editTextLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
-                android:inputType="textPostalAddress"
                 android:hint="@string/locationHint"
                 android:importantForAutofill="yes"
-                android:autofillHints=""
+                android:inputType="textPostalAddress"
+                android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
             <TextView
@@ -136,16 +145,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/biography"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editTextBiography"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/biographyHint"
                 android:importantForAutofill="yes"
-                android:autofillHints=""
+                android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
             <TextView
@@ -154,14 +165,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/skills"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/noSkillsTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/skillsPlaceholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="16sp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/skillgroup"
@@ -192,8 +205,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="@string/skillHint"
                 android:inputType="textPersonName"
-                android:hint="@string/skillHint" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
