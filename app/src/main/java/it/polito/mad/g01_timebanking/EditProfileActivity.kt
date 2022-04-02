@@ -36,7 +36,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     // Views
-    lateinit var profilePicture:ImageButton
+    lateinit var profilePicture:ImageView
     lateinit var ivFullName: EditText
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
@@ -69,12 +69,13 @@ class EditProfileActivity : AppCompatActivity() {
         ivLocation = findViewById(R.id.editTextLocation)
         ivBiography = findViewById(R.id.editTextBiography)
         ivSkills = findViewById(R.id.editTextAddSkills)
-        profilePicture = findViewById(R.id.profilePictureButton)
+        profilePicture = findViewById(R.id.profilePicture)
+        val profilePictureButton = findViewById<ImageButton>(R.id.profilePictureTransparentButton)
         skillGroup = findViewById(R.id.skillgroup)
         noSkills = findViewById(R.id.noSkillsTextView)
 
         // Set listener for picture clicks
-        profilePicture.setOnClickListener { showPopup(profilePicture) }
+        profilePictureButton.setOnClickListener { showPopup(profilePictureButton) }
 
         // Initialize values
         val i = intent
