@@ -12,8 +12,8 @@ import android.util.Log.ERROR
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.ViewTreeObserver
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
@@ -24,6 +24,8 @@ class ShowProfileActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "ShowProfileActivity"
     }
+    private lateinit var scrollView:ScrollView
+    private lateinit var frameView:FrameLayout
     private lateinit var tvFullName:TextView
     private lateinit var tvNickname:TextView
     private lateinit var tvEmail:TextView
@@ -45,6 +47,14 @@ class ShowProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_profile)
 
         initializeView()
+
+//        scrollView.viewTreeObserver.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
+//            override fun onGlobalLayout() {
+//                frameView.post{frameView.layoutParams = LinearLayout.LayoutParams(scrollView.width, scrollView.height/3)}
+//                scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//            }
+//        })
+
         initializeData()
         updateView()
     }
@@ -84,6 +94,8 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun initializeView() {
         // Fetch views
+        scrollView = findViewById(R.id.sv)
+        frameView = findViewById(R.id.frameView1)
         tvFullName = findViewById(R.id.fullname)
         tvNickname = findViewById(R.id.nickname)
         tvEmail = findViewById(R.id.email)
