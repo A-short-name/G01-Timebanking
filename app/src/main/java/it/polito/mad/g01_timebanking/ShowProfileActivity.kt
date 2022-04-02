@@ -7,14 +7,13 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
@@ -32,8 +31,8 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var email:String
     private lateinit var location:String
     private lateinit var profilePicturePath:String
-    // TODO: read from file
-    private var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
+
+    private var skills = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +46,13 @@ class ShowProfileActivity : AppCompatActivity() {
     private fun initializeData() {
         //initialize the variables reading from file
 
-        var gson = Gson()
+        val gson = Gson()
         val sharedPref = this.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
         val s: String = sharedPref.getString(getString(R.string.user_info), "" ) ?: ""
 
-        var u =  if(s!="") gson.fromJson(s,UserInfo::class.java) else UserInfo()
+        val u =  if(s!="") gson.fromJson(s,UserInfo::class.java) else UserInfo()
 
         fullName = u.fullName
         nickName = u.nickname
@@ -70,16 +69,21 @@ class ShowProfileActivity : AppCompatActivity() {
         tvLocation = findViewById(R.id.location)
         ivProfilePicture = findViewById(R.id.profilePicture)
         skillGroup = findViewById(R.id.skillgroup)
+        val noSkills = findViewById<TextView>(R.id.noSkillsTextView)
 
-        if(!skills.isEmpty())
+        if(skills.isNotEmpty()) {
             skills.forEach {
                 val chip = Chip(this)
                 chip.text = it
                 chip.isCheckable = false
                 chip.isClickable = true
                 skillGroup.addView(chip)
-        }
+            }
 
+            noSkills.isVisible = false;
+        } else {
+            noSkills.isVisible = true;
+        }
     }
 
     private fun updateView() {

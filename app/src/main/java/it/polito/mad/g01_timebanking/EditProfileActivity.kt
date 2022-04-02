@@ -12,14 +12,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.PopupMenu
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
@@ -37,8 +37,10 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
+    lateinit var ivSkills: EditText
     lateinit var skillGroup: ChipGroup
     lateinit var profilePicturePath: String
+    lateinit var noSkills: TextView
 
     // TODO: read from file
     //var skills = mutableSetOf("Lavavetri","Pelatore di castagne")
@@ -59,8 +61,10 @@ class EditProfileActivity : AppCompatActivity() {
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
+        ivSkills = findViewById(R.id.editTextAddSkills)
         profilePicture = findViewById(R.id.profilePictureButton)
         skillGroup = findViewById(R.id.skillgroup)
+        noSkills = findViewById(R.id.noSkillsTextView)
 
         profilePicture.setOnClickListener { showPopup(profilePicture) }
         val i = intent
@@ -76,6 +80,27 @@ class EditProfileActivity : AppCompatActivity() {
         //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
         //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
         populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
+
+        ivSkills.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                skills.add(v.text.toString())
+                skillGroup.addView(Chip(this).apply {
+                    text= v.text;
+                    isClickable = false
+                    isCheckable = false
+                    isCloseIconVisible = true;
+                    setOnClickListener{
+                        skills.remove(it.toString())
+                        skillGroup.removeView(this)
+                    }
+                    if(noSkills.isVisible) noSkills.isVisible = false
+                })
+                v.text = ""
+                true
+            } else {
+                false
+            }
+        }
 
         //TODO rimuovere skill generata automaticamente dopo aver implementato aggiunta skill
         //val tmp1 = Math.random()
@@ -293,6 +318,12 @@ class EditProfileActivity : AppCompatActivity() {
         //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
                 //as? MutableSet<String> ?: mutableSetOf<String>()
         skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+
+        skillGroup.removeAllViews()
+
+        if(skills.isEmpty())
+            noSkills.isVisible = true
+
         skills.forEach {
             val chip = Chip(this)
             chip.isCloseIconVisible = true;
@@ -301,6 +332,7 @@ class EditProfileActivity : AppCompatActivity() {
             chip.isClickable = false
             chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
             skillGroup.addView(chip)
+            noSkills.isVisible = false
         }
     }
 }
