@@ -8,12 +8,14 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.ViewTreeObserver
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
@@ -49,27 +51,35 @@ class ShowProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_profile)
 
         initializeView()
+        //the only way to set height image to 1/3 of the screen is programmatically
+        //This is ue to the fact that we use a scroll view with a bio with variable length
+        arrangeViewByRatio()
 
+        initializeData()
+        updateView()
+    }
+
+    private fun arrangeViewByRatio() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
+            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    frameView.post{frameView.layoutParams = LinearLayout.LayoutParams(scrollView.width, scrollView.height/3)}
+                    frameView.post {
+                        frameView.layoutParams =
+                            LinearLayout.LayoutParams(scrollView.width, scrollView.height / 3)
+                    }
                     scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    //Resize consequently cardView with image
+                    val cardView = findViewById<CardView>(R.id.imageCard)
+                    val relativeDimension = scrollView.height / 3 - 32
+                    //I want a square box for the image that doesn't fit all the space in the parent frameView
+                    cardView.layoutParams.width = relativeDimension
+                    cardView.layoutParams.height = relativeDimension
+                    //different from before because cardView doesn't work with LinearLayout.LayoutP....
                 }
             })
         }
 
-//        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
-//                override fun onGlobalLayout() {
-//                    frameView.post{frameView.layoutParams = LinearLayout.LayoutParams(scrollView.width, scrollView.height/3)}
-//                    scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                }
-//            })
-//        }
-
-        initializeData()
-        updateView()
     }
 
 
