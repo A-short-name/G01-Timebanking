@@ -91,13 +91,16 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
                     // Add skillText on set
-                    skills.add(v.text.toString())
-                    // Add Pill
-                    addSkillView(v.text.toString())
-                    // Reset editText field for new skills
-                    v.text = ""
+                    if(skills.add(v.text.toString())){
+                        // Add Pill
+                        addSkillView(v.text.toString())
+                        // Reset editText field for new skills
+                        v.text = ""
+                    } else {
+                        Toast.makeText(this,"Skill already present", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    Toast.makeText(this,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH} characters", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH+1} characters", Toast.LENGTH_SHORT).show()
                 }
                 true
             } else {
