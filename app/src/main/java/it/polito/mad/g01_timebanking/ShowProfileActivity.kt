@@ -7,6 +7,8 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.util.Log.ERROR
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -19,6 +21,9 @@ import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
 
 class ShowProfileActivity : AppCompatActivity() {
+    companion object {
+        private const val TAG = "ShowProfileActivity"
+    }
     private lateinit var tvFullName:TextView
     private lateinit var tvNickname:TextView
     private lateinit var tvEmail:TextView
@@ -146,15 +151,25 @@ class ShowProfileActivity : AppCompatActivity() {
 
         i.putExtras(b)
 
-        startActivityForResult(i, 0)
+        startActivityForResult(i, UserKey.EDIT_ACTIVITY_REQUEST)
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        readResult(data)
-        updateView()
-        //TODO: prendere tutti i nomi ritornati dal result
+        when (requestCode){
+            UserKey.EDIT_ACTIVITY_REQUEST -> {
+                if(resultCode == RESULT_OK) {
+                    readResult(data)
+                    updateView()
+                }
+                else
+                    Log.e(TAG,"activity result not OK,\n\tresultCode: $resultCode\n\trequestCode: $requestCode ")
+            }
+            else -> { Log.e(TAG,"activity request code not recognized, requestCode: $requestCode")
+            }
+        }
+
     }
 
     private fun readResult(data: Intent?) {
@@ -231,4 +246,6 @@ class ShowProfileActivity : AppCompatActivity() {
             matrix, true
         )
     }
+
+
 }

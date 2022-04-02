@@ -1,6 +1,9 @@
 package it.polito.mad.g01_timebanking
 
 object UserKey {
+
+    const val EDIT_ACTIVITY_REQUEST = 1
+
     const val FULL_NAME = "fullName"
     const val NICKNAME = "nickname"
     const val EMAIL = "email"

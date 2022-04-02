@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -29,6 +30,11 @@ import java.util.*
 
 
 class EditProfileActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "EditProfileActivity"
+    }
+
     // Views
     lateinit var profilePicture:ImageButton
     lateinit var ivFullName: EditText
@@ -112,6 +118,8 @@ class EditProfileActivity : AppCompatActivity() {
         setResult(Activity.RESULT_OK,i2)
         //Salva in un file tutti i campi
         updatePreferences()
+
+        Log.i(TAG,"profile preference wrote in local cache")
         super.onBackPressed() //finish is inside the onBackPressed()
     }
 
@@ -135,6 +143,7 @@ class EditProfileActivity : AppCompatActivity() {
             putString(getString(R.string.user_info), serializedUser)
             apply()
         }
+
     }
 
     private fun prepareResult(i2: Intent) {
@@ -205,10 +214,9 @@ class EditProfileActivity : AppCompatActivity() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
             if(profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
                 val f = File(profilePicturePath)
-                println(f.absolutePath)
                 mediaScanIntent.data = Uri.fromFile(f)
                 sendBroadcast(mediaScanIntent)
-            } else println("galleryAddPict: profilePicturePath is null")
+            } else Log.e(TAG,"profilePicturePath is null")
         }
     }
 
@@ -217,7 +225,7 @@ class EditProfileActivity : AppCompatActivity() {
         when (requestCode) {
             PICK_IMAGE_REQUEST -> { //For Image Gallery
                 if (resultCode == RESULT_OK && data != null && data.data != null) {
-
+                    TODO("implement image gallery")
                 }
                 return
             }
@@ -227,7 +235,7 @@ class EditProfileActivity : AppCompatActivity() {
                     if(profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {                // by this point we have the camera photo on disk
                         readImage()
                         galleryAddPic()
-                    } else println("result: profilePicturePath is null")               // RESIZE BITMAP, see section below
+                    } else Log.e(TAG,"result: profilePicturePath is null")               // RESIZE BITMAP, see section below
                 //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
@@ -343,5 +351,6 @@ class EditProfileActivity : AppCompatActivity() {
         skillGroup.addView(chip)
         noSkills.isVisible = false
     }
+
 }
 
