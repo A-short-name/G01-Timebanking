@@ -304,10 +304,11 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         populateSkillGroup(savedInstanceState.getString(UserKey.SKILLS_EXTRA_ID))
+
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
 
-
-        readImage()
+        if(!profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
+            readImage()
     }
 
     private fun populateSkillGroup(serializedJson: String?) {

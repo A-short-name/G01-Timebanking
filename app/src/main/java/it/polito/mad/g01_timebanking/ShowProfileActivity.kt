@@ -165,10 +165,8 @@ class ShowProfileActivity : AppCompatActivity() {
         profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
         val gson = Gson()
         val serializedJson = data?.getStringExtra(UserKey.SKILLS_EXTRA_ID)
-        if(serializedJson != "[]")
-            skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
-        else
-            skills = mutableSetOf()
+        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
