@@ -42,6 +42,7 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
     lateinit var ivSkills: EditText
+    lateinit var ivBiography: EditText
     lateinit var skillGroup: ChipGroup
     lateinit var profilePicturePath: String
     lateinit var noSkills: TextView
@@ -66,6 +67,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
+        ivBiography = findViewById(R.id.biography)
         ivSkills = findViewById(R.id.editTextAddSkills)
         profilePicture = findViewById(R.id.profilePictureButton)
         skillGroup = findViewById(R.id.skillgroup)
@@ -80,6 +82,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivNickname.setText(i.getStringExtra(UserKey.NICKNAME_EXTRA_ID))
         ivEmail.setText(i.getStringExtra(UserKey.EMAIL_EXTRA_ID))
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
+        ivBiography.setText(i.getStringExtra(UserKey.BIOGRAPHY_EXTRA_ID))
         profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
         if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
@@ -125,12 +128,13 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun updatePreferences() {
         val u = UserInfo (
-            ivFullName.text.toString(),
-            ivNickname.text.toString(),
-            ivEmail.text.toString(),
-            ivLocation.text.toString(),
-            profilePicturePath,
-            skills
+            fullName = ivFullName.text.toString(),
+            nickname = ivNickname.text.toString(),
+            email = ivEmail.text.toString(),
+            location = ivLocation.text.toString(),
+            biography = ivBiography.text.toString(),
+            profilePicturePath = profilePicturePath,
+            skills = skills
         )
 
         val gson = Gson();
@@ -151,6 +155,7 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra(UserKey.NICKNAME_EXTRA_ID, ivNickname.text.toString())
         i2.putExtra(UserKey.EMAIL_EXTRA_ID, ivEmail.text.toString())
         i2.putExtra(UserKey.LOCATION_EXTRA_ID, ivLocation.text.toString())
+        i2.putExtra(UserKey.BIOGRAPHY_EXTRA_ID, ivBiography.text.toString())
         i2.putExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID, profilePicturePath)
         val gson = Gson();
         val serializedSkills: String = gson.toJson(skills)
