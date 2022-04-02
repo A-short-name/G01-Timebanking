@@ -1,6 +1,7 @@
 package it.polito.mad.g01_timebanking
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -48,16 +49,28 @@ class ShowProfileActivity : AppCompatActivity() {
 
         initializeView()
 
-//        scrollView.viewTreeObserver.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
-//            override fun onGlobalLayout() {
-//                frameView.post{frameView.layoutParams = LinearLayout.LayoutParams(scrollView.width, scrollView.height/3)}
-//                scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//            }
-//        })
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
+                override fun onGlobalLayout() {
+                    frameView.post{frameView.layoutParams = LinearLayout.LayoutParams(scrollView.width, scrollView.height/3)}
+                    scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
+
+//        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
+//                override fun onGlobalLayout() {
+//                    frameView.post{frameView.layoutParams = LinearLayout.LayoutParams(scrollView.width, scrollView.height/3)}
+//                    scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                }
+//            })
+//        }
 
         initializeData()
         updateView()
     }
+
 
     private fun initializeData() {
         //initialize the variables reading from file
