@@ -67,7 +67,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
-        ivBiography = findViewById(R.id.biography)
+        ivBiography = findViewById(R.id.editTextBiography)
         ivSkills = findViewById(R.id.editTextAddSkills)
         profilePicture = findViewById(R.id.profilePictureButton)
         skillGroup = findViewById(R.id.skillgroup)
