@@ -9,7 +9,6 @@ import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.util.Log.ERROR
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -31,6 +30,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var tvNickname:TextView
     private lateinit var tvEmail:TextView
     private lateinit var tvLocation:TextView
+    private lateinit var tvBiography:TextView
     private lateinit var ivProfilePicture:ImageView
     private lateinit var skillGroup:ChipGroup
     private lateinit var noSkills:TextView
@@ -39,6 +39,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var nickName:String
     private lateinit var email:String
     private lateinit var location:String
+    private lateinit var biography:String
     private lateinit var profilePicturePath:String
 
     private lateinit var skills : MutableSet<String>
@@ -87,6 +88,7 @@ class ShowProfileActivity : AppCompatActivity() {
         nickName = u.nickname
         email = u.email
         location = u.location
+        biography = u.biography
         profilePicturePath = u.profilePicturePath
         skills = u.skills
 
@@ -113,6 +115,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickname = findViewById(R.id.nickname)
         tvEmail = findViewById(R.id.email)
         tvLocation = findViewById(R.id.location)
+        tvBiography = findViewById(R.id.biography)
         ivProfilePicture = findViewById(R.id.profilePicture)
         skillGroup = findViewById(R.id.skillgroup)
         noSkills = findViewById(R.id.noSkillsTextView)
@@ -123,6 +126,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickname.text = nickName
         tvEmail.text = email
         tvLocation.text = location
+        tvBiography.text = biography
         if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
             readImage()
         }
@@ -170,6 +174,7 @@ class ShowProfileActivity : AppCompatActivity() {
             UserKey.NICKNAME_EXTRA_ID to tvNickname.text,
             UserKey.EMAIL_EXTRA_ID to tvEmail.text,
             UserKey.LOCATION_EXTRA_ID to tvLocation.text,
+            UserKey.BIOGRAPHY_EXTRA_ID to tvBiography.text,
             UserKey.PROFILE_PICTURE_PATH_EXTRA_ID to profilePicturePath,
             UserKey.SKILLS_EXTRA_ID to serializedSkills
             )
@@ -202,6 +207,7 @@ class ShowProfileActivity : AppCompatActivity() {
         nickName = data?.getStringExtra(UserKey.NICKNAME_EXTRA_ID) ?: UserKey.NICKNAME_PLACEHOLDER
         email = data?.getStringExtra(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
         location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
+        biography = data?.getStringExtra(UserKey.BIOGRAPHY_EXTRA_ID) ?: UserKey.BIOGRAPHY_PLACEHOLDER
         profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
         val gson = Gson()
         val serializedJson = data?.getStringExtra(UserKey.SKILLS_EXTRA_ID)
@@ -216,6 +222,7 @@ class ShowProfileActivity : AppCompatActivity() {
         outState.putString(UserKey.NICKNAME_EXTRA_ID, nickName)
         outState.putString(UserKey.EMAIL_EXTRA_ID, email)
         outState.putString(UserKey.LOCATION_EXTRA_ID, location)
+        outState.putString(UserKey.BIOGRAPHY_EXTRA_ID, biography)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
 
         val gson = Gson();
@@ -229,6 +236,7 @@ class ShowProfileActivity : AppCompatActivity() {
         nickName = savedInstanceState.getString(UserKey.NICKNAME_EXTRA_ID) ?: UserKey.NICKNAME_PLACEHOLDER
         email = savedInstanceState.getString(UserKey.EMAIL_EXTRA_ID) ?: UserKey.EMAIL_PLACEHOLDER
         location = savedInstanceState.getString(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
+        biography = savedInstanceState.getString(UserKey.BIOGRAPHY_EXTRA_ID) ?: UserKey.BIOGRAPHY_PLACEHOLDER
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
 
