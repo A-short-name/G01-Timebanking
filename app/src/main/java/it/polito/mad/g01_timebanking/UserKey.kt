@@ -19,4 +19,5 @@ object UserKey {
     const val EMAIL_PLACEHOLDER = "No email"
     const val LOCATION_PLACEHOLDER = "No loc"
     const val PROFILE_PICTURE_PATH_PLACEHOLDER = ""
+    const val MINIMUM_SKILLS_LENGTH = 3
 }

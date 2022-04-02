@@ -88,12 +88,17 @@ class EditProfileActivity : AppCompatActivity() {
         ivSkills.setOnEditorActionListener { v, actionId, event ->
             // If user presses enter
             if(actionId == EditorInfo.IME_ACTION_DONE){
-                // Add skillText on set
-                skills.add(v.text.toString())
-                // Add Pill
-                addSkillView(v.text.toString())
-                // Reset editText field for new skills
-                v.text = ""
+
+                if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
+                    // Add skillText on set
+                    skills.add(v.text.toString())
+                    // Add Pill
+                    addSkillView(v.text.toString())
+                    // Reset editText field for new skills
+                    v.text = ""
+                } else {
+                    Toast.makeText(this,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH} characters", Toast.LENGTH_SHORT).show()
+                }
                 true
             } else {
                 false
@@ -120,7 +125,7 @@ class EditProfileActivity : AppCompatActivity() {
             skills
         )
 
-        val gson : Gson = Gson();
+        val gson = Gson();
         val serializedUser: String = gson.toJson(u)
 
         val sharedPref =
@@ -328,7 +333,12 @@ class EditProfileActivity : AppCompatActivity() {
         chip.text = skillText
         chip.isCheckable = false
         chip.isClickable = false
-        chip.setOnCloseIconClickListener { skills.remove(chip.text); skillGroup.removeView(chip) }
+        chip.setOnCloseIconClickListener {
+            skills.remove(chip.text)
+            skillGroup.removeView(chip)
+            if(skills.isEmpty())
+                noSkills.isVisible=true
+        }
         skillGroup.addView(chip)
         noSkills.isVisible = false
     }

@@ -25,6 +25,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var tvLocation:TextView
     private lateinit var ivProfilePicture:ImageView
     private lateinit var skillGroup:ChipGroup
+    private lateinit var noSkills:TextView
 
     private lateinit var fullName:String
     private lateinit var nickName:String
@@ -32,7 +33,7 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var location:String
     private lateinit var profilePicturePath:String
 
-    private var skills = mutableSetOf<String>()
+    private lateinit var skills : MutableSet<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     private fun initializeData() {
         //initialize the variables reading from file
-
+        skills = mutableSetOf()
         val gson = Gson()
         val sharedPref = this.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
@@ -59,17 +60,7 @@ class ShowProfileActivity : AppCompatActivity() {
         email = u.email
         location = u.location
         profilePicturePath = u.profilePicturePath
-        skills = u.skills       //TODO: print messaggio quando set vuoto
-    }
-
-    private fun initializeView() {
-        tvFullName = findViewById(R.id.fullname)
-        tvNickname = findViewById(R.id.nickname)
-        tvEmail = findViewById(R.id.email)
-        tvLocation = findViewById(R.id.location)
-        ivProfilePicture = findViewById(R.id.profilePicture)
-        skillGroup = findViewById(R.id.skillgroup)
-        val noSkills = findViewById<TextView>(R.id.noSkillsTextView)
+        skills = u.skills
 
         if(skills.isNotEmpty()) {
             skills.forEach {
@@ -86,22 +77,38 @@ class ShowProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun initializeView() {
+        // Fetch views
+        tvFullName = findViewById(R.id.fullname)
+        tvNickname = findViewById(R.id.nickname)
+        tvEmail = findViewById(R.id.email)
+        tvLocation = findViewById(R.id.location)
+        ivProfilePicture = findViewById(R.id.profilePicture)
+        skillGroup = findViewById(R.id.skillgroup)
+        noSkills = findViewById(R.id.noSkillsTextView)
+    }
+
     private fun updateView() {
         tvFullName.text = fullName
         tvNickname.text = nickName
         tvEmail.text = email
         tvLocation.text = location
-        if (profilePicturePath is String && !profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)) {
+        if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
             readImage()
         }
+
         skillGroup.removeAllViews()
-        skills.forEach{
-            val chip = Chip(this)
-            chip.text = it
-            chip.isCheckable = false
-            chip.isClickable = true
-            skillGroup.addView(chip)
-        }
+
+        if(skills.isEmpty())
+            noSkills.isVisible = true
+        else
+            skills.forEach{
+                val chip = Chip(this)
+                chip.text = it
+                chip.isCheckable = false
+                chip.isClickable = true
+                skillGroup.addView(chip)
+            }.also{noSkills.isVisible = false}
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -157,7 +164,11 @@ class ShowProfileActivity : AppCompatActivity() {
         location = data?.getStringExtra(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
         profilePicturePath = data?.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
         val gson = Gson()
-        skills = gson.fromJson(data?.getStringExtra(UserKey.SKILLS_EXTRA_ID), MutableSet::class.java) as MutableSet<String>
+        val serializedJson = data?.getStringExtra(UserKey.SKILLS_EXTRA_ID)
+        if(serializedJson != "[]")
+            skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+        else
+            skills = mutableSetOf()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -169,7 +180,9 @@ class ShowProfileActivity : AppCompatActivity() {
         outState.putString(UserKey.LOCATION_EXTRA_ID, location)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
 
-        //TODO mancano le skills.. ma in realtà non serve nulla di questo perché tanto rilegge da file adesso
+        val gson = Gson();
+        val serializedSkills: String = gson.toJson(skills)
+        outState.putString(UserKey.SKILLS_EXTRA_ID, serializedSkills)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -180,13 +193,18 @@ class ShowProfileActivity : AppCompatActivity() {
         location = savedInstanceState.getString(UserKey.LOCATION_EXTRA_ID) ?: UserKey.LOCATION_PLACEHOLDER
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
+
+        val gson = Gson();
+        val serializedJson = savedInstanceState.getString(UserKey.SKILLS_EXTRA_ID)
+        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+
         updateView()
     }
 
     private fun readImage() {
         val takenImage = BitmapFactory.decodeFile(profilePicturePath)
 
-        val ei = ExifInterface(profilePicturePath!!)
+        val ei = ExifInterface(profilePicturePath)
         val orientation: Int = ei.getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_UNDEFINED
