@@ -255,7 +255,7 @@ class EditProfileActivity : AppCompatActivity() {
                 if (resultCode == RESULT_OK) {
                     if(data != null && data.data != null) {
                         try {
-                            profilePicturePath = getRealPathFromURI(data.data);
+                            profilePicturePath = getRealPathFromURI(data.data)
                             readImage()
                             galleryAddPic()
                         } catch (e: IOException) {
@@ -283,21 +283,42 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun getRealPathFromURI(uri: Uri?): String {
         var filePath = ""
+        //image:33 or primary:Download/download.jpeg
         val wholeID = DocumentsContract.getDocumentId(uri)
-
         // Split at colon, use second item in the array
         val id = wholeID.split(":").toTypedArray()[1]
-        val column = arrayOf(MediaStore.Images.Media.DATA)
 
-        // where id is equal to
-        val sel = MediaStore.Images.Media._ID + "=?"
-        val cursor: Cursor = this.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, column, sel, arrayOf(id), null)!!
-        val columnIndex = cursor.getColumnIndex(column[0])
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex)
+        val type = wholeID.split(":").toTypedArray()[0]
+
+        //When picture is choosen from the external dir e.g. sdk_gphone.../Download
+        //The uri in the result data is in the form: content://com.android.externalstorage.documents/document/primary%3ADownload%2Fdownload.jpeg
+        //So the authority is externalstorage and the path to return is built through the absolute path of Environment.get...
+        if ("primary".equals(type, ignoreCase = true)) {
+            return Environment.getExternalStorageDirectory().absolutePath + "/" + id;
+            //e.g. /storage/emulated/0/Download/download.jpeg
         }
-        cursor.close()
-        return filePath
+        //The picture is choosen from recent or download or any anpther suggested pseudo-folder of the gallery
+        //The uri in the result data is in the form: content://com.android.providers.media.documents/document/image%3A33
+        else {  //type is image
+            val column = arrayOf(MediaStore.Images.Media.DATA)
+
+            // where id is equal to
+            val sel = MediaStore.Images.Media._ID + "=?"
+            val cursor: Cursor = this.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                column,
+                sel,
+                arrayOf(id),
+                null
+            )!!
+            val columnIndex = cursor.getColumnIndex(column[0])
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(columnIndex)
+            }
+            cursor.close()
+            return filePath
+        }
+
     }
 
 
@@ -347,7 +368,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
+    private fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
         val matrix = Matrix()
         matrix.postRotate(angle.toFloat())
         return Bitmap.createBitmap(
@@ -356,7 +377,7 @@ class EditProfileActivity : AppCompatActivity() {
         )
     }
 
-    fun checkPermissionAndChoose(){
+    private fun checkPermissionAndChoose(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED){
