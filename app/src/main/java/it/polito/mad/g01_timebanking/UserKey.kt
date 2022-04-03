@@ -26,4 +26,21 @@ object UserKey {
     const val BIOGRAPHY_PLACEHOLDER = ""
     const val PROFILE_PICTURE_PATH_PLACEHOLDER = ""
     const val MINIMUM_SKILLS_LENGTH = 3
+    val SKILL_SUGGESTION : Array<String> = arrayOf(
+        "Car maintenance",
+        "Cleaning",
+        "Driving",
+        "Doing laundry",
+        "Coocking",
+        "Garden maintenance",
+        "Grocery shopping",
+        "Organizing closet",
+        "Painting room",
+        "Parenting",
+        "Tutoring in math",
+        "Tidying up the house",
+        "Basic plumbing",
+        "Vacuuming",
+        "Washing car"
+    )
 }

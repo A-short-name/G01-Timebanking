@@ -48,7 +48,7 @@ class EditProfileActivity : AppCompatActivity() {
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
-    lateinit var ivSkills: EditText
+    lateinit var ivSkills: AutoCompleteTextView
     lateinit var ivBiography: EditText
     lateinit var skillGroup: ChipGroup
     lateinit var profilePicturePath: String
@@ -56,6 +56,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     // Variables
     lateinit var skills : MutableSet<String>
+
 
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
@@ -66,7 +67,7 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit_profile)
 
         initializeView()
-
+        initializeSkillSuggestion()
     }
 
     private fun initializeView() {
@@ -467,5 +468,27 @@ class EditProfileActivity : AppCompatActivity() {
         noSkills.isVisible = false
     }
 
+
+    private fun initializeSkillSuggestion() {
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line, UserKey.SKILL_SUGGESTION
+        );
+        val actv = findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
+        actv.setAdapter(adapter)
+        actv.setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l
+            ->
+            val selected: String = adapterView.getItemAtPosition(i) as String
+            if (skills.add(selected)) {
+                // Add Pill
+                addSkillView(selected)
+                // Reset editText field for new skills
+                ivSkills.setText("")
+            } else {
+                Toast.makeText(this, "Skill already present", Toast.LENGTH_SHORT).show()
+                ivSkills.setText("")
+            }
+        })
+    }
 }
 

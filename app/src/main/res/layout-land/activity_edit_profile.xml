@@ -121,7 +121,7 @@
                 android:ems="10"
                 android:hint="@string/nicknameHint"
                 android:importantForAutofill="yes"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapWords"
                 android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
@@ -184,6 +184,7 @@
                 android:ems="10"
                 android:hint="@string/biographyHint"
                 android:importantForAutofill="yes"
+                android:inputType="textLongMessage"
                 android:textSize="16sp"
                 tools:ignore="LabelFor" />
 
@@ -228,11 +229,13 @@
                     android:text="@string/skill3" />
             </com.google.android.material.chip.ChipGroup>
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/editTextAddSkills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:autofillHints=""
+                android:importantForAutofill="yes"
                 android:hint="@string/skillHint"
                 android:inputType="textPersonName"
                 android:textSize="16sp" />
