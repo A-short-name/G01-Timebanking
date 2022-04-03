@@ -116,7 +116,6 @@ class ShowProfileActivity : AppCompatActivity() {
                 chip.isClickable = true
                 skillGroup.addView(chip)
             }
-
             noSkills.isVisible = false
         } else {
             noSkills.isVisible = true
