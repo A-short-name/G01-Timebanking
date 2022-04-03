@@ -12,7 +12,7 @@
     <string name="skill3">Skill3</string>
     <string name="preference_file_key">basicPreferencesFile</string>
     <string name="profile_picture">Profile Picture</string>
-    <string name="user_info">User Info</string>
+    <string name="user_info">profile</string>
 
     <string name="namePlaceholder">No name</string>
     <string name="nicknamePlaceholder">No nickname</string>

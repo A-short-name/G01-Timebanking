@@ -353,7 +353,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun onMenuItemClick(item: MenuItem): Boolean {
-        Toast.makeText(this, "Selected Item: " + item.title, Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Selected Item: " + item.title, Toast.LENGTH_SHORT).show()
         return when (item.itemId) {
             R.id.gallery ->                 // do your code
             {

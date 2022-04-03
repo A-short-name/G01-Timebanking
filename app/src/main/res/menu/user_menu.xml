@@ -5,5 +5,5 @@
         android:id="@+id/editButton"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="editButton"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

@@ -31,7 +31,7 @@ object UserKey {
         "Cleaning",
         "Driving",
         "Doing laundry",
-        "Coocking",
+        "Cooking",
         "Garden maintenance",
         "Grocery shopping",
         "Organizing closet",
