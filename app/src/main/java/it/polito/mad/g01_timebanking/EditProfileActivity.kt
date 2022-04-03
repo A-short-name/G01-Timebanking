@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -15,6 +16,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
@@ -172,7 +174,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun dispatchChoosePictureIntent(){
-        val choosePictureIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        val choosePictureIntent = Intent(Intent.ACTION_GET_CONTENT)
         choosePictureIntent.type = "image/*"
         try {
             startActivityForResult(choosePictureIntent, PICK_IMAGE_REQUEST)
@@ -238,7 +240,7 @@ class EditProfileActivity : AppCompatActivity() {
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
-            if(profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+            if(profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 val f = File(profilePicturePath)
                 mediaScanIntent.data = Uri.fromFile(f)
                 sendBroadcast(mediaScanIntent)
@@ -253,11 +255,9 @@ class EditProfileActivity : AppCompatActivity() {
                 if (resultCode == RESULT_OK) {
                     if(data != null && data.data != null) {
                         try {
-                            //val fileImage : File = File(data.data.toString())
-                            //profilePicturePath = fileImage.absolutePath
-                            //val takenImage = BitmapFactory.decodeFile(profilePicturePath) //returns null
-                            profilePicturePath = data.data.toString()
-                            profilePicture.setImageURI(profilePicturePath.toUri()) // handle chosen image
+                            profilePicturePath = getRealPathFromURI(data.data);
+                            readImage()
+                            galleryAddPic()
                         } catch (e: IOException) {
                             Log.i("TAG", "Some exception $e")
                         }
@@ -270,7 +270,7 @@ class EditProfileActivity : AppCompatActivity() {
             CAPTURE_IMAGE_REQUEST -> if (resultCode == RESULT_OK) { //For CAMERA
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
-                    if(profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {                // by this point we have the camera photo on disk
+                    if(profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {                // by this point we have the camera photo on disk
                         readImage()
                         galleryAddPic()
                     } else Log.e(TAG,"result: profilePicturePath is null")               // RESIZE BITMAP, see section below
@@ -281,28 +281,44 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
-    private fun readImage() {
-        if(profilePicturePath.startsWith("content://com.google.android.apps.photos.contentprovider/")) {
-            profilePicture.setImageURI(profilePicturePath.toUri())
-        }
-        else {
-            val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-            val ei = ExifInterface(profilePicturePath!!)
-            val orientation: Int = ei.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED
-            )
+    private fun getRealPathFromURI(uri: Uri?): String {
+        var filePath = ""
+        val wholeID = DocumentsContract.getDocumentId(uri)
 
-            var rotatedBitmap: Bitmap? = null
-            rotatedBitmap = when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
-                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
-                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
-                ExifInterface.ORIENTATION_NORMAL -> takenImage
-                else -> takenImage
-            }
-            profilePicture.setImageBitmap(rotatedBitmap)
+        // Split at colon, use second item in the array
+        val id = wholeID.split(":").toTypedArray()[1]
+        val column = arrayOf(MediaStore.Images.Media.DATA)
+
+        // where id is equal to
+        val sel = MediaStore.Images.Media._ID + "=?"
+        val cursor: Cursor = this.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, column, sel, arrayOf(id), null)!!
+        val columnIndex = cursor.getColumnIndex(column[0])
+        if (cursor.moveToFirst()) {
+            filePath = cursor.getString(columnIndex)
         }
+        cursor.close()
+        return filePath
+    }
+
+
+    private fun readImage() {
+        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
+        val ei = ExifInterface(profilePicturePath)
+        val orientation: Int = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
+
+        var rotatedBitmap: Bitmap? = null
+        rotatedBitmap = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
+            ExifInterface.ORIENTATION_NORMAL -> takenImage
+            else -> takenImage
+        }
+        profilePicture.setImageBitmap(rotatedBitmap)
+
     }
 
     private fun showPopup(v: View) {
@@ -364,7 +380,7 @@ class EditProfileActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode){
             PERMISSION_CODE -> {
-                if (grantResults.size >0 && grantResults[0] ==
+                if (grantResults.size > 0 && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED){
                     //permission from popup granted
                     dispatchChoosePictureIntent()
@@ -393,7 +409,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
 
-        if(!profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
+        if(profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
             readImage()
     }
 
@@ -402,7 +418,7 @@ class EditProfileActivity : AppCompatActivity() {
         //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
         //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
                 //as? MutableSet<String> ?: mutableSetOf<String>()
-        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String> //TODO: check this cast
 
         skillGroup.removeAllViews()
 

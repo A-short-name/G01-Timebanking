@@ -1,29 +1,32 @@
 package it.polito.mad.g01_timebanking
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.net.toUri
 import android.view.ViewTreeObserver
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
+
 
 class ShowProfileActivity : AppCompatActivity() {
     companion object {
@@ -114,9 +117,9 @@ class ShowProfileActivity : AppCompatActivity() {
                 skillGroup.addView(chip)
             }
 
-            noSkills.isVisible = false;
+            noSkills.isVisible = false
         } else {
-            noSkills.isVisible = true;
+            noSkills.isVisible = true
         }
     }
 
@@ -178,7 +181,7 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
     private fun editProfile() {
-        val gson = Gson();
+        val gson = Gson()
         val serializedSkills: String = gson.toJson(skills)
 
         val i = Intent(this, EditProfileActivity::class.java)
@@ -237,7 +240,7 @@ class ShowProfileActivity : AppCompatActivity() {
         outState.putString(UserKey.BIOGRAPHY_EXTRA_ID, biography)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
 
-        val gson = Gson();
+        val gson = Gson()
         val serializedSkills: String = gson.toJson(skills)
         outState.putString(UserKey.SKILLS_EXTRA_ID, serializedSkills)
     }
@@ -257,38 +260,28 @@ class ShowProfileActivity : AppCompatActivity() {
         skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
 
         updateView()
+
     }
 
     private fun readImage() {
-        //onBackPressed uses
-        //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F61/ORIGINAL/NONE/image%2Fjpeg/1251745918
-        //onCreate uses
-        //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F61/ORIGINAL/NONE/image%2Fjpeg/1537179437
-        if(profilePicturePath.startsWith("content://com.google.android.apps.photos.contentprovider/")) {
-            var uriImage = profilePicturePath.toUri()
-            ivProfilePicture.setImageURI(uriImage)
-        }
-        else {
-            val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-            val ei = ExifInterface(profilePicturePath)
-            val orientation: Int = ei.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED
-            )
+        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
+        val ei = ExifInterface(profilePicturePath)
+        val orientation: Int = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
 
-            var rotatedBitmap: Bitmap? = null
-            rotatedBitmap = when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
-                ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
-                ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
-                ExifInterface.ORIENTATION_NORMAL -> takenImage
-                else -> takenImage
-            }
-            ivProfilePicture.setImageBitmap(rotatedBitmap)
+        val rotatedBitmap: Bitmap? = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
+            ExifInterface.ORIENTATION_NORMAL -> takenImage
+            else -> takenImage
         }
+        ivProfilePicture.setImageBitmap(rotatedBitmap)
     }
 
-    fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
+    private fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
         val matrix = Matrix()
         matrix.postRotate(angle.toFloat())
         return Bitmap.createBitmap(
