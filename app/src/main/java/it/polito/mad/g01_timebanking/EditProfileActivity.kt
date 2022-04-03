@@ -19,12 +19,13 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.PopupMenu
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import java.io.File
@@ -35,13 +36,24 @@ import java.util.*
 
 class EditProfileActivity : AppCompatActivity() {
 
-    lateinit var profilePicture:ImageButton
-    var fullName: String = ""
+    companion object {
+        private const val TAG = "EditProfileActivity"
+    }
+
+    // Views
+    lateinit var profilePicture:ImageView
     lateinit var ivFullName: EditText
     lateinit var ivNickname: EditText
     lateinit var ivEmail: EditText
     lateinit var ivLocation: EditText
+    lateinit var ivSkills: EditText
+    lateinit var ivBiography: EditText
+    lateinit var skillGroup: ChipGroup
     lateinit var profilePicturePath: String
+    lateinit var noSkills: TextView
+
+    // Variables
+    lateinit var skills : MutableSet<String>
 
     val CAPTURE_IMAGE_REQUEST = 1
     val PICK_IMAGE_REQUEST = 2
@@ -56,24 +68,61 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun initializeView() {
+        // Fetch views
         ivFullName = findViewById(R.id.editTextFullName)
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
         ivLocation = findViewById(R.id.editTextLocation)
-        profilePicture = findViewById(R.id.profilePictureButton)
+        ivBiography = findViewById(R.id.editTextBiography)
+        ivSkills = findViewById(R.id.editTextAddSkills)
+        profilePicture = findViewById(R.id.profilePicture)
+        val profilePictureButton = findViewById<ImageButton>(R.id.profilePictureTransparentButton)
+        skillGroup = findViewById(R.id.skillgroup)
+        noSkills = findViewById(R.id.noSkillsTextView)
 
-        profilePicture.setOnClickListener { showPopup(profilePicture) }
+        // Set listener for picture clicks
+        profilePictureButton.setOnClickListener { showPopup(profilePictureButton) }
+
+        // Initialize values
         val i = intent
         ivFullName.setText(i.getStringExtra(UserKey.FULL_NAME_EXTRA_ID))
         ivNickname.setText(i.getStringExtra(UserKey.NICKNAME_EXTRA_ID))
         ivEmail.setText(i.getStringExtra(UserKey.EMAIL_EXTRA_ID))
         ivLocation.setText(i.getStringExtra(UserKey.LOCATION_EXTRA_ID))
+        ivBiography.setText(i.getStringExtra(UserKey.BIOGRAPHY_EXTRA_ID))
         profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
-        if (profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
+        if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
             readImage()
 
+        //TODO: remove this comment
+        //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
+        //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
+        populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
 
+        // Set listener on "add skills" field
+        ivSkills.setOnEditorActionListener { v, actionId, event ->
+            // If user presses enter
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
+                    // Add skillText on set
+                    if(skills.add(v.text.toString())){
+                        // Add Pill
+                        addSkillView(v.text.toString())
+                        // Reset editText field for new skills
+                        v.text = ""
+                    } else {
+                        Toast.makeText(this,"Skill already present", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH+1} characters", Toast.LENGTH_SHORT).show()
+                }
+                true
+            } else {
+                false
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -82,19 +131,23 @@ class EditProfileActivity : AppCompatActivity() {
         setResult(Activity.RESULT_OK,i2)
         //Salva in un file tutti i campi
         updatePreferences()
+
+        Log.i(TAG,"profile preference wrote in local cache")
         super.onBackPressed() //finish is inside the onBackPressed()
     }
 
     private fun updatePreferences() {
         val u = UserInfo (
-            ivFullName.text.toString(),
-            ivNickname.text.toString(),
-            ivEmail.text.toString(),
-            ivLocation.text.toString(),
-            profilePicturePath
+            fullName = ivFullName.text.toString(),
+            nickname = ivNickname.text.toString(),
+            email = ivEmail.text.toString(),
+            location = ivLocation.text.toString(),
+            biography = ivBiography.text.toString(),
+            profilePicturePath = profilePicturePath,
+            skills = skills
         )
 
-        val gson : Gson = Gson()
+        val gson = Gson();
         val serializedUser: String = gson.toJson(u)
 
         val sharedPref =
@@ -111,7 +164,11 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra(UserKey.NICKNAME_EXTRA_ID, ivNickname.text.toString())
         i2.putExtra(UserKey.EMAIL_EXTRA_ID, ivEmail.text.toString())
         i2.putExtra(UserKey.LOCATION_EXTRA_ID, ivLocation.text.toString())
+        i2.putExtra(UserKey.BIOGRAPHY_EXTRA_ID, ivBiography.text.toString())
         i2.putExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID, profilePicturePath)
+        val gson = Gson();
+        val serializedSkills: String = gson.toJson(skills)
+        i2.putExtra(UserKey.SKILLS_EXTRA_ID, serializedSkills)
     }
 
     private fun dispatchChoosePictureIntent(){
@@ -183,10 +240,9 @@ class EditProfileActivity : AppCompatActivity() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
             if(profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 val f = File(profilePicturePath)
-                println(f.absolutePath)
                 mediaScanIntent.data = Uri.fromFile(f)
                 sendBroadcast(mediaScanIntent)
-            } else println("galleryAddPict: profilePicturePath is null")
+            } else Log.e(TAG,"profilePicturePath is null")
         }
     }
 
@@ -194,7 +250,6 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             PICK_IMAGE_REQUEST -> { //For Image Gallery
-
                 if (resultCode == RESULT_OK) {
                     if(data != null && data.data != null) {
                         try {
@@ -207,10 +262,7 @@ class EditProfileActivity : AppCompatActivity() {
                             Log.i("TAG", "Some exception $e")
                         }
                     }
-                    else // handle chosen image
-                    {
-                        println("result: data is null")
-                    }
+                    else Log.e(TAG,"result: profilePicturePath is null")
                 }
                 else Toast.makeText(this, "Picture was not loaded", Toast.LENGTH_SHORT).show()
                 return
@@ -221,10 +273,10 @@ class EditProfileActivity : AppCompatActivity() {
                     if(profilePicturePath is String && profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {                // by this point we have the camera photo on disk
                         readImage()
                         galleryAddPic()
-                    } else println("result: profilePicturePath is null")               // RESIZE BITMAP, see section below
+                    } else Log.e(TAG,"result: profilePicturePath is null")               // RESIZE BITMAP, see section below
                 //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
             } else { // Result was a failure
-                Toast.makeText(this, "Picture was not taken!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
             }
             }
         }
@@ -236,11 +288,11 @@ class EditProfileActivity : AppCompatActivity() {
         else {
             val takenImage = BitmapFactory.decodeFile(profilePicturePath)
 
-            val ei = ExifInterface(profilePicturePath)
-            val orientation: Int = ei.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED
-            )
+        val ei = ExifInterface(profilePicturePath!!)
+        val orientation: Int = ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
 
             var rotatedBitmap: Bitmap? = null
             rotatedBitmap = when (orientation) {
@@ -250,7 +302,6 @@ class EditProfileActivity : AppCompatActivity() {
                 ExifInterface.ORIENTATION_NORMAL -> takenImage
                 else -> takenImage
             }
-
             profilePicture.setImageBitmap(rotatedBitmap)
         }
     }
@@ -330,13 +381,55 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID,profilePicturePath)
+        val gson = Gson();
+        val serializedSkills: String = gson.toJson(skills)
+        outState.putString(UserKey.SKILLS_EXTRA_ID, serializedSkills)
+        //alternativa, credo perdo l'ordine
+        //outState.putStringArray(UserKey.SKILLS_EXTRA_ID, skills.toTypedArray())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+        populateSkillGroup(savedInstanceState.getString(UserKey.SKILLS_EXTRA_ID))
+
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
 
-        readImage()
+        if(!profilePicturePath.equals(UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER))
+            readImage()
     }
+
+    private fun populateSkillGroup(serializedJson: String?) {
+        val gson = Gson()
+        //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
+        //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
+                //as? MutableSet<String> ?: mutableSetOf<String>()
+        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
+
+        skillGroup.removeAllViews()
+
+        if(skills.isEmpty())
+            noSkills.isVisible = true
+
+        skills.forEach {
+            addSkillView(it)
+        }
+    }
+
+    private fun addSkillView(skillText: String) {
+        val chip = Chip(this)
+        chip.isCloseIconVisible = true;
+        chip.text = skillText
+        chip.isCheckable = false
+        chip.isClickable = false
+        chip.setOnCloseIconClickListener {
+            skills.remove(chip.text)
+            skillGroup.removeView(chip)
+            if(skills.isEmpty())
+                noSkills.isVisible=true
+        }
+        skillGroup.addView(chip)
+        noSkills.isVisible = false
+    }
+
 }
 

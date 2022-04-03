@@ -2,13 +2,29 @@
     <string name="app_name">G01-Timebanking</string>
     <string name="name">Full Name</string>
     <string name="nickname">Nickname</string>
-    <string name="email">email@address</string>
+    <string name="email">Email</string>
     <string name="location">Location</string>
-    <string name="skills">Skills:</string>
+    <string name="biography">Biography</string>
+    <string name="personalData">Your personal data</string>
+    <string name="skills">Skills</string>
     <string name="skill1">Skill1</string>
     <string name="skill2">Skill2</string>
     <string name="skill3">Skill3</string>
-    <string name="preference_file_key">testnamegiu</string>
+    <string name="preference_file_key">basicPreferencesFile</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="user_info">User Info</string>
+
+    <string name="namePlaceholder">No name</string>
+    <string name="nicknamePlaceholder">No nickname</string>
+    <string name="emailPlaceholder">No email address</string>
+    <string name="locationPlaceholder">No location</string>
+    <string name="biographyPlaceholder">No biography provided</string>
+    <string name="skillsPlaceholder">No skills provided</string>
+
+    <string name="nameHint">Insert your name here</string>
+    <string name="nicknameHint">Insert your nickname here</string>
+    <string name="emailHint">Insert your email here</string>
+    <string name="locationHint">Insert your location here</string>
+    <string name="biographyHint">Insert your biography here</string>
+    <string name="skillHint">Insert your skill here</string>
 </resources>
