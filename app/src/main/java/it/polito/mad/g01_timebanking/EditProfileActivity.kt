@@ -287,12 +287,11 @@ class EditProfileActivity : AppCompatActivity() {
         }
         else {
             val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-
-        val ei = ExifInterface(profilePicturePath!!)
-        val orientation: Int = ei.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
+            val ei = ExifInterface(profilePicturePath!!)
+            val orientation: Int = ei.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED
+            )
 
             var rotatedBitmap: Bitmap? = null
             rotatedBitmap = when (orientation) {
