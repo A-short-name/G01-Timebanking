@@ -10,6 +10,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
@@ -63,6 +64,8 @@ class ShowProfileActivity : AppCompatActivity() {
 
         initializeData()
         updateView()
+        if(!isExternalStorageWritable())
+            Log.e(TAG, "No external volume mounted")
     }
 
     private fun arrangeViewByRatio() {
@@ -259,7 +262,6 @@ class ShowProfileActivity : AppCompatActivity() {
         skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String>
 
         updateView()
-
     }
 
     private fun readImage() {
@@ -287,5 +289,11 @@ class ShowProfileActivity : AppCompatActivity() {
             source, 0, 0, source.width, source.height,
             matrix, true
         )
+    }
+
+    // Checks if a volume containing external storage is available
+    // for read and write.
+    private fun isExternalStorageWritable(): Boolean {
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
 }

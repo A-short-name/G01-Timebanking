@@ -17,6 +17,6 @@ data class UserInfo(
         location = UserKey.LOCATION_PLACEHOLDER,
         biography = UserKey.BIOGRAPHY_PLACEHOLDER,
         profilePicturePath = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER,
-        skills = mutableSetOf<String>()      //TODO check this
+        skills = mutableSetOf<String>()      //pay attention
     )
 }

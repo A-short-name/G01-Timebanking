@@ -68,6 +68,9 @@ class EditProfileActivity : AppCompatActivity() {
 
         initializeView()
         initializeSkillSuggestion()
+        if(!isExternalStorageWritable())
+            Log.e(TAG, "No external volume mounted")
+        Log.i(TAG,"***profilePicturePath*** is: $profilePicturePath")
     }
 
     private fun initializeView() {
@@ -98,9 +101,7 @@ class EditProfileActivity : AppCompatActivity() {
         if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
             readImage()
 
-        //TODO: remove this comment
-        //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
-        //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
+
         populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
 
         // Set listener on "add skills" field
@@ -257,6 +258,9 @@ class EditProfileActivity : AppCompatActivity() {
                     if(data != null && data.data != null) {
                         try {
                             profilePicturePath = getRealPathFromURI(data.data)
+                            //Now I Copy the file loaded from the gallery (which path is stored in profilePicturePath) to a new file in the app-specific media storage folder
+                            File(profilePicturePath).copyTo(createImageFile(this))
+                            //In createImageFile the profilePicturePath is changed to the one in app-specific folder
                             readImage()
                             galleryAddPic()
                         } catch (e: IOException) {
@@ -281,6 +285,15 @@ class EditProfileActivity : AppCompatActivity() {
             }
             }
         }
+
+    //Extension kotlin function to copy a file (tried with shared picture pick from the gallery) to another
+    fun File.copyTo(file: File) {
+        inputStream().use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
 
     private fun getRealPathFromURI(uri: Uri?): String {
         var filePath = ""
@@ -440,7 +453,7 @@ class EditProfileActivity : AppCompatActivity() {
         //se qualcosa va storto, e non riesce neanche a fare il cast, ritorna null. In quel caso lo rimappo sul set vuoto
         //introdotto a causa di un errore ruotando lo schermo in editProfile, causato da cast errato di MutableSet
                 //as? MutableSet<String> ?: mutableSetOf<String>()
-        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String> //TODO: check this cast
+        skills = gson.fromJson(serializedJson, MutableSet::class.java) as MutableSet<String> //pay attention to this cast
 
         skillGroup.removeAllViews()
 
@@ -489,6 +502,12 @@ class EditProfileActivity : AppCompatActivity() {
                 ivSkills.setText("")
             }
         })
+    }
+
+    // Checks if a volume containing external storage is available
+    // for read and write.
+    private fun isExternalStorageWritable(): Boolean {
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
 }
 
