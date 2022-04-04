@@ -111,9 +111,9 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
                     // Add skillText on set
-                    if(skills.add(v.text.toString())){
+                    if(skills.add(v.text.toString().lowercase())){
                         // Add Pill
-                        addSkillView(v.text.toString())
+                        addSkillView(v.text.toString().lowercase())
                         // Reset editText field for new skills
                         v.text = ""
                     } else {
@@ -492,9 +492,9 @@ class EditProfileActivity : AppCompatActivity() {
         actv.setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l
             ->
             val selected: String = adapterView.getItemAtPosition(i) as String
-            if (skills.add(selected)) {
+            if (skills.add(selected.lowercase())) {
                 // Add Pill
-                addSkillView(selected)
+                addSkillView(selected.lowercase())
                 // Reset editText field for new skills
                 ivSkills.setText("")
             } else {
