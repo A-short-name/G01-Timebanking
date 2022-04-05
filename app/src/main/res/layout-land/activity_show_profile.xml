@@ -35,6 +35,18 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/avatar" />
         </androidx.cardview.widget.CardView>
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:numStars="5"
+            android:stepSize="0.01"
+            android:isIndicator="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="16dp"
+            />
     </FrameLayout>
 
     <ScrollView

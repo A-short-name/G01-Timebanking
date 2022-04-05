@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/drawable/ratingbar.xml" value="0.1" />
+        <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/drawable/ratingbar_empty.xml" value="0.1" />
+        <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/drawable/ratingbar_filled.xml" value="0.1" />
         <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/layout-land/activity_edit_profile.xml" value="0.1" />
-        <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/layout-land/activity_show_profile.xml" value="0.1" />
+        <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/layout-land/activity_show_profile.xml" value="0.2" />
         <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/layout/activity_edit_profile.xml" value="0.2" />
         <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/layout/activity_main.xml" value="0.24547101449275363" />
         <entry key="..\:/Users/etern/Documents/Universita/Magistrale/Secondo_anno/Secondo_semestre/Mobile_Application_Development/02_Lab/MyLabs/G01-Timebanking/app/src/main/res/layout/activity_show_profile.xml" value="0.1660377358490566" />

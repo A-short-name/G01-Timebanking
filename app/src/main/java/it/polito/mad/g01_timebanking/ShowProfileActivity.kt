@@ -66,6 +66,8 @@ class ShowProfileActivity : AppCompatActivity() {
         updateView()
         if(!FileHelper.isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
+        val ratingbar = findViewById<RatingBar>(R.id.ratingBar);
+        ratingbar.rating = 3.67f;
     }
 
     private fun arrangeViewByRatio() {
