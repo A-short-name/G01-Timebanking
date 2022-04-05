@@ -70,7 +70,6 @@ class EditProfileActivity : AppCompatActivity() {
         initializeSkillSuggestion()
         if(!isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
-        Log.i(TAG,"***profilePicturePath*** is: $profilePicturePath")
     }
 
     private fun initializeView() {
@@ -226,16 +225,27 @@ class EditProfileActivity : AppCompatActivity() {
     private fun createImageFile(context: Context): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)  ///storage/sdcard0/Pictures
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
+        //val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)  ///storage/sdcard0/Pictures
+        var baseFolder = if(isExternalStorageWritable()) {
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath ?: ""  //storage/sdcard0/Pictures
+        }
+        // revert to using internal storage
+        else {
+            //getFilesDir()
+            //Returns the absolute path to the directory on the filesystem where files created with openFileOutput are stored
+            context.filesDir.absolutePath
+        }
+        return File(baseFolder,"JPEG_${timeStamp}.jpg")
+            .apply { profilePicturePath =absolutePath }
+/*        return File.createTempFile(
+            "JPEG_${timeStamp}_", *//* prefix *//*
+            ".jpg", *//* suffix *//*
+            storageDir *//* directory *//*
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             //eg. /storage/emulated/0/Android/data/it.polito.mad.g01_timebanking/files/Pictures/JPEG_20220329_123453_7193664665067830656.jpg
             profilePicturePath = absolutePath
-        }
+        }*/
     }
 
     //Add the photo to a gallery
@@ -507,7 +517,7 @@ class EditProfileActivity : AppCompatActivity() {
     // Checks if a volume containing external storage is available
     // for read and write.
     private fun isExternalStorageWritable(): Boolean {
-        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
     }
 }
 
