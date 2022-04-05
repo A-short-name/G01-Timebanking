@@ -1,22 +1,13 @@
 package it.polito.mad.g01_timebanking
 
 import android.Manifest
-import android.R.attr
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
@@ -28,11 +19,9 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import androidx.core.net.toUri
 import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -68,7 +57,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         initializeView()
         initializeSkillSuggestion()
-        if(!isExternalStorageWritable())
+        if(!FileHelper.isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
     }
 
@@ -98,7 +87,7 @@ class EditProfileActivity : AppCompatActivity() {
         profilePicturePath = i.getStringExtra(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID).toString()
 
         if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
-            readImage()
+            FileHelper.readImage(profilePicturePath, profilePicture)
 
 
         populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
@@ -189,7 +178,7 @@ class EditProfileActivity : AppCompatActivity() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Create the File where the photo should go
         val photoFile: File? = try {
-            createImageFile(this)
+            FileHelper.createImageFile(this).apply { profilePicturePath = absolutePath }
         } catch (ex: IOException) {
             // Error occurred while creating the File
             null
@@ -221,33 +210,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    //@Throws(IOException::class)
-    private fun createImageFile(context: Context): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        //val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)  ///storage/sdcard0/Pictures
-        var baseFolder = if(isExternalStorageWritable()) {
-            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath ?: ""  //storage/sdcard0/Pictures
-        }
-        // revert to using internal storage
-        else {
-            //getFilesDir()
-            //Returns the absolute path to the directory on the filesystem where files created with openFileOutput are stored
-            context.filesDir.absolutePath
-        }
-        return File(baseFolder,"JPEG_${timeStamp}.jpg")
-            .apply { profilePicturePath =absolutePath }
-/*        return File.createTempFile(
-            "JPEG_${timeStamp}_", *//* prefix *//*
-            ".jpg", *//* suffix *//*
-            storageDir *//* directory *//*
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            //eg. /storage/emulated/0/Android/data/it.polito.mad.g01_timebanking/files/Pictures/JPEG_20220329_123453_7193664665067830656.jpg
-            profilePicturePath = absolutePath
-        }*/
-    }
-
     //Add the photo to a gallery
     //https://developer.android.com/training/camera/photobasics#TaskGallery
     private fun galleryAddPic() {
@@ -267,11 +229,11 @@ class EditProfileActivity : AppCompatActivity() {
                 if (resultCode == RESULT_OK) {
                     if(data != null && data.data != null) {
                         try {
-                            profilePicturePath = getRealPathFromURI(data.data)
+                            profilePicturePath = FileHelper.getRealPathFromURI(data.data, this)
                             //Now I Copy the file loaded from the gallery (which path is stored in profilePicturePath) to a new file in the app-specific media storage folder
-                            File(profilePicturePath).copyTo(createImageFile(this))
-                            //In createImageFile the profilePicturePath is changed to the one in app-specific folder
-                            readImage()
+                            File(profilePicturePath).copyTo(FileHelper.createImageFile(this).apply { profilePicturePath = absolutePath })
+                            //After createImageFile the profilePicturePath is changed to the one of the copy in app-specific folder
+                            FileHelper.readImage(profilePicturePath, profilePicture)
                             galleryAddPic()
                         } catch (e: IOException) {
                             Log.i("TAG", "Some exception $e")
@@ -286,7 +248,7 @@ class EditProfileActivity : AppCompatActivity() {
                 //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
 
                     if(profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {                // by this point we have the camera photo on disk
-                        readImage()
+                        FileHelper.readImage(profilePicturePath, profilePicture)
                         galleryAddPic()
                     } else Log.e(TAG,"result: profilePicturePath is null")               // RESIZE BITMAP, see section below
                 //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
@@ -295,76 +257,6 @@ class EditProfileActivity : AppCompatActivity() {
             }
             }
         }
-
-    //Extension kotlin function to copy a file (tried with shared picture pick from the gallery) to another
-    fun File.copyTo(file: File) {
-        inputStream().use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
-    }
-
-    private fun getRealPathFromURI(uri: Uri?): String {
-        var filePath = ""
-        //image:33 or primary:Download/download.jpeg
-        val wholeID = DocumentsContract.getDocumentId(uri)
-        // Split at colon, use second item in the array
-        val id = wholeID.split(":").toTypedArray()[1]
-
-        val type = wholeID.split(":").toTypedArray()[0]
-
-        //When picture is choosen from the external dir e.g. sdk_gphone.../Download
-        //The uri in the result data is in the form: content://com.android.externalstorage.documents/document/primary%3ADownload%2Fdownload.jpeg
-        //So the authority is externalstorage and the path to return is built through the absolute path of Environment.get...
-        if ("primary".equals(type, ignoreCase = true)) {
-            return Environment.getExternalStorageDirectory().absolutePath + "/" + id;
-            //e.g. /storage/emulated/0/Download/download.jpeg
-        }
-        //The picture is choosen from recent or download or any anpther suggested pseudo-folder of the gallery
-        //The uri in the result data is in the form: content://com.android.providers.media.documents/document/image%3A33
-        else {  //type is image
-            val column = arrayOf(MediaStore.Images.Media.DATA)
-
-            // where id is equal to
-            val sel = MediaStore.Images.Media._ID + "=?"
-            val cursor: Cursor = this.contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                column,
-                sel,
-                arrayOf(id),
-                null
-            )!!
-            val columnIndex = cursor.getColumnIndex(column[0])
-            if (cursor.moveToFirst()) {
-                filePath = cursor.getString(columnIndex)
-            }
-            cursor.close()
-            return filePath
-        }
-
-    }
-
-
-    private fun readImage() {
-        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-        val ei = ExifInterface(profilePicturePath)
-        val orientation: Int = ei.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
-
-        var rotatedBitmap: Bitmap? = null
-        rotatedBitmap = when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
-            ExifInterface.ORIENTATION_NORMAL -> takenImage
-            else -> takenImage
-        }
-        profilePicture.setImageBitmap(rotatedBitmap)
-
-    }
 
     private fun showPopup(v: View) {
         val popup = PopupMenu(this, v)
@@ -392,14 +284,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(angle.toFloat())
-        return Bitmap.createBitmap(
-            source, 0, 0, source.width, source.height,
-            matrix, true
-        )
-    }
+
 
     private fun checkPermissionAndChoose(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -455,7 +340,7 @@ class EditProfileActivity : AppCompatActivity() {
         profilePicturePath = savedInstanceState.getString(UserKey.PROFILE_PICTURE_PATH_EXTRA_ID) ?: return
 
         if(profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
-            readImage()
+            FileHelper.readImage(profilePicturePath, profilePicture)
     }
 
     private fun populateSkillGroup(serializedJson: String?) {
@@ -514,10 +399,5 @@ class EditProfileActivity : AppCompatActivity() {
         })
     }
 
-    // Checks if a volume containing external storage is available
-    // for read and write.
-    private fun isExternalStorageWritable(): Boolean {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
-    }
 }
 

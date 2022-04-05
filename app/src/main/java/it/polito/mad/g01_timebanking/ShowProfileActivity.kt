@@ -64,7 +64,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
         initializeData()
         updateView()
-        if(!isExternalStorageWritable())
+        if(!FileHelper.isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
     }
 
@@ -146,7 +146,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvLocation.text = location
         tvBiography.text = biography
         if (profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-            readImage()
+            FileHelper.readImage(profilePicturePath, ivProfilePicture)
         }
 
         skillGroup.removeAllViews()
@@ -264,36 +264,4 @@ class ShowProfileActivity : AppCompatActivity() {
         updateView()
     }
 
-    private fun readImage() {
-        val takenImage = BitmapFactory.decodeFile(profilePicturePath)
-        val ei = ExifInterface(profilePicturePath)
-        val orientation: Int = ei.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
-
-        val rotatedBitmap: Bitmap? = when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
-            ExifInterface.ORIENTATION_NORMAL -> takenImage
-            else -> takenImage
-        }
-        ivProfilePicture.setImageBitmap(rotatedBitmap)
-    }
-
-    private fun rotateImage(source: Bitmap, angle: Int): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(angle.toFloat())
-        return Bitmap.createBitmap(
-            source, 0, 0, source.width, source.height,
-            matrix, true
-        )
-    }
-
-    // Checks if a volume containing external storage is available
-    // for read and write.
-    private fun isExternalStorageWritable(): Boolean {
-        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-    }
 }
