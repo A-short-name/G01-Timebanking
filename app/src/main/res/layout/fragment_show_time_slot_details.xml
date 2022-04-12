@@ -6,112 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
         android:id="@+id/title_time_slot_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:text="@string/title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:id="@+id/title_body_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/title_placeholder"
+            android:textColorHint="#757575" />
 
-    <TextView
-        android:id="@+id/description_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/description"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="@+id/date_time_slot_details"
-        app:layout_constraintTop_toBottomOf="@+id/date_time_slot_details" />
+        <TextView
+            android:id="@+id/description_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:id="@+id/description_body_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/description_placeholder"
+            android:textColorHint="#757575" />
 
-    <TextView
-        android:id="@+id/date_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/date"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="@+id/title_time_slot_details"
-        app:layout_constraintTop_toBottomOf="@+id/title_time_slot_details" />
+        <TextView
+            android:id="@+id/date_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:id="@+id/date_body_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/date_placeholder"
+            android:textColorHint="#757575" />
 
-    <TextView
-        android:id="@+id/duration_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/duration"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="@+id/description_time_slot_details"
-        app:layout_constraintTop_toBottomOf="@+id/description_body_time_slot_details" />
+        <TextView
+            android:id="@+id/duration_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/duration"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        <TextView
+            android:id="@+id/duration_body_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/duration_placeholder"
+            android:textColorHint="#757575" />
 
-    <TextView
-        android:id="@+id/location_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/location"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="@+id/duration_time_slot_details"
-        app:layout_constraintTop_toBottomOf="@+id/duration_time_slot_details" />
+        <TextView
+            android:id="@+id/location_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/location"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:id="@+id/location_body_time_slot_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/locationPlaceholder"
+            android:textColorHint="#757575" />
 
-    <TextView
-        android:id="@+id/description_body_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/description_placeholder"
-        android:textColorHint="#757575"
-        app:layout_constraintStart_toStartOf="@+id/description_time_slot_details"
-        app:layout_constraintTop_toBottomOf="@+id/description_time_slot_details" />
-
-    <TextView
-        android:id="@+id/title_body_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:hint="@string/title_placeholder"
-        android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="@+id/title_time_slot_details"
-        app:layout_constraintStart_toEndOf="@+id/title_time_slot_details"
-        app:layout_constraintTop_toTopOf="@+id/title_time_slot_details" />
-
-    <TextView
-        android:id="@+id/date_body_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:hint="@string/date_placeholder"
-        android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="@+id/date_time_slot_details"
-        app:layout_constraintStart_toEndOf="@+id/date_time_slot_details"
-        app:layout_constraintTop_toTopOf="@+id/date_time_slot_details" />
-
-    <TextView
-        android:id="@+id/duration_body_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:hint="@string/duration_placeholder"
-        android:textColorHint="#757575"
-        app:layout_constraintBottom_toBottomOf="@+id/duration_time_slot_details"
-        app:layout_constraintStart_toEndOf="@+id/duration_time_slot_details"
-        app:layout_constraintTop_toTopOf="@+id/duration_time_slot_details" />
-
-    <TextView
-        android:id="@+id/location_body_time_slot_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:hint="@string/locationPlaceholder"
-        android:textColorHint="#757575"
-        app:layout_constraintEnd_toEndOf="@+id/location_time_slot_details"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location_time_slot_details" />
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
