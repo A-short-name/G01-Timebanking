@@ -45,7 +45,10 @@
     <string name="description_hint">Insert the description of your offered job</string>
     <string name="date">Date</string>
     <string name="date_placeholder">No date</string>
-    <string name="date_hint">insert your start date (format yy/mm/dd hh:mm)</string>
+    <string name="date_hint">yyyy/mm/dd</string>
+    <string name="time">Time</string>
+    <string name="time_placeholder">No time</string>
+    <string name="time_hint">hh:mm</string>
     <string name="duration">Duration</string>
     <string name="duration_placeholder">No duration</string>
     <string name="duration_hint">insert your time availability</string>
