@@ -1,17 +1,34 @@
 package it.polito.mad.g01_timebanking.ui.timeslotdetails
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.*
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
+import it.polito.mad.g01_timebanking.model.TimeSlotDetails
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class TimeSlotDetailsFragment : Fragment() {
+    private lateinit var timeSlotDetailsViewModel : TimeSlotDetailsViewModel
+
+    private lateinit var timeSlotDetailsLD : LiveData<TimeSlotDetails>
+
+    // Views to be handled
+    private lateinit var textViewTitle: TextView
+    private lateinit var textViewLocation: TextView
+    private lateinit var textViewDuration: TextView
+    private lateinit var textViewDate: TextView
+    private lateinit var textViewDescription: TextView
 
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
@@ -24,21 +41,32 @@ class TimeSlotDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
+        timeSlotDetailsViewModel = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
+
+        timeSlotDetailsLD = timeSlotDetailsViewModel.timeSlotDetails
 
         _binding = FragmentTimeSlotDetailsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.titleTimeSlotDetails
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            //textView.text = it
-        }
+        textViewTitle = root.findViewById(R.id.title_time_slot_details)
+        textViewLocation = root.findViewById(R.id.location_body_time_slot_details)
+        textViewDuration = root.findViewById(R.id.duration_body_time_slot_details)
+        textViewDate = root.findViewById(R.id.date_body_time_slot_details)
+        textViewDescription = root.findViewById(R.id.description_body_time_slot_details)
 
         // Enable menu options
         setHasOptionsMenu(true)
 
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        populateFields()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        populateFields()
     }
 
     override fun onDestroyView() {
@@ -61,5 +89,17 @@ class TimeSlotDetailsFragment : Fragment() {
             item,
             requireView().findNavController())
                 || super.onOptionsItemSelected(item)
+    }
+
+    private fun populateFields() {
+        textViewTitle.text = timeSlotDetailsLD.value!!.title
+        textViewLocation.text = timeSlotDetailsLD.value!!.location
+        textViewDuration.text = timeSlotDetailsLD.value!!.duration
+        textViewDescription.text = timeSlotDetailsLD.value!!.description
+
+        val myFormat =
+            if (DateFormat.is24HourFormat(activity)) "dd/MM/yyyy hh:mm" else "dd/MM/yyyy hh:mm a"
+        val dateFormat = SimpleDateFormat(myFormat, Locale.US)
+        textViewDate.text = dateFormat.format(timeSlotDetailsLD.value!!.calendar.time)
     }
 }
