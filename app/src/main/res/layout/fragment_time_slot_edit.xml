@@ -83,6 +83,7 @@
                 android:ems="10"
                 android:hint="@string/time_hint"
                 android:inputType="time"
+                android:focusable="false"
                 android:minHeight="48dp" />
 
             <TextView
