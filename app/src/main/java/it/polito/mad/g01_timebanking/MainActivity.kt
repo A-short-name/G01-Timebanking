@@ -3,6 +3,7 @@ package it.polito.mad.g01_timebanking
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -49,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        println("Number: " + supportFragmentManager.backStackEntryCount)
         if (supportFragmentManager.backStackEntryCount == 0)
             super.onBackPressed()
         else

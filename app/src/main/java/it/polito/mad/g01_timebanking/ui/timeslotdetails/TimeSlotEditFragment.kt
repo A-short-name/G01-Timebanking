@@ -9,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
+import androidx.navigation.fragment.findNavController
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.model.TimeSlotDetails
@@ -62,7 +64,7 @@ class TimeSlotEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /* Set fields */
+            /* Set fields */
         editTextTitle.setText(timeSlotDetailsLD.value!!.title)
         editTextLocation.setText(timeSlotDetailsLD.value!!.location)
         editTextDuration.setText(timeSlotDetailsLD.value!!.duration)

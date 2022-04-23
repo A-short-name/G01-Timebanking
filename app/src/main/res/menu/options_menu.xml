@@ -3,5 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_edit_time_slot"
-        android:title="Edit advertisement" />
+        android:title="Edit advertisement"
+        android:menuCategory="secondary" />
 </menu>

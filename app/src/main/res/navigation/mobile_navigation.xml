@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_show_time_slot_to_nav_edit_time_slot"
             app:destination="@id/nav_edit_time_slot" />
+        <action
+            android:id="@+id/action_nav_show_time_slot_to_nav_your_offers"
+            app:destination="@id/nav_your_offers" />
     </fragment>
 
     <fragment
