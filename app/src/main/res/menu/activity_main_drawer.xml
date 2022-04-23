@@ -12,9 +12,5 @@
             android:id="@+id/nav_show_time_slot"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_show_time_slot" />
-        <item
-            android:id="@+id/nav_edit_time_slot"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_edit_time_slot" />
     </group>
 </menu>
