@@ -1,10 +1,10 @@
-package it.polito.mad.g01_timebanking.ui.home
+package it.polito.mad.g01_timebanking.ui.timeslotlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class TimeSlotListViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"

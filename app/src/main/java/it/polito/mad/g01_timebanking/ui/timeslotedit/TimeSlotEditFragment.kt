@@ -1,4 +1,4 @@
-package it.polito.mad.g01_timebanking.ui.gallery
+package it.polito.mad.g01_timebanking.ui.timeslotedit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import it.polito.mad.g01_timebanking.databinding.FragmentEditTimeSlotDetailsBinding
+import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 
-class EditTimeSlotDetailsFragment : Fragment() {
+class TimeSlotEditFragment : Fragment() {
 
-    private var _binding: FragmentEditTimeSlotDetailsBinding? = null
+    private var _binding: FragmentTimeSlotEditBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,9 +22,9 @@ class EditTimeSlotDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val galleryViewModel =
-            ViewModelProvider(this).get(EditTimeSlotDetailsViewModel::class.java)
+            ViewModelProvider(this).get(TimeSlotEditViewModel::class.java)
 
-        _binding = FragmentEditTimeSlotDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentTimeSlotEditBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         return root

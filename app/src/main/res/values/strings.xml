@@ -53,8 +53,11 @@
     <string name="duration_placeholder">No duration</string>
     <string name="duration_hint">insert your time availability</string>
 
+    <!-- Your offers strings -->
+    <string name="your_offers">Your offers</string>
+
     <!--    navbar strings -->
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_your_offers">Your offers</string>
+    <string name="menu_show_time_slot">Show Time Slot Details</string>
+    <string name="menu_edit_time_slot">Edit Time Slot Details</string>
 </resources>
