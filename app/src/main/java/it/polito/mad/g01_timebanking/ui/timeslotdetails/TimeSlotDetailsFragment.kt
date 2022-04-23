@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
 import android.widget.TextView
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding

@@ -1,7 +1,6 @@
 package it.polito.mad.g01_timebanking
 
 import android.os.Bundle
-import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -12,7 +11,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
-import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,17 +36,11 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_show_time_slot, R.id.nav_edit_time_slot, R.id.nav_your_offers
+                R.id.nav_show_time_slot, R.id.nav_your_offers
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // menuInflater.inflate(R.menu.main, menu)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
