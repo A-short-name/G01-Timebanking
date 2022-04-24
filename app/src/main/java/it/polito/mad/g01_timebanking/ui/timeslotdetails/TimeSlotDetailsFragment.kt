@@ -61,11 +61,6 @@ class TimeSlotDetailsFragment : Fragment() {
         populateFields()
     }
 
-    override fun onResume() {
-        super.onResume()
-        populateFields()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
