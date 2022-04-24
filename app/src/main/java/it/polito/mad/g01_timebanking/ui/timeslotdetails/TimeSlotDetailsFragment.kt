@@ -5,8 +5,8 @@ import android.text.format.DateFormat
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import it.polito.mad.g01_timebanking.R
@@ -17,7 +17,7 @@ import java.util.*
 
 
 class TimeSlotDetailsFragment : Fragment() {
-    private lateinit var timeSlotDetailsViewModel : TimeSlotDetailsViewModel
+    private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
 
     private lateinit var timeSlotDetailsLD : LiveData<TimeSlotDetails>
 
@@ -39,7 +39,6 @@ class TimeSlotDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        timeSlotDetailsViewModel = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
 
         timeSlotDetailsLD = timeSlotDetailsViewModel.timeSlotDetails
 
