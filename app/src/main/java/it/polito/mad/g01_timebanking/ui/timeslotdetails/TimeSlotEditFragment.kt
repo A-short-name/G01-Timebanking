@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +19,7 @@ import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.model.TimeSlotDetails
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class TimeSlotEditFragment : Fragment() {
     // View model variable
@@ -62,13 +65,35 @@ class TimeSlotEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-            /* Set fields */
+        /* Set fields */
         editTextTitle.setText(timeSlotDetailsLD.value!!.title)
         editTextLocation.setText(timeSlotDetailsLD.value!!.location)
         editTextDuration.setText(timeSlotDetailsLD.value!!.duration)
         editTextDate.setText(fromDateToString(timeSlotDetailsLD.value!!.calendar.time))
         editTextTime.setText(fromTimeToString(timeSlotDetailsLD.value!!.calendar.time))
         editTextDescription.setText(timeSlotDetailsLD.value!!.description)
+
+        // This function calls setTitle each time there is a change on text.
+        // A possible workaround could be "setOnFocusChangeListener"
+        // editTextTitle.setOnFocusChangeListener(){ _, _ -> //view, hasFocus parameters
+        // }
+        // The problem with the above function is that it is not called if the user is editing
+        // and then presses back (without losing focus on the editText)
+        editTextTitle.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+            }
+        })
 
         /* Code fragment to generate time and date picker  */
 
