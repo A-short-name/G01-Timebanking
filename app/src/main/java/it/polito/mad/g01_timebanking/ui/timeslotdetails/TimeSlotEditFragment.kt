@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -87,12 +88,15 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         // Check if the fragment is called from the FAB (so it has to be empty)
-        if (arguments?.getBoolean("hasToBeEmpty") == true) {
+        if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
             timeSlotDetailsViewModel.setTitle("")
             timeSlotDetailsViewModel.setDuration("")
             timeSlotDetailsViewModel.setDescription("")
             timeSlotDetailsViewModel.setLocation("")
-            timeSlotDetailsViewModel.setDateTime(Calendar.getInstance())
+            val expTime = Calendar.getInstance()
+            expTime.add(Calendar.HOUR_OF_DAY,+12)
+            expTime.set(Calendar.MINUTE,0)
+            timeSlotDetailsViewModel.setDateTime(expTime)
         }
 
         /* Code fragment to generate time and date picker  */

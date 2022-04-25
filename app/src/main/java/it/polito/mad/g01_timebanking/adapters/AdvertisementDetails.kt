@@ -1,4 +1,4 @@
-package it.polito.mad.g01_timebanking.entities
+package it.polito.mad.g01_timebanking.adapters
 
 import android.view.LayoutInflater
 import android.view.View
