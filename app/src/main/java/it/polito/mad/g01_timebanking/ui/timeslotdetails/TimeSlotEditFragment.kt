@@ -110,17 +110,6 @@ class TimeSlotEditFragment : Fragment() {
             timeSlotDetailsViewModel.setDateTime(expTime)
             timeSlotDetailsViewModel.setId(advListViewModel.count())
         }
-        advListViewModel.advList.observe(this.viewLifecycleOwner){
-            val gson = Gson();
-            val serializedAdvList: String = gson.toJson(advListViewModel.advList.value)
-
-            val sharedPref =
-                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
-            with(sharedPref.edit()) {
-                putString(getString(R.string.adv_list), serializedAdvList)
-                apply()
-            }
-        }
 
         /* Code fragment to generate time and date picker  */
 
@@ -218,6 +207,17 @@ class TimeSlotEditFragment : Fragment() {
         )
         //There is an observer that update preferences
         advListViewModel.addOrUpdateElement(a)
+
+        val gson = Gson();
+        val serializedAdvList: String = gson.toJson(advListViewModel.advList.value)
+        println(serializedAdvList);
+
+        val sharedPref =
+            context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putString(getString(R.string.adv_list), serializedAdvList)
+            apply()
+        }
 
         super.onDetach()
     }
