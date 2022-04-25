@@ -53,11 +53,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount == 0)
-            super.onBackPressed()
-        else
-            supportFragmentManager.popBackStack()
-    }
 }
