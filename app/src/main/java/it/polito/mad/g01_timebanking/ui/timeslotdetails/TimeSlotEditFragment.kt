@@ -11,11 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
+import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +28,7 @@ import java.util.*
 class TimeSlotEditFragment : Fragment() {
     // View model variable
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
+    private val advListViewModel : TimeSlotListViewModel by activityViewModels()
 
     // Variables to handle date and time calculation
     private var nowTimeDate = Calendar.getInstance()
@@ -42,6 +48,8 @@ class TimeSlotEditFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private var actualAdvId = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +73,10 @@ class TimeSlotEditFragment : Fragment() {
         editTextDescription = view.findViewById(R.id.editTextTextDescription)
 
         /* Set fields */
+        timeSlotDetailsViewModel.id.observe(this.viewLifecycleOwner) {
+            actualAdvId = it
+        }
+
         timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
             editTextTitle.setText(it)
         }
@@ -97,6 +109,18 @@ class TimeSlotEditFragment : Fragment() {
             expTime.add(Calendar.HOUR_OF_DAY,+12)
             expTime.set(Calendar.MINUTE,0)
             timeSlotDetailsViewModel.setDateTime(expTime)
+            timeSlotDetailsViewModel.setId(advListViewModel.count())
+        }
+        advListViewModel.advList.observe(this.viewLifecycleOwner){
+            val gson = Gson();
+            val serializedAdvList: String = gson.toJson(advListViewModel.advList.value)
+
+            val sharedPref =
+                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
+            with(sharedPref.edit()) {
+                putString(getString(R.string.adv_list), serializedAdvList)
+                apply()
+            }
         }
 
         /* Code fragment to generate time and date picker  */
@@ -184,6 +208,17 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
         timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
         timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+
+        val a = AdvertisementDetails (
+            id = actualAdvId,
+            title = editTextTitle.text.toString(),
+            location = editTextLocation.text.toString(),
+            calendar = actualTimeDate,
+            duration = editTextDuration.text.toString(),
+            description = editTextDescription.text.toString()
+        )
+        //There is an observer that update preferences
+        advListViewModel.addOrUpdateElement(a)
 
         super.onDetach()
     }

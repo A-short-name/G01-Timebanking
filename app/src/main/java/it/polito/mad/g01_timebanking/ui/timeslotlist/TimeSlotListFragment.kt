@@ -20,6 +20,7 @@ import java.util.*
 
 class TimeSlotListFragment : Fragment() {
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
+    private val timeSlotListViewModel : TimeSlotListViewModel by activityViewModels()
     private var _binding: FragmentTimeSlotListBinding? = null
 
     // This property is only valid between onCreateView and
@@ -48,18 +49,17 @@ class TimeSlotListFragment : Fragment() {
         val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
         val yourOffersText = view.findViewById<TextView>(R.id.offersTitle)
 
-        val items = listOf(AdvertisementDetails("First adv","Turin", Calendar.getInstance(), "3","Long description"),
-            AdvertisementDetails("Second adv","Milan", Calendar.getInstance(), "5","another description"))
-
-        if (items.isEmpty()) {
-            recyclerViewAdv.visibility = View.GONE
-            emptyAdvText.visibility = View.VISIBLE
-            yourOffersText.visibility = View.GONE
+        timeSlotListViewModel.advList.observe(this.viewLifecycleOwner){
+            if (it.isEmpty()) {
+                recyclerViewAdv.visibility = View.GONE
+                emptyAdvText.visibility = View.VISIBLE
+                yourOffersText.visibility = View.GONE
+            }
+            val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
+            recyclerViewAdv.adapter = adapter
         }
 
-        val adapter = AdvertisementAdapter(items, timeSlotDetailsViewModel)
 
-        recyclerViewAdv.adapter = adapter
     }
 
     override fun onDestroyView() {

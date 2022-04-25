@@ -10,19 +10,27 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
+import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
 import java.util.*
 
 data class AdvertisementDetails (
+    var id: Int,
     var title: String,
     var location: String,
     var calendar: Calendar,
     var duration: String,
     var description: String
-    )
+    ){
+    override fun equals(other: Any?): Boolean {
+        other as AdvertisementDetails
+        return id == other.id
+    }
+}
 
 class AdvertisementAdapter(
     private val data:List<AdvertisementDetails>,
-    private val vm: TimeSlotDetailsViewModel)
+    private val tsDetailsViewModel: TimeSlotDetailsViewModel,
+    private val advListViewModel: TimeSlotListViewModel)
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 
     class AdvertisementViewHolder(v:View): RecyclerView.ViewHolder(v) {
@@ -69,11 +77,11 @@ class AdvertisementAdapter(
         val callback: (v: View) -> Unit = {
             val pos = data.indexOf(adv)
             if (pos != -1) {
-                vm.setTitle(adv.title)
-                vm.setDuration(adv.duration)
-                vm.setDescription(adv.description)
-                vm.setLocation(adv.location)
-                vm.setDateTime(adv.calendar)
+                tsDetailsViewModel.setTitle(adv.title)
+                tsDetailsViewModel.setDuration(adv.duration)
+                tsDetailsViewModel.setDescription(adv.description)
+                tsDetailsViewModel.setLocation(adv.location)
+                tsDetailsViewModel.setDateTime(adv.calendar)
                 Navigation.findNavController(it).navigate(action)
             }
         }

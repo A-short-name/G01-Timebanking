@@ -5,6 +5,11 @@ import androidx.lifecycle.*
 import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
+    private val pvtId = MutableLiveData<Int>().also {
+        it.value = 10
+    }
+    val id : LiveData<Int> = pvtId
+
     private val pvtTitle = MutableLiveData<String>().also {
         it.value = "No title"
     }
@@ -29,6 +34,10 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         it.value = "No duration"
     }
     val duration : LiveData<String> = pvtDuration
+
+    fun setId(id: Int) {
+        pvtId.value = id
+    }
 
     fun setTitle(title: String) {
         pvtTitle.value = title

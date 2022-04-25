@@ -1,10 +1,13 @@
 package it.polito.mad.g01_timebanking
 
+import android.app.Application
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigator
@@ -18,12 +21,21 @@ import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
+import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    /*
+    class ExtraParamsViewModelFactory(
+        private val application: Application,
+        private val myExtraParam: String
+    ): ViewModelProvider.NewInstanceFactory() {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            TimeSlotListViewModel(application, myExtraParam) as T
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +43,12 @@ class MainActivity : AppCompatActivity() {
         // It creates the VM that will be used by fragments
         val vm : TimeSlotDetailsViewModel =
             ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
+        val advListViewModel : TimeSlotListViewModel =
+            ViewModelProvider(this)[TimeSlotListViewModel::class.java]
+        /*val advListViewModel: TimeSlotListViewModel by viewModels {
+            ExtraParamsViewModelFactory(this.application, "some string value")
+        }*/
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
