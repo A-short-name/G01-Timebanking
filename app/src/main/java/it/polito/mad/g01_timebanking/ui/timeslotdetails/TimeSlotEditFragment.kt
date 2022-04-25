@@ -95,6 +95,55 @@ class TimeSlotEditFragment : Fragment() {
             }
         })
 
+        // Same for all other editTexts
+        editTextDescription.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+            }
+        })
+
+        editTextLocation.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+            }
+        })
+
+        editTextDuration.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                timeSlotDetailsViewModel.setLocation(editTextDuration.text.toString())
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+            }
+        })
+
         /* Code fragment to generate time and date picker  */
 
         // When a date is selected by the user this function is called.
