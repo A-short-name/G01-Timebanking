@@ -86,6 +86,14 @@ class TimeSlotEditFragment : Fragment() {
             actualTimeDate = it
         }
 
+        // Check if the fragment is called from the FAB (so it has to be empty)
+        if (arguments?.getBoolean("hasToBeEmpty") == true) {
+            timeSlotDetailsViewModel.setTitle("")
+            timeSlotDetailsViewModel.setDuration("")
+            timeSlotDetailsViewModel.setDescription("")
+            timeSlotDetailsViewModel.setLocation("")
+            timeSlotDetailsViewModel.setDateTime(Calendar.getInstance())
+        }
 
         /* Code fragment to generate time and date picker  */
 

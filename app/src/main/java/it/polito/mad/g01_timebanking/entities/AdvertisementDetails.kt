@@ -7,9 +7,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.util.*
 
 data class AdvertisementDetails (
@@ -20,7 +20,11 @@ data class AdvertisementDetails (
     var description: String
     )
 
-class AdvertisementAdapter(private val data:List<AdvertisementDetails>): RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
+class AdvertisementAdapter(
+    private val data:List<AdvertisementDetails>,
+    private val vm: TimeSlotDetailsViewModel)
+        : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
+
     class AdvertisementViewHolder(v:View): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advDate)
@@ -45,21 +49,35 @@ class AdvertisementAdapter(private val data:List<AdvertisementDetails>): Recycle
 
     override fun onBindViewHolder(holder: AdvertisementViewHolder, position: Int) {
         val adv = data[position]
-        val buttonCallback : (v: View) -> Unit = {
-            val pos = data.indexOf(adv)
-            if (pos!=-1) {
-                Navigation.findNavController(it).navigate(R.id.action_nav_your_offers_to_nav_edit_time_slot)
-            }
-        }
 
-        val cardCallback : (v: View) -> Unit = {
-            val pos = data.indexOf(adv)
-            if (pos!=-1) {
-                Navigation.findNavController(it).navigate(R.id.action_nav_your_offers_to_nav_show_time_slot)
-            }
-        }
+        // This callback will be called when the editButton of the list is clicked
+        val buttonCallback: (v: View) -> Unit = defineCallbacks(adv,"button")
+
+        // This callback will be called when the cardCallback of the list is clicked
+        val cardCallback : (v: View) -> Unit = defineCallbacks(adv, "cardView")
 
         holder.bind(adv, buttonCallback, cardCallback)
+    }
+
+    private fun defineCallbacks(adv: AdvertisementDetails, destination: String): (v: View) -> Unit {
+        val action = when (destination) {
+            "button" -> R.id.action_nav_your_offers_to_nav_edit_time_slot
+            "cardView" -> R.id.action_nav_your_offers_to_nav_show_time_slot
+            else -> -1
+        }
+
+        val callback: (v: View) -> Unit = {
+            val pos = data.indexOf(adv)
+            if (pos != -1) {
+                vm.setTitle(adv.title)
+                vm.setDuration(adv.duration)
+                vm.setDescription(adv.description)
+                vm.setLocation(adv.location)
+                vm.setDateTime(adv.calendar)
+                Navigation.findNavController(it).navigate(action)
+            }
+        }
+        return callback
     }
 
     override fun getItemCount(): Int = data.size
