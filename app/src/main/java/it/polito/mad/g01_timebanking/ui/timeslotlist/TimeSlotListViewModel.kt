@@ -1,24 +1,18 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlist
 
-import android.app.Application
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
-import it.polito.mad.g01_timebanking.MainActivity
-import it.polito.mad.g01_timebanking.R
-import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.util.*
 
 class TimeSlotListViewModel() : ViewModel() {
+    private val mAdvList = mutableListOf(
+        AdvertisementDetails(0,"First adv","Turin", Calendar.getInstance(), "3","Long description"),
+        AdvertisementDetails(1, "Second adv","Milan", Calendar.getInstance(), "5","another description"))
 
     private val pvtList = MutableLiveData<MutableList<AdvertisementDetails>>().also {
-        it.value = mutableListOf(AdvertisementDetails(0,"First adv","Turin", Calendar.getInstance(), "3","Long description"),
-            AdvertisementDetails(1, "Second adv","Milan", Calendar.getInstance(), "5","another description"))
+        it.value = mAdvList
 /*
         val gson = Gson()
 
@@ -32,17 +26,17 @@ class TimeSlotListViewModel() : ViewModel() {
 
  */
     }
+
     val advList : LiveData<MutableList<AdvertisementDetails>> = pvtList
 
     fun addOrUpdateElement(a: AdvertisementDetails){
-        val pos = pvtList.value?.indexOf(a) ?: -1
+        val pos = mAdvList.indexOf(a)
         if(pos != -1)
-            pvtList.value?.removeAt(pos)
+            mAdvList.removeAt(pos)
 
-        pvtList.value?.add(a)
+        mAdvList.add(a)
+        pvtList.value = mAdvList
     }
 
-    fun count(): Int{
-        return pvtList.value?.size ?: 0
-    }
+    fun count() = mAdvList.size
 }

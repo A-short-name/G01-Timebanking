@@ -55,9 +55,12 @@ class TimeSlotListFragment : Fragment() {
                 emptyAdvText.visibility = View.VISIBLE
                 yourOffersText.visibility = View.GONE
             }
+
             val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
             recyclerViewAdv.adapter = adapter
         }
+
+
 
 
     }
