@@ -62,6 +62,16 @@ class TimeSlotListFragment : Fragment() {
                 yourOffersText.visibility = View.VISIBLE
             }
 
+            val gson = Gson();
+            val serializedAdvList: String = gson.toJson(it)
+
+            val sharedPref =
+                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
+            with(sharedPref.edit()) {
+                putString(getString(R.string.adv_list), serializedAdvList)
+                apply()
+            }
+
             val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
             recyclerViewAdv.adapter = adapter
         }

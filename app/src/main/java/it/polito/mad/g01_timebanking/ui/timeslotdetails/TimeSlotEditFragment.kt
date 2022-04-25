@@ -98,6 +98,19 @@ class TimeSlotEditFragment : Fragment() {
             actualTimeDate = it
         }
 
+//        advListViewModel.advList.observe(this.viewLifecycleOwner) {
+//            val gson = Gson();
+//            val serializedAdvList: String = gson.toJson(it)
+//            println(serializedAdvList);
+//
+//            val sharedPref =
+//                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
+//            with(sharedPref.edit()) {
+//                putString(getString(R.string.adv_list), serializedAdvList)
+//                apply()
+//            }
+//        }
+
         // Check if the fragment is called from the FAB (so it has to be empty)
         if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
             timeSlotDetailsViewModel.setTitle("")
@@ -207,17 +220,6 @@ class TimeSlotEditFragment : Fragment() {
         )
         //There is an observer that update preferences
         advListViewModel.addOrUpdateElement(a)
-
-        val gson = Gson();
-        val serializedAdvList: String = gson.toJson(advListViewModel.advList.value)
-        println(serializedAdvList);
-
-        val sharedPref =
-            context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            putString(getString(R.string.adv_list), serializedAdvList)
-            apply()
-        }
 
         super.onDetach()
     }
