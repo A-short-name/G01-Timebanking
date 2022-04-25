@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -149,10 +150,23 @@ class TimeSlotEditFragment : Fragment() {
         // When a date is selected by the user this function is called.
         // It updates the date in the calendar object and the editText shown to the user
         val date = OnDateSetListener { _, year, month, day ->
-            timeSlotDetailsViewModel.setDate(year, month, day)
+            val actTime = Calendar.getInstance()
+            val desiredTime = Calendar.getInstance()
 
-            val dateString = fromDateToString(timeSlotDetailsLD.value?.calendar?.time!!)
-            editTextDate.setText(dateString)
+            desiredTime.set(Calendar.YEAR,year)
+            desiredTime.set(Calendar.MONTH,month)
+            desiredTime.set(Calendar.DAY_OF_MONTH,day)
+
+            if(actTime < desiredTime) {
+                timeSlotDetailsViewModel.setDate(desiredTime)
+
+                val dateString = fromDateToString(timeSlotDetailsLD.value?.calendar?.time!!)
+                editTextDate.setText(dateString)
+            } else {
+                val text: CharSequence = "Date is already passed. Choose a future one!"
+                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
 
         // When the edit text is clicked, pop-up the date picker instead
