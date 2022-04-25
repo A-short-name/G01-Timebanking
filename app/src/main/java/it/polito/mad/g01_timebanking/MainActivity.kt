@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -12,9 +11,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { _ ->
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             navController.navigate(R.id.action_nav_your_offers_to_nav_edit_time_slot)
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
