@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
-import java.util.*
 
-class TimeSlotListViewModel() : ViewModel() {
-    private val mAdvList = mutableListOf(
-        AdvertisementDetails(0,"First adv","Turin", Calendar.getInstance(), "3","Long description"),
-        AdvertisementDetails(1, "Second adv","Milan", Calendar.getInstance(), "5","another description"))
+class TimeSlotListViewModel : ViewModel() {
+    private val mAdvList : MutableList<AdvertisementDetails> = mutableListOf()
 
     private val pvtList = MutableLiveData<MutableList<AdvertisementDetails>>().also {
         it.value = mAdvList
