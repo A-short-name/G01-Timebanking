@@ -3,7 +3,11 @@ package it.polito.mad.g01_timebanking.entities
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import java.util.*
@@ -20,10 +24,14 @@ class AdvertisementAdapter(private val data:List<AdvertisementDetails>): Recycle
     class AdvertisementViewHolder(v:View): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advDate)
+        private val button: ImageButton = v.findViewById(R.id.editAdvButton)
+        private val cardView: CardView = v.findViewById(R.id.advCardView)
 
-        fun bind(adv: AdvertisementDetails) {
+        fun bind(adv: AdvertisementDetails, buttonAction: (v: View) -> Unit, cardAction: (v: View) -> Unit) {
             title.text = adv.title
             date.text = adv.calendar.time.toString()
+            button.setOnClickListener(buttonAction)
+            cardView.setOnClickListener(cardAction)
         }
     }
 
@@ -37,7 +45,21 @@ class AdvertisementAdapter(private val data:List<AdvertisementDetails>): Recycle
 
     override fun onBindViewHolder(holder: AdvertisementViewHolder, position: Int) {
         val adv = data[position]
-        holder.bind(adv)
+        val buttonCallback : (v: View) -> Unit = {
+            val pos = data.indexOf(adv)
+            if (pos!=-1) {
+                Navigation.findNavController(it).navigate(R.id.action_nav_your_offers_to_nav_edit_time_slot)
+            }
+        }
+
+        val cardCallback : (v: View) -> Unit = {
+            val pos = data.indexOf(adv)
+            if (pos!=-1) {
+                Navigation.findNavController(it).navigate(R.id.action_nav_your_offers_to_nav_show_time_slot)
+            }
+        }
+
+        holder.bind(adv, buttonCallback, cardCallback)
     }
 
     override fun getItemCount(): Int = data.size

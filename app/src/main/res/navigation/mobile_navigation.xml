@@ -34,7 +34,18 @@
         tools:layout="@layout/fragment_time_slot_list" >
         <action
             android:id="@+id/action_nav_your_offers_to_nav_show_time_slot"
-            app:destination="@id/nav_show_time_slot" />
+            app:destination="@id/nav_show_time_slot"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_your_offers_to_nav_edit_time_slot"
+            app:destination="@id/nav_edit_time_slot"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
 </navigation>
