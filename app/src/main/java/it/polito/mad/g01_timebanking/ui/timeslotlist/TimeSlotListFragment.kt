@@ -7,7 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
+import it.polito.mad.g01_timebanking.entities.AdvertisementAdapter
+import it.polito.mad.g01_timebanking.entities.AdvertisementDetails
+import java.util.*
 
 
 class TimeSlotListFragment : Fragment() {
@@ -27,13 +33,22 @@ class TimeSlotListFragment : Fragment() {
             ViewModelProvider(this)[TimeSlotListViewModel::class.java]
 
         _binding = FragmentTimeSlotListBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        val textView: TextView = binding.titleYourOffers
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            //textView.text = it
-        }
-        return root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recyclerViewAdv = view.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerViewAdv.layoutManager = LinearLayoutManager(context)
+
+        val items = listOf(AdvertisementDetails("First adv","Turin", Calendar.getInstance(), "3","Long description"),
+                    AdvertisementDetails("Second adv","Milan", Calendar.getInstance(), "5","another description"))
+
+        val adapter = AdvertisementAdapter(items)
+
+        recyclerViewAdv.adapter = adapter
     }
 
     override fun onDestroyView() {
