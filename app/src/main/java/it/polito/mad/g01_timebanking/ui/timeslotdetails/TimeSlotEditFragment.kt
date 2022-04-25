@@ -28,6 +28,10 @@ class TimeSlotEditFragment : Fragment() {
     // This var will contain user information
     private lateinit var timeSlotDetailsLD : LiveData<TimeSlotDetails>
 
+    // Variables to handle date and time calculation
+    private var actTimeDate = Calendar.getInstance()
+    private var desiredTimeDate = Calendar.getInstance()
+
     // Views to be handled
     private lateinit var editTextTitle: EditText
     private lateinit var editTextLocation: EditText
@@ -73,6 +77,8 @@ class TimeSlotEditFragment : Fragment() {
         editTextDate.setText(fromDateToString(timeSlotDetailsLD.value!!.calendar.time))
         editTextTime.setText(fromTimeToString(timeSlotDetailsLD.value!!.calendar.time))
         editTextDescription.setText(timeSlotDetailsLD.value!!.description)
+
+        desiredTimeDate = timeSlotDetailsLD.value!!.calendar
 
         // This function calls setTitle each time there is a change on text.
         // A possible workaround could be "setOnFocusChangeListener"
@@ -150,22 +156,21 @@ class TimeSlotEditFragment : Fragment() {
         // When a date is selected by the user this function is called.
         // It updates the date in the calendar object and the editText shown to the user
         val date = OnDateSetListener { _, year, month, day ->
-            val actTime = Calendar.getInstance()
-            val desiredTime = Calendar.getInstance()
+            actTimeDate = Calendar.getInstance()
 
-            desiredTime.set(Calendar.YEAR,year)
-            desiredTime.set(Calendar.MONTH,month)
-            desiredTime.set(Calendar.DAY_OF_MONTH,day)
+            desiredTimeDate.set(Calendar.YEAR,year)
+            desiredTimeDate.set(Calendar.MONTH,month)
+            desiredTimeDate.set(Calendar.DAY_OF_MONTH,day)
 
-            if(actTime < desiredTime) {
-                timeSlotDetailsViewModel.setDate(desiredTime)
+            if(actTimeDate < desiredTimeDate) {
+                timeSlotDetailsViewModel.setDateTime(desiredTimeDate)
 
-                val dateString = fromDateToString(timeSlotDetailsLD.value?.calendar?.time!!)
+                val dateString = fromDateToString(timeSlotDetailsLD.value!!.calendar.time)
                 editTextDate.setText(dateString)
             } else {
                 val text: CharSequence = "Date is already passed. Choose a future one!"
-                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-                toast.show();
+                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                toast.show()
             }
         }
 
@@ -183,11 +188,25 @@ class TimeSlotEditFragment : Fragment() {
         // When a time is selected by the user this function is called.
         // It updates the time in the calendar object and the editText shown to the user
         val time = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-            timeSlotDetailsViewModel.setTime(hour,minute)
+            println("Selected hour: $hour")
+            actTimeDate = Calendar.getInstance()
 
-            // Format time as e.g. 13:30 (if 24 hours) or 01:30 PM (if 12 hours)
-            val timeString = fromTimeToString(timeSlotDetailsLD.value?.calendar?.time!!)
-            editTextTime.setText(timeString)
+            desiredTimeDate.set(Calendar.HOUR, hour)
+            desiredTimeDate.set(Calendar.MINUTE, minute)
+
+            // If the selected date is today, make sure the time selected is not passed
+            if (actTimeDate < desiredTimeDate) {
+                timeSlotDetailsViewModel.setDateTime(desiredTimeDate)
+
+                // Format time as e.g. 13:30 (if 24 hours) or 01:30 PM (if 12 hours)
+                val timeString = fromTimeToString(timeSlotDetailsLD.value!!.calendar.time)
+                editTextTime.setText(timeString)
+            } else {
+                val text: CharSequence = "Time is already passed. Choose a future one!"
+                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                toast.show()
+            }
+
         }
 
         // When the edit text is clicked, pop-up the date picker instead
@@ -209,7 +228,7 @@ class TimeSlotEditFragment : Fragment() {
     }
 
     private fun fromTimeToString(date : Date): String? {
-        val myFormat = if (DateFormat.is24HourFormat(activity)) "hh:mm" else "hh:mm a"
+        val myFormat = if (DateFormat.is24HourFormat(activity)) "HH:mm" else "hh:mm aa"
 
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
 

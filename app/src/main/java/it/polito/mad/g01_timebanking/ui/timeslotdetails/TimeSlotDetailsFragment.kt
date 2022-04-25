@@ -90,7 +90,7 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewDescription.text = timeSlotDetailsLD.value!!.description
 
         val myFormat =
-            if (DateFormat.is24HourFormat(activity)) "dd/MM/yyyy hh:mm" else "dd/MM/yyyy hh:mm a"
+            if (DateFormat.is24HourFormat(activity)) "dd/MM/yyyy hh:mm" else "dd/MM/yyyy hh:mm aa"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
         textViewDate.text = dateFormat.format(timeSlotDetailsLD.value!!.calendar.time)
     }

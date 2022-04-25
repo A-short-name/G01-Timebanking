@@ -32,14 +32,11 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         timeSlotDetails.value!!.description = description
     }
 
-    fun setDate(calendar: Calendar) {
+    fun setDateTime(calendar: Calendar) {
         timeSlotDetails.value!!.calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
         timeSlotDetails.value!!.calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH))
         timeSlotDetails.value!!.calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
-    }
-
-    fun setTime(hour: Int, minute: Int) {
-        timeSlotDetails.value!!.calendar.set(Calendar.HOUR, hour)
-        timeSlotDetails.value!!.calendar.set(Calendar.MINUTE, minute)
+        timeSlotDetails.value!!.calendar.set(Calendar.HOUR, calendar.get(Calendar.HOUR))
+        timeSlotDetails.value!!.calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
     }
 }
