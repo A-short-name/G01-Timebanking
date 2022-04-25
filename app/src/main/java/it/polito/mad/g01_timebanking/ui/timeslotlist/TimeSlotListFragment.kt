@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -44,8 +45,17 @@ class TimeSlotListFragment : Fragment() {
         val recyclerViewAdv = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerViewAdv.layoutManager = LinearLayoutManager(context)
 
+        val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
+        val yourOffersText = view.findViewById<TextView>(R.id.offersTitle)
+
         val items = listOf(AdvertisementDetails("First adv","Turin", Calendar.getInstance(), "3","Long description"),
-                    AdvertisementDetails("Second adv","Milan", Calendar.getInstance(), "5","another description"))
+            AdvertisementDetails("Second adv","Milan", Calendar.getInstance(), "5","another description"))
+
+        if (items.isEmpty()) {
+            recyclerViewAdv.visibility = View.GONE
+            emptyAdvText.visibility = View.VISIBLE
+            yourOffersText.visibility = View.GONE
+        }
 
         val adapter = AdvertisementAdapter(items, timeSlotDetailsViewModel)
 

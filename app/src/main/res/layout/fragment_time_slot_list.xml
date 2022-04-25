@@ -27,4 +27,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offersTitle" />
+
+    <TextView
+        android:id="@+id/emptyAdvertisementsText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No advertisements\nCreate a new one!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:visibility="gone"
+        android:gravity="center" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
