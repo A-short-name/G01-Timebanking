@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
-import org.w3c.dom.Text
 import java.util.*
 
 data class AdvertisementDetails (
@@ -19,8 +18,8 @@ data class AdvertisementDetails (
 
 class AdvertisementAdapter(private val data:List<AdvertisementDetails>): RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
     class AdvertisementViewHolder(v:View): RecyclerView.ViewHolder(v) {
-        val title: TextView = v.findViewById(R.id.advTitle)
-        val date: TextView = v.findViewById(R.id.advDate)
+        private val title: TextView = v.findViewById(R.id.advTitle)
+        private val date: TextView = v.findViewById(R.id.advDate)
 
         fun bind(adv: AdvertisementDetails) {
             title.text = adv.title
