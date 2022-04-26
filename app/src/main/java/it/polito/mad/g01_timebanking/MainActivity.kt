@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
+import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
@@ -46,6 +47,8 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val advListViewModel : TimeSlotListViewModel =
             ViewModelProvider(this)[TimeSlotListViewModel::class.java]
+        val profileViewModel : ProfileViewModel =
+            ViewModelProvider(this)[ProfileViewModel::class.java]
         /*val advListViewModel: TimeSlotListViewModel by viewModels {
             ExtraParamsViewModelFactory(this.application, "some string value")
         }*/
@@ -88,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_show_time_slot, R.id.nav_your_offers,
+                R.id.nav_show_profile, R.id.nav_your_offers,
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

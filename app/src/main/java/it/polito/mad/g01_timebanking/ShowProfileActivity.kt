@@ -1,3 +1,4 @@
+/*
 package it.polito.mad.g01_timebanking
 
 import android.content.Intent
@@ -161,13 +162,7 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
-        return when (item.itemId) {
-            R.id.editButton -> {
-                editProfile()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item)
         }
     }
 
@@ -254,3 +249,4 @@ class ShowProfileActivity : AppCompatActivity() {
     }
 
 }
+*/

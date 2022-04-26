@@ -1,4 +1,4 @@
-package it.polito.mad.g01_timebanking
+package it.polito.mad.g01_timebanking.ui.profile
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -10,13 +10,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
+import it.polito.mad.g01_timebanking.*
+import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 
 class ShowProfileFragment : Fragment() {
+    private val profileViewModel : ProfileViewModel by activityViewModels()
+
     companion object {
         private const val TAG = "ShowProfileActivity"
     }
@@ -69,6 +74,41 @@ class ShowProfileFragment : Fragment() {
         ivProfilePicture = view.findViewById(R.id.profilePicture)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
+
+        profileViewModel.fullName.observe(this.viewLifecycleOwner) {
+            tvFullName.text = it
+        }
+        profileViewModel.nickname.observe(this.viewLifecycleOwner) {
+            tvNickname.text = it
+        }
+        profileViewModel.email.observe(this.viewLifecycleOwner) {
+            tvEmail.text = it
+        }
+        profileViewModel.location.observe(this.viewLifecycleOwner) {
+            tvLocation.text = it
+        }
+        profileViewModel.biography.observe(this.viewLifecycleOwner) {
+            tvBiography.text = it
+        }
+        profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it, ivProfilePicture)
+            }
+        }
+        profileViewModel.skills.observe(this.viewLifecycleOwner) {
+            skillGroup.removeAllViews()
+
+            if(it.isEmpty())
+                noSkills.isVisible = true
+            else
+                it.forEach{ content ->
+                    val chip = Chip(context)
+                    chip.text = content
+                    chip.isCheckable = false
+                    chip.isClickable = true
+                    skillGroup.addView(chip)
+                }.also{noSkills.isVisible = false}
+        }
     }
 
     private fun arrangeViewByRatio(view: View) {
@@ -102,7 +142,7 @@ class ShowProfileFragment : Fragment() {
         )
         val s: String = sharedPref?.getString(getString(R.string.user_info), "" ) ?: ""
 
-        val u =  if(s!="") gson.fromJson(s,UserInfo::class.java) else UserInfo()
+        val u =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
 
         fullName = u.fullName
         nickName = u.nickname
