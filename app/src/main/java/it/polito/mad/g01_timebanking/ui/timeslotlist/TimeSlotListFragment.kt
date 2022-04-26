@@ -34,8 +34,8 @@ class TimeSlotListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this)[TimeSlotListViewModel::class.java]
+//        val homeViewModel =
+//            ViewModelProvider(this)[TimeSlotListViewModel::class.java]
 
         _binding = FragmentTimeSlotListBinding.inflate(inflater, container, false)
 
