@@ -2,6 +2,7 @@ package it.polito.mad.g01_timebanking.ui.profile
 
 import android.Manifest
 import android.content.ActivityNotFoundException
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -28,9 +29,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.FileHelper
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.io.File
 import java.io.IOException
 
@@ -356,28 +360,39 @@ class EditProfileFragment: Fragment() {
             }
         }
     }
+    override fun onDetach() {
+        profileViewModel.setFullname(ivFullName.text.toString())
+        profileViewModel.setNickname(ivNickname.text.toString())
+        profileViewModel.setEmail(ivEmail.text.toString())
+        profileViewModel.setLocation(ivLocation.text.toString())
+        profileViewModel.setBiography(ivBiography.text.toString())
+        //profileViewModel.setProfilePicturePath() is changed everytime
+        //profileViewModel.setSkills() is changed everytime
 
-/*    private fun updatePreferences() {
+        updatePreferences()
+        super.onDetach()
+    }
+    private fun updatePreferences() {
         val u = UserInfo (
-            fullName = ivFullName.text.toString(),
-            nickname = ivNickname.text.toString(),
-            email = ivEmail.text.toString(),
-            location = ivLocation.text.toString(),
-            biography = ivBiography.text.toString(),
-            profilePicturePath = profilePicturePath,
-            skills = skills
+            fullName = profileViewModel.fullName.value!!,
+            nickname = profileViewModel.nickname.value!!,
+            email = profileViewModel.email.value!!,
+            location = profileViewModel.location.value!!,
+            biography = profileViewModel.biography.value!!,
+            profilePicturePath = profileViewModel.profilePicturePath.value!!,
+            skills = profileViewModel.skills.value!!
         )
 
         val gson = Gson();
         val serializedUser: String = gson.toJson(u)
 
         val sharedPref =
-            this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+            context?.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
                 ?: return
         with(sharedPref.edit()) {
             putString(getString(R.string.user_info), serializedUser)
             apply()
         }
-    }*/
+    }
 
 }
