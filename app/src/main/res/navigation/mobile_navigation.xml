@@ -50,7 +50,12 @@
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="it.polito.mad.g01_timebanking.ui.profile.EditProfileFragment"
-        android:label="@string/menu_edit_profile" />
+        android:label="@string/menu_edit_profile" >
+        <action
+            android:id="@+id/action_nav_edit_profile_to_nav_show_profile"
+            app:destination="@id/nav_show_profile"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/nav_show_profile"
         android:name="it.polito.mad.g01_timebanking.ui.profile.ShowProfileFragment"

@@ -15,10 +15,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.g01_timebanking.FileHelper
@@ -49,12 +54,24 @@ class EditProfileFragment: Fragment() {
     val PICK_IMAGE_REQUEST = 2
     val PERMISSION_CODE = 1001
 
+/*    class myClass(val v: View): OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            v.findNavController().popBackStack()
+        }
+    }*/
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        //val myclass = myClass(requireView())
+
+        activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
+            Toast.makeText(context,"Programmatore: ricordati di salvare i dati", Toast.LENGTH_SHORT).show()
+            requireView().findNavController().popBackStack()
+        }
         return root
     }
 
@@ -146,10 +163,6 @@ class EditProfileFragment: Fragment() {
                 }
             }
 
-
-        fun addSkillView(skillText: String) {
-
-        }
 /*        populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
 
         // Set listener on "add skills" field
