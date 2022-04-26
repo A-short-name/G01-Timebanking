@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -78,7 +79,7 @@ class EditProfileFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeView(view)
-        //initializeData()
+        initializeSkillSuggestion(view)
 
         if(!FileHelper.isExternalStorageWritable())
             Log.e(EditProfileFragment.TAG, "No external volume mounted")
@@ -162,32 +163,27 @@ class EditProfileFragment: Fragment() {
                     false
                 }
             }
+    }
 
-/*        populateSkillGroup(i.getStringExtra(UserKey.SKILLS_EXTRA_ID))
-
-        // Set listener on "add skills" field
-        ivSkills.setOnEditorActionListener { v, actionId, event ->
-            // If user presses enter
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-
-                if(v.text.toString().length> UserKey.MINIMUM_SKILLS_LENGTH) {
-                    // Add skillText on set
-                    if(skills.add(v.text.toString().lowercase())){
-                        // Add Pill
-                        addSkillView(v.text.toString().lowercase())
-                        // Reset editText field for new skills
-                        v.text = ""
-                    } else {
-                        Toast.makeText(this,"Skill already present", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH+1} characters", Toast.LENGTH_SHORT).show()
-                }
-                true
+    private fun initializeSkillSuggestion(view: View) {
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line, UserKey.SKILL_SUGGESTION
+        );
+        val actv = view.findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
+        actv.setAdapter(adapter)
+        actv.setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l
+            ->
+            val selected: String = adapterView.getItemAtPosition(i) as String
+            if (profileViewModel.tryToAddSkill(selected.lowercase())) {
+                // PillView is added to the PillGroup thanks to the observer
+                // Reset editText field for new skills
+                ivSkills.setText("")
             } else {
-                false
+                Toast.makeText(context, "Skill already present", Toast.LENGTH_SHORT).show()
+                ivSkills.setText("")
             }
-        }*/
+        })
     }
 
     private fun showPopup(v: View) {
@@ -204,19 +200,19 @@ class EditProfileFragment: Fragment() {
         return when (item.itemId) {
             R.id.gallery ->                 // do your code
             {
-                //checkPermissionAndChoose()
+                checkPermissionAndChoose()
                 true
             }
             R.id.camera ->                 // do your code
             {
-                //dispatchTakePictureIntent()
+                dispatchTakePictureIntent()
                 return true
             }
             else -> false
         }
     }
 
-/*    private fun checkPermissionAndChoose(){
+    private fun checkPermissionAndChoose(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (context?.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED){
@@ -245,12 +241,14 @@ class EditProfileFragment: Fragment() {
         }
     }
 
+    var tmpProfilePicturePath = ""
+
     private fun dispatchTakePictureIntent() {
 
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Create the File where the photo should go
         val photoFile: File? = try {
-            FileHelper.createImageFile(context).apply { profilePicturePath = absolutePath }
+            FileHelper.createImageFile(requireContext()).apply { tmpProfilePicturePath = absolutePath }
         } catch (ex: IOException) {
             // Error occurred while creating the File
             null
@@ -258,7 +256,7 @@ class EditProfileFragment: Fragment() {
         // Continue only if the File was successfully created
         photoFile?.also {
             val photoURI: Uri = FileProvider.getUriForFile(
-                context,
+                requireContext(),
                 "it.polito.mad.g01_timebanking.fileprovider",
                 it
             )
@@ -280,9 +278,75 @@ class EditProfileFragment: Fragment() {
                 Toast.makeText(context,"Error", Toast.LENGTH_SHORT).show()
             }
         }
-    }*/
+    }
 
 
- */
 
+
+    //Add the photo to a gallery
+    //https://developer.android.com/training/camera/photobasics#TaskGallery
+    private fun galleryAddPic() {
+        Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
+            if(profileViewModel.profilePicturePath.value != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                val f = File(profileViewModel.profilePicturePath.value)
+                mediaScanIntent.data = Uri.fromFile(f)
+                activity?.sendBroadcast(mediaScanIntent)
+            } else Log.e(TAG,"profilePicturePath is null")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            PICK_IMAGE_REQUEST -> { //For Image Gallery
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    if(data != null && data.data != null) {
+                        try {
+                            val tmpProfilePicturePath = FileHelper.getRealPathFromURI(data.data, requireContext())
+                            //Now I Copy the file loaded from the gallery (which path is stored in profilePicturePath) to a new file in the app-specific media storage folder
+                            val newFile = File(tmpProfilePicturePath).copyTo(FileHelper.createImageFile(requireContext()))
+                            profileViewModel.setProfilePicturePath(newFile.absolutePath)
+                            //After createImageFile the profilePicturePath is changed to the one of the copy in app-specific folder
+                            //New picture is loaded thanks to observer
+                            galleryAddPic()
+                        } catch (e: IOException) {
+                            Log.i("TAG", "Some exception $e")
+                        }
+                    }
+                    else Log.e(TAG,"result: profilePicturePath is null")
+                }
+                else Toast.makeText(context, "Picture was not loaded", Toast.LENGTH_SHORT).show()
+                return
+            }
+            CAPTURE_IMAGE_REQUEST -> if (resultCode == AppCompatActivity.RESULT_OK) { //For CAMERA
+                //You can use image PATH that you already created its file by the intent that launched the CAMERA (MediaStore.EXTRA_OUTPUT)
+                //in dispatchIntent we change the value of the path and triggers the observer
+                //call FileHelper.readImage here is redundant
+                if(tmpProfilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {                // by this point we have the camera photo on disk
+                    profileViewModel.setProfilePicturePath(tmpProfilePicturePath)
+                    galleryAddPic()
+                } else Log.e(TAG,"result: profilePicturePath is null")               // RESIZE BITMAP, see section below
+                //https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
+            } else { // Result was a failure
+                Toast.makeText(context, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            PERMISSION_CODE -> {
+                if (grantResults.size > 0 && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED){
+                    //permission from popup granted
+                    dispatchChoosePictureIntent()
+                }
+                else{
+                    //permission from popup denied
+                    Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 }
