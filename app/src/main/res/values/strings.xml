@@ -61,4 +61,6 @@
     <string name="menu_your_offers">Your offers</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
