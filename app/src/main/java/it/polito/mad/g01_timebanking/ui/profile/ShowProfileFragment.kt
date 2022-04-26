@@ -3,6 +3,7 @@ package it.polito.mad.g01_timebanking.ui.profile
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
@@ -36,15 +37,6 @@ class ShowProfileFragment : Fragment() {
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
 
-    private lateinit var fullName:String
-    private lateinit var nickName:String
-    private lateinit var email:String
-    private lateinit var location:String
-    private lateinit var biography:String
-    private lateinit var profilePicturePath:String
-
-    private lateinit var skills : MutableSet<String>
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,8 +50,13 @@ class ShowProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeView(view)
+        //the only way to set height image to 1/3 of the screen is programmatically
+        //This is ue to the fact that we use a scroll view with a bio with variable length
         arrangeViewByRatio(view)
         initializeData()
+
+        if(!FileHelper.isExternalStorageWritable())
+            Log.e(TAG, "No external volume mounted")
     }
 
     private fun initializeView(view: View) {
@@ -135,7 +132,6 @@ class ShowProfileFragment : Fragment() {
 
     private fun initializeData() {
         //initialize the variables reading from file
-        skills = mutableSetOf()
         val gson = Gson()
         val sharedPref = context?.getSharedPreferences(
             getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
@@ -144,26 +140,14 @@ class ShowProfileFragment : Fragment() {
 
         val u =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
 
-        fullName = u.fullName
-        nickName = u.nickname
-        email = u.email
-        location = u.location
-        biography = u.biography
-        profilePicturePath = u.profilePicturePath
-        skills = u.skills
+        profileViewModel.setFullname(u.fullName)
+        profileViewModel.setNickname(u.nickname)
+        profileViewModel.setEmail(u.email)
+        profileViewModel.setLocation(u.location)
+        profileViewModel.setBiography(u.biography)
+        profileViewModel.setProfilePicturePath(u.profilePicturePath)
+        profileViewModel.setSkills(u.skills)
 
-        if(skills.isNotEmpty()) {
-            skills.forEach {
-                val chip = Chip(context)
-                chip.text = it
-                chip.isCheckable = false
-                chip.isClickable = true
-                skillGroup.addView(chip)
-            }
-            noSkills.isVisible = false
-        } else {
-            noSkills.isVisible = true
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -179,7 +163,7 @@ class ShowProfileFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
-    private fun editProfile() {
+/*    private fun editProfile() {
         val gson = Gson()
         val serializedSkills: String = gson.toJson(skills)
 
@@ -197,6 +181,6 @@ class ShowProfileFragment : Fragment() {
 
         startActivityForResult(i, UserKey.EDIT_ACTIVITY_REQUEST)
 
-    }
+    }*/
 }
 

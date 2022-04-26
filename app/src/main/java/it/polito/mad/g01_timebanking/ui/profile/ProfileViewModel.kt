@@ -38,6 +38,7 @@ class ProfileViewModel: ViewModel() {
     }
     val profilePicturePath : LiveData<String> = pvtProfilePicturePath
 
+    var tmpSkills : MutableSet<String> = mutableSetOf()
     private val pvtSkills = MutableLiveData<MutableSet<String>>().also {
         it.value = mutableSetOf<String>()
     }
@@ -69,6 +70,22 @@ class ProfileViewModel: ViewModel() {
     }
 
     fun setSkills(skills: MutableSet<String>) {
+        tmpSkills=skills
         pvtSkills.value = skills
+    }
+
+    fun removeSkill(skillText: String) {
+        tmpSkills.remove(skillText)
+        pvtSkills.value = tmpSkills
+        //pvtSkills.value.remove(skillText)
+    }
+
+    fun tryToAddSkill(skillText: String): Boolean {
+        return if(tmpSkills.add(skillText)){
+                    pvtSkills.value = tmpSkills
+                    true
+                }
+                else
+                    false
     }
 }
