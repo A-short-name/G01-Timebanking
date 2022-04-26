@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -15,15 +17,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -32,6 +33,7 @@ import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey
 import java.io.File
 import java.io.IOException
+
 
 class EditProfileFragment: Fragment() {
     private val profileViewModel : ProfileViewModel by activityViewModels()
@@ -71,6 +73,7 @@ class EditProfileFragment: Fragment() {
 
         activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
             Toast.makeText(context,"Programmatore: ricordati di salvare i dati", Toast.LENGTH_SHORT).show()
+            //updatePreferences()
             requireView().findNavController().popBackStack()
         }
         return root
@@ -103,7 +106,8 @@ class EditProfileFragment: Fragment() {
         // Initialize values
 
         profileViewModel.fullName.observe(this.viewLifecycleOwner) {
-            ivFullName.setText(it)
+            if(it != ivFullName.text.toString())
+                ivFullName.setText(it)
         }
         profileViewModel.nickname.observe(this.viewLifecycleOwner) {
             ivNickname.setText(it)
@@ -163,6 +167,8 @@ class EditProfileFragment: Fragment() {
                     false
                 }
             }
+
+        ivFullName.doAfterTextChanged { profileViewModel.setFullname(it.toString()) }
     }
 
     private fun initializeSkillSuggestion(view: View) {
@@ -240,7 +246,8 @@ class EditProfileFragment: Fragment() {
             Toast.makeText(context,"Error", Toast.LENGTH_SHORT).show()
         }
     }
-
+    //this variable is used in CAPTURE_IMAGE section of the onActivityResult
+    //to change the vm only when the picture is saved
     var tmpProfilePicturePath = ""
 
     private fun dispatchTakePictureIntent() {
@@ -349,4 +356,28 @@ class EditProfileFragment: Fragment() {
             }
         }
     }
+
+/*    private fun updatePreferences() {
+        val u = UserInfo (
+            fullName = ivFullName.text.toString(),
+            nickname = ivNickname.text.toString(),
+            email = ivEmail.text.toString(),
+            location = ivLocation.text.toString(),
+            biography = ivBiography.text.toString(),
+            profilePicturePath = profilePicturePath,
+            skills = skills
+        )
+
+        val gson = Gson();
+        val serializedUser: String = gson.toJson(u)
+
+        val sharedPref =
+            this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+                ?: return
+        with(sharedPref.edit()) {
+            putString(getString(R.string.user_info), serializedUser)
+            apply()
+        }
+    }*/
+
 }

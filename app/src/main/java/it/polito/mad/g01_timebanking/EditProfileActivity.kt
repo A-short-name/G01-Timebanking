@@ -75,42 +75,6 @@ class EditProfileActivity : AppCompatActivity() {
         i2.putExtra(UserKey.SKILLS_EXTRA_ID, serializedSkills)
     }*/
 
-    /*private fun dispatchTakePictureIntent() {
-
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        // Create the File where the photo should go
-        val photoFile: File? = try {
-            FileHelper.createImageFile(this).apply { profilePicturePath = absolutePath }
-        } catch (ex: IOException) {
-            // Error occurred while creating the File
-            null
-        }
-        // Continue only if the File was successfully created
-        photoFile?.also {
-            val photoURI: Uri = FileProvider.getUriForFile(
-                this,
-                "it.polito.mad.g01_timebanking.fileprovider",
-                it
-            )
-            //FileProvider return a content in the form
-            //content://it.polito.mad.g01_timebanking.fileprovider/my_images/JPEG_20220329_123453_7193664665067830656.jpg
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-
-            //Original problem with resolveActivity as in the documentation:
-            //This appears to be due to the new restrictions on "package visibility" introduced in Android 11.
-            //Basically, starting with API level 30, if you're targeting that version or higher,
-            //your app cannot see, or directly interact with, most external packages without
-            //explicitly requesting allowance, either through a blanket QUERY_ALL_PACKAGES
-            //permission, or by including an appropriate <queries> element in your manifest.
-            //https://stackoverflow.com/questions/62535856/intent-resolveactivity-returns-null-in-api-30
-            //https://cketti.de/2020/09/03/avoid-intent-resolveactivity/
-            try {
-                startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST)
-            }   catch (e: ActivityNotFoundException) {
-                Toast.makeText(this,"Error", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }*/
  /*
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
