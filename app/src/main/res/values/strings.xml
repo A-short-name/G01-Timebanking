@@ -61,4 +61,13 @@
     <string name="menu_your_offers">Your offers</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
+
+    <!-- Advertisements Hints -->
+    <string name="shr_hint_title">Advertisement Title</string>
+    <string name="shr_hint_location">Location</string>
+    <string name="shr_hint_description">Description</string>
+    <string name="shr_hint_duration">Duration</string>
+    <string name="shr_hint_date">Date</string>
+    <string name="shr_hint_time">Time</string>
+
 </resources>
