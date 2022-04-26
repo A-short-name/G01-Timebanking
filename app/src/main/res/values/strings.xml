@@ -59,6 +59,7 @@
 
     <!--    navbar strings -->
     <string name="menu_your_offers">Your offers</string>
-    <string name="menu_show_time_slot">Show Time Slot Details</string>
+    <string name="menu_show_my_account">My Account</string>
+    <string name="menu_edit_profile">Edit Account</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
 </resources>
