@@ -9,6 +9,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -39,6 +40,8 @@ class TimeSlotEditFragment : Fragment() {
     private lateinit var editTextDate: EditText
     private lateinit var editTextTime: EditText
     private lateinit var editTextDescription: EditText
+    private lateinit var confirmAdvButton: Button
+    private lateinit var cancelAdvButton: Button
 
     private var _binding: FragmentTimeSlotEditBinding? = null
 
@@ -68,6 +71,8 @@ class TimeSlotEditFragment : Fragment() {
         editTextDate = view.findViewById(R.id.dateEditText)
         editTextTime = view.findViewById(R.id.timeEditText)
         editTextDescription = view.findViewById(R.id.descriptionEditText)
+        confirmAdvButton = view.findViewById(R.id.confirmAdvButton)
+        cancelAdvButton = view.findViewById(R.id.cancelAdvButton)
 
         /* Set fields */
         timeSlotDetailsViewModel.id.observe(this.viewLifecycleOwner) {
@@ -201,6 +206,14 @@ class TimeSlotEditFragment : Fragment() {
             ).show()
         }
         /* End of Code fragment to generate time and date picker */
+
+        // Cancel and confirm button listeners
+        confirmAdvButton.setOnClickListener {
+
+        }
+        cancelAdvButton.setOnClickListener {
+
+        }
     }
 
     override fun onDetach() {
