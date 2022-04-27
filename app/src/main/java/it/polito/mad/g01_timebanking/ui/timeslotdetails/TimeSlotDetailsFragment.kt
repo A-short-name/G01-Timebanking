@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,7 +50,6 @@ class TimeSlotDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         textViewTitle = view.findViewById(R.id.titleShowText)
         textViewLocation = view.findViewById(R.id.locationShowText)
         textViewDuration = view.findViewById(R.id.durationShowText)
@@ -65,7 +65,6 @@ class TimeSlotDetailsFragment : Fragment() {
             textViewDate.setText(it.calendar.fromDateToString())
             textViewTime.setText(it.calendar.fromTimeToString())
         }
-
 //        timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
 //        }
 //

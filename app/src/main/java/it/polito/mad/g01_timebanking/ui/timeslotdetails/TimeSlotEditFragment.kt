@@ -19,12 +19,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.UserKey.REQUIRED
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -86,12 +88,14 @@ class TimeSlotEditFragment : Fragment() {
                     requireView().findNavController().popBackStack()
                 }
                 "cancel" -> {
+                    if(arguments?.getBoolean(HASTOBEEMPTY) == false) {
+                        timeSlotDetailsViewModel.setTitle(actAdv.title)
+                        timeSlotDetailsViewModel.setDuration(actAdv.duration)
+                        timeSlotDetailsViewModel.setDescription(actAdv.description)
+                        timeSlotDetailsViewModel.setLocation(actAdv.location)
+                        timeSlotDetailsViewModel.setDateTime(actAdv.calendar)
+                    }
                     clickedButton=""
-                    timeSlotDetailsViewModel.setTitle(actAdv.title)
-                    timeSlotDetailsViewModel.setDuration(actAdv.duration)
-                    timeSlotDetailsViewModel.setDescription(actAdv.description)
-                    timeSlotDetailsViewModel.setLocation(actAdv.location)
-                    timeSlotDetailsViewModel.setDateTime(actAdv.calendar)
                     requireView().findNavController().popBackStack()
                 }
                 else -> {
@@ -367,5 +371,26 @@ class TimeSlotEditFragment : Fragment() {
         val myFormat = "dd/MM/yyyy"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
         return dateFormat.format(this.time)
+    }
+
+    private fun myfun(){
+        // Populate advertisements
+        val typeMyType: Type = object : TypeToken<ArrayList<AdvertisementDetails?>?>() {}.type
+        val gson = Gson()
+
+        val sharedPref = context?.getSharedPreferences(
+            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
+        )
+        val s: String = sharedPref?.getString(getString(R.string.adv_list), "") ?: ""
+
+        val l : MutableList<AdvertisementDetails> =
+            if(s!="")
+                gson.fromJson(s, typeMyType) as MutableList<AdvertisementDetails>
+            else
+                mutableListOf()
+        if(actualAdvId!=-1)
+         l.get(actualAdvId)
+        println("Read: $s")
+        advListViewModel.initializeAdvList(l)
     }
 }
