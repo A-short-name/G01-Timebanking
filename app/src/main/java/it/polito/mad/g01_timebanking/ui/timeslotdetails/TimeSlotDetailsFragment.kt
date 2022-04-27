@@ -3,6 +3,7 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
+import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,11 +19,12 @@ class TimeSlotDetailsFragment : Fragment() {
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
 
     // Views to be handled
-    private lateinit var textViewTitle: TextView
-    private lateinit var textViewLocation: TextView
-    private lateinit var textViewDuration: TextView
-    private lateinit var textViewDate: TextView
-    private lateinit var textViewDescription: TextView
+    private lateinit var textViewTitle: EditText
+    private lateinit var textViewLocation: EditText
+    private lateinit var textViewDuration: EditText
+    private lateinit var textViewDate: EditText
+    private lateinit var textViewTime: EditText
+    private lateinit var textViewDescription: EditText
 
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
@@ -47,33 +49,32 @@ class TimeSlotDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        textViewTitle = view.findViewById(R.id.title_time_slot_details)
-        textViewLocation = view.findViewById(R.id.location_body_time_slot_details)
-        textViewDuration = view.findViewById(R.id.duration_body_time_slot_details)
-        textViewDate = view.findViewById(R.id.date_body_time_slot_details)
-        textViewDescription = view.findViewById(R.id.description_body_time_slot_details)
+        textViewTitle = view.findViewById(R.id.titleShowText)
+        textViewLocation = view.findViewById(R.id.locationShowText)
+        textViewDuration = view.findViewById(R.id.durationShowText)
+        textViewDate = view.findViewById(R.id.dateShowText)
+        textViewTime = view.findViewById(R.id.timeShowText)
+        textViewDescription = view.findViewById(R.id.descriptionShowText)
 
         timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
-            textViewTitle.text = it
+            textViewTitle.setText(it)
         }
 
         timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
-            textViewLocation.text = it
+            textViewLocation.setText(it)
         }
 
         timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
-            textViewDuration.text = it
+            textViewDuration.setText(it)
         }
 
         timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
-            textViewDescription.text = it
+            textViewDescription.setText(it)
         }
 
         timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-            val myFormat =
-                if (DateFormat.is24HourFormat(activity)) "dd/MM/yyyy hh:mm" else "dd/MM/yyyy hh:mm aa"
-            val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-            textViewDate.text = dateFormat.format(it.time)
+            textViewDate.setText(it.fromDateToString())
+            textViewTime.setText(it.fromTimeToString())
         }
     }
 
@@ -97,5 +98,19 @@ class TimeSlotDetailsFragment : Fragment() {
             item,
             requireView().findNavController())
                 || super.onOptionsItemSelected(item)
+    }
+
+    private fun Calendar.fromTimeToString(): String? {
+        val myFormat = if (DateFormat.is24HourFormat(activity)) "HH:mm" else "hh:mm a"
+
+        val dateFormat = SimpleDateFormat(myFormat, Locale.US)
+
+        return dateFormat.format(this.time)
+    }
+
+    private fun Calendar.fromDateToString(): String? {
+        val myFormat = "dd/MM/yyyy"
+        val dateFormat = SimpleDateFormat(myFormat, Locale.US)
+        return dateFormat.format(this.time)
     }
 }

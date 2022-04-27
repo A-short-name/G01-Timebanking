@@ -113,8 +113,8 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-            editTextDate.setText(fromDateToString(it.time))
-            editTextTime.setText(fromTimeToString(it.time))
+            editTextDate.setText(it.fromDateToString())
+            editTextTime.setText(it.fromTimeToString())
             actualTimeDate = it
         }
 
@@ -233,10 +233,6 @@ class TimeSlotEditFragment : Fragment() {
             }
         }
         cancelAdvButton.setOnClickListener {
-            timeSlotDetailsViewModel.setTitle("")
-            timeSlotDetailsViewModel.setDuration("")
-            timeSlotDetailsViewModel.setDescription("")
-            timeSlotDetailsViewModel.setLocation("")
             clickedButton = true
             activity?.onBackPressed()
         }
@@ -256,7 +252,6 @@ class TimeSlotEditFragment : Fragment() {
                 valid = false
             } else {
                 it.error = null
-                valid = true
             }
         }
 
@@ -267,7 +262,10 @@ class TimeSlotEditFragment : Fragment() {
         if(validateFields())
            addAdvToVM()
         else if(!clickedButton) {
-            val text: CharSequence = "Fields are not valid. Advertisement not saved"
+            var text: CharSequence = "Fields not valid. Changes not saved"
+            if(arguments?.getBoolean(HASTOBEEMPTY) == true)
+                text = "Fields are not valid. Advertisement not saved"
+
             val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
             toast.show()
         }
@@ -298,17 +296,17 @@ class TimeSlotEditFragment : Fragment() {
         _binding = null
     }
 
-    private fun fromTimeToString(date : Date): String? {
+    private fun Calendar.fromTimeToString(): String? {
         val myFormat = if (DateFormat.is24HourFormat(activity)) "HH:mm" else "hh:mm a"
 
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
 
-        return dateFormat.format(date)
+        return dateFormat.format(this.time)
     }
 
-    private fun fromDateToString(date: Date): String? {
+    private fun Calendar.fromDateToString(): String? {
         val myFormat = "dd/MM/yyyy"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-        return dateFormat.format(date)
+        return dateFormat.format(this.time)
     }
 }
