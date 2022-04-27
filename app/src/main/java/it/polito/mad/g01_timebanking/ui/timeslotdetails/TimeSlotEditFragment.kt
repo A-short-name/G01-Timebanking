@@ -116,7 +116,7 @@ class TimeSlotEditFragment : Fragment() {
             timeSlotDetailsViewModel.setDescription("")
             timeSlotDetailsViewModel.setLocation("")
             val expTime = Calendar.getInstance()
-            expTime.add(Calendar.HOUR_OF_DAY,+12)
+            expTime.add(Calendar.HOUR_OF_DAY,+1)
             expTime.set(Calendar.MINUTE,0)
             timeSlotDetailsViewModel.setDateTime(expTime)
             timeSlotDetailsViewModel.setId(advListViewModel.count())
