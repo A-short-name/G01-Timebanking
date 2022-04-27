@@ -126,6 +126,12 @@ class TimeSlotEditFragment : Fragment() {
 
         // When a date is selected by the user this function is called.
         // It updates the date in the calendar object and the textInput shown to the user
+//        textInputDate.editText?.setOnFocusChangeListener { view, isFocused ->
+//            if (view.isInTouchMode && isFocused) {
+//                view.performClick()  // picks up first tap
+//            }
+//        }
+
         val date = OnDateSetListener { _, year, month, day ->
             nowTimeDate = Calendar.getInstance()
 
