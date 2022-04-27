@@ -59,7 +59,7 @@ class TimeSlotListFragment : Fragment() {
                 yourOffersText.visibility = View.VISIBLE
             }
 
-            val gson = Gson()
+/*            val gson = Gson()
             val serializedAdvList: String = gson.toJson(it)
 
             val sharedPref =
@@ -67,7 +67,7 @@ class TimeSlotListFragment : Fragment() {
             with(sharedPref.edit()) {
                 putString(getString(R.string.adv_list), serializedAdvList)
                 apply()
-            }
+            }*/
 
             val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
             recyclerViewAdv.adapter = adapter

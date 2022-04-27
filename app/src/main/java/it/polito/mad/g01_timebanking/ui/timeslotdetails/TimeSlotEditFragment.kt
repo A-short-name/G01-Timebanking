@@ -13,10 +13,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.UserKey.REQUIRED
@@ -159,18 +161,18 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
             actAdv = it
         }
-//        advListViewModel.advList.observe(this.viewLifecycleOwner) {
-//            val gson = Gson();
-//            val serializedAdvList: String = gson.toJson(it)
-//            println(serializedAdvList);
-//
-//            val sharedPref =
-//                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
-//            with(sharedPref.edit()) {
-//                putString(getString(R.string.adv_list), serializedAdvList)
-//                apply()
-//            }
-//        }
+        advListViewModel.advList.observe(this.viewLifecycleOwner) {
+            val gson = Gson();
+            val serializedAdvList: String = gson.toJson(it)
+            println(serializedAdvList);
+
+            val sharedPref =
+                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
+            with(sharedPref.edit()) {
+                putString(getString(R.string.adv_list), serializedAdvList)
+                apply()
+            }
+        }
 
         // Check if the fragment is called from the FAB (so it has to be empty)
         if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
@@ -327,6 +329,26 @@ class TimeSlotEditFragment : Fragment() {
         advListViewModel.addOrUpdateElement(a)
         timeSlotDetailsViewModel.setAdvertisement(a)
     }
+/*
+    private fun saveAdv() {
+        timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
+        timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
+        timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
+        timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+
+        val a = AdvertisementDetails(
+            id = actualAdvId,
+            title = editTextTitle.text.toString(),
+            location = editTextLocation.text.toString(),
+            calendar = actualTimeDate,
+            duration = editTextDuration.text.toString(),
+            description = editTextDescription.text.toString()
+        )
+        //There is an observer that update preferences
+        advListViewModel.addOrUpdateElement(a)
+        savePreferences(advListViewModel.advList.value!!)
+        timeSlotDetailsViewModel.setAdvertisement(a)
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()
