@@ -12,8 +12,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
@@ -53,7 +55,8 @@ class TimeSlotEditFragment : Fragment() {
     private lateinit var cancelAdvButton: Button
 
     // Variable to handle button state
-    private var clickedButton = false
+    private var clickedButton = ""
+    private lateinit var actAdv : AdvertisementDetails
 
     private var _binding: FragmentTimeSlotEditBinding? = null
 
@@ -69,6 +72,41 @@ class TimeSlotEditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTimeSlotEditBinding.inflate(inflater, container, false)
+
+        activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
+            Toast.makeText(context,"Programmatore: ricordati di salvare i dati", Toast.LENGTH_SHORT).show()
+            //updatePreferences()
+
+            when (clickedButton) {
+                "confirm" -> {
+                    addAdvToVM()
+                    clickedButton=""
+                    requireView().findNavController().popBackStack()
+                }
+                "cancel" -> {
+                    clickedButton=""
+                    timeSlotDetailsViewModel.setTitle(actAdv.title)
+                    timeSlotDetailsViewModel.setDuration(actAdv.duration)
+                    timeSlotDetailsViewModel.setDescription(actAdv.description)
+                    timeSlotDetailsViewModel.setLocation(actAdv.location)
+                    timeSlotDetailsViewModel.setDateTime(actAdv.calendar)
+                    requireView().findNavController().popBackStack()
+                }
+                else -> {
+                    if(validateFields())
+                        addAdvToVM()
+                    else {
+                        var text: CharSequence = "Fields not valid. Changes not saved"
+                        if(arguments?.getBoolean(HASTOBEEMPTY) == true)
+                            text = "Fields are not valid. Advertisement not saved"
+
+                        val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                    requireView().findNavController().popBackStack()
+                }
+            }
+        }
 
         return binding.root
     }
@@ -118,6 +156,9 @@ class TimeSlotEditFragment : Fragment() {
             actualTimeDate = it
         }
 
+        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
+            actAdv = it
+        }
 //        advListViewModel.advList.observe(this.viewLifecycleOwner) {
 //            val gson = Gson();
 //            val serializedAdvList: String = gson.toJson(it)
@@ -227,13 +268,13 @@ class TimeSlotEditFragment : Fragment() {
         // Cancel and confirm button listeners
         confirmAdvButton.setOnClickListener {
             if(validateFields()) {
-                clickedButton = true
+                clickedButton = "confirm"
                 // Do not add the adv here, since it will be added onDetach
                 activity?.onBackPressed()
             }
         }
         cancelAdvButton.setOnClickListener {
-            clickedButton = true
+            clickedButton = "cancel"
             activity?.onBackPressed()
         }
     }
@@ -259,16 +300,11 @@ class TimeSlotEditFragment : Fragment() {
     }
 
     override fun onDetach() {
-        if(validateFields())
-           addAdvToVM()
-        else if(!clickedButton) {
-            var text: CharSequence = "Fields not valid. Changes not saved"
-            if(arguments?.getBoolean(HASTOBEEMPTY) == true)
-                text = "Fields are not valid. Advertisement not saved"
-
-            val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
-            toast.show()
-        }
+        timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
+        timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
+        timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
+        timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+        timeSlotDetailsViewModel.setDateTime(actualTimeDate)
 
         super.onDetach()
     }
@@ -289,6 +325,7 @@ class TimeSlotEditFragment : Fragment() {
         )
         //There is an observer that update preferences
         advListViewModel.addOrUpdateElement(a)
+        timeSlotDetailsViewModel.setAdvertisement(a)
     }
 
     override fun onDestroyView() {

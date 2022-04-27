@@ -26,7 +26,6 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var textViewDate: EditText
     private lateinit var textViewTime: EditText
     private lateinit var textViewDescription: EditText
-    private lateinit var backButton : Button
 
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
@@ -57,32 +56,31 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewDate = view.findViewById(R.id.dateShowText)
         textViewTime = view.findViewById(R.id.timeShowText)
         textViewDescription = view.findViewById(R.id.descriptionShowText)
-        backButton = view.findViewById(R.id.backAdvButton)
 
-        timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
-            textViewTitle.setText(it)
+        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
+            textViewTitle.setText(it.title)
+            textViewLocation.setText(it.location)
+            textViewDuration.setText(it.duration)
+            textViewDescription.setText(it.description)
+            textViewDate.setText(it.calendar.fromDateToString())
+            textViewTime.setText(it.calendar.fromTimeToString())
         }
 
-        timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
-            textViewLocation.setText(it)
-        }
-
-        timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
-            textViewDuration.setText(it)
-        }
-
-        timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
-            textViewDescription.setText(it)
-        }
-
-        timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-            textViewDate.setText(it.fromDateToString())
-            textViewTime.setText(it.fromTimeToString())
-        }
-
-        backButton.setOnClickListener {
-            activity?.onBackPressed()
-        }
+//        timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
+//        }
+//
+//        timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
+//        }
+//
+//        timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
+//        }
+//
+//        timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
+//        }
+//
+//        timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
+//
+//        }
     }
 
     override fun onDestroyView() {
