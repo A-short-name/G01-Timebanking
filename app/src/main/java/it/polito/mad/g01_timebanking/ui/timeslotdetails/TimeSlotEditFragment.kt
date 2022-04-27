@@ -88,12 +88,9 @@ class TimeSlotEditFragment : Fragment() {
                     requireView().findNavController().popBackStack()
                 }
                 "cancel" -> {
-                    if(arguments?.getBoolean(HASTOBEEMPTY) == false) {
-                        timeSlotDetailsViewModel.setTitle(actAdv.title)
-                        timeSlotDetailsViewModel.setDuration(actAdv.duration)
-                        timeSlotDetailsViewModel.setDescription(actAdv.description)
-                        timeSlotDetailsViewModel.setLocation(actAdv.location)
-                        timeSlotDetailsViewModel.setDateTime(actAdv.calendar)
+                    if(arguments?.getBoolean(HASTOBEEMPTY) != true) {
+                        println("Premuto cancel!")
+                        restoreOldVMFromSharedPref()
                     }
                     clickedButton=""
                     requireView().findNavController().popBackStack()
@@ -373,7 +370,7 @@ class TimeSlotEditFragment : Fragment() {
         return dateFormat.format(this.time)
     }
 
-    private fun myfun(){
+    private fun restoreOldVMFromSharedPref(){
         // Populate advertisements
         val typeMyType: Type = object : TypeToken<ArrayList<AdvertisementDetails?>?>() {}.type
         val gson = Gson()
@@ -388,9 +385,15 @@ class TimeSlotEditFragment : Fragment() {
                 gson.fromJson(s, typeMyType) as MutableList<AdvertisementDetails>
             else
                 mutableListOf()
-        if(actualAdvId!=-1)
-         l.get(actualAdvId)
-        println("Read: $s")
-        advListViewModel.initializeAdvList(l)
+
+        var restoredAdv : AdvertisementDetails
+        if(arguments?.getBoolean(HASTOBEEMPTY) != true) {
+            restoredAdv= l.get(actualAdvId)
+            timeSlotDetailsViewModel.setTitle(restoredAdv.title)
+            timeSlotDetailsViewModel.setDuration(restoredAdv.duration)
+            timeSlotDetailsViewModel.setDescription(restoredAdv.description)
+            timeSlotDetailsViewModel.setLocation(restoredAdv.location)
+            timeSlotDetailsViewModel.setDateTime(restoredAdv.calendar)
+        }
     }
 }

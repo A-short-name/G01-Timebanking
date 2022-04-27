@@ -57,29 +57,34 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewTime = view.findViewById(R.id.timeShowText)
         textViewDescription = view.findViewById(R.id.descriptionShowText)
 
-        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
+/*        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
             textViewTitle.setText(it.title)
             textViewLocation.setText(it.location)
             textViewDuration.setText(it.duration)
             textViewDescription.setText(it.description)
             textViewDate.setText(it.calendar.fromDateToString())
             textViewTime.setText(it.calendar.fromTimeToString())
+        }*/
+        timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
+            textViewTitle.setText(it)
         }
-//        timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
-//        }
-//
-//        timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
-//        }
-//
-//        timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
-//        }
-//
-//        timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
-//        }
-//
-//        timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-//
-//        }
+
+        timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
+            textViewLocation.setText(it)
+        }
+
+        timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
+            textViewDuration.setText(it)
+        }
+
+        timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
+            textViewDescription.setText(it)
+        }
+
+        timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
+            textViewDate.setText(it.fromDateToString())
+            textViewTime.setText(it.fromTimeToString())
+        }
     }
 
     override fun onDestroyView() {
