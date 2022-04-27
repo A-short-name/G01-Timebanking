@@ -14,6 +14,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -34,6 +36,11 @@ class TimeSlotEditFragment : Fragment() {
     private var desiredTimeDate = Calendar.getInstance()
 
     // Views to be handled
+        // variable for validation
+    private lateinit var textInputTitle: TextInputLayout
+    private lateinit var textInputLocation: TextInputLayout
+    private lateinit var textInputDuration: TextInputLayout
+        // edit text of the fields of the advertisement
     private lateinit var editTextTitle: EditText
     private lateinit var editTextLocation: EditText
     private lateinit var editTextDuration: EditText
@@ -64,6 +71,8 @@ class TimeSlotEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /* Get text input layout (material design wrapper) */
+        textInputTitle = view.findViewById(R.id.titleTextInputLayout)
         /* Get text views */
         editTextTitle = view.findViewById(R.id.titleEditText)
         editTextLocation = view.findViewById(R.id.locationEditText)
@@ -209,7 +218,11 @@ class TimeSlotEditFragment : Fragment() {
 
         // Cancel and confirm button listeners
         confirmAdvButton.setOnClickListener {
-
+            if(editTextTitle.text.isBlank()){
+                textInputTitle.error = "Must not be empty"
+            }else{
+                textInputTitle.error = null
+            }
         }
         cancelAdvButton.setOnClickListener {
 
