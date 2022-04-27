@@ -14,10 +14,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.textfield.TextInputEditText
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
+import it.polito.mad.g01_timebanking.UserKey.REQUIRED
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
@@ -40,6 +41,8 @@ class TimeSlotEditFragment : Fragment() {
     private lateinit var textInputTitle: TextInputLayout
     private lateinit var textInputLocation: TextInputLayout
     private lateinit var textInputDuration: TextInputLayout
+    private lateinit var textInputDescription: TextInputLayout
+
         // edit text of the fields of the advertisement
     private lateinit var editTextTitle: EditText
     private lateinit var editTextLocation: EditText
@@ -49,6 +52,9 @@ class TimeSlotEditFragment : Fragment() {
     private lateinit var editTextDescription: EditText
     private lateinit var confirmAdvButton: Button
     private lateinit var cancelAdvButton: Button
+
+    // Variable to handle button state
+    private var clickedButton = false
 
     private var _binding: FragmentTimeSlotEditBinding? = null
 
@@ -73,6 +79,9 @@ class TimeSlotEditFragment : Fragment() {
 
         /* Get text input layout (material design wrapper) */
         textInputTitle = view.findViewById(R.id.titleTextInputLayout)
+        textInputLocation = view.findViewById(R.id.locationTextInputLayout)
+        textInputDuration = view.findViewById(R.id.durationTextInputLayout)
+        textInputDescription = view.findViewById(R.id.descriptionTextInputLayout)
         /* Get text views */
         editTextTitle = view.findViewById(R.id.titleEditText)
         editTextLocation = view.findViewById(R.id.locationEditText)
@@ -218,24 +227,62 @@ class TimeSlotEditFragment : Fragment() {
 
         // Cancel and confirm button listeners
         confirmAdvButton.setOnClickListener {
-            if(editTextTitle.text.isBlank()){
-                textInputTitle.error = "Must not be empty"
-            }else{
-                textInputTitle.error = null
+            if(validateFields()) {
+                clickedButton = true
+                // Do not add the adv here, since it will be added onDetach
+                activity?.onBackPressed()
             }
         }
         cancelAdvButton.setOnClickListener {
-
+            timeSlotDetailsViewModel.setTitle("")
+            timeSlotDetailsViewModel.setDuration("")
+            timeSlotDetailsViewModel.setDescription("")
+            timeSlotDetailsViewModel.setLocation("")
+            clickedButton = true
+            activity?.onBackPressed()
         }
     }
 
+    private fun validateFields() : Boolean {
+        var valid = true
+
+        val fieldsToValidate = listOf(textInputTitle,
+                                        textInputDuration,
+                                        textInputLocation,
+                                        textInputDescription)
+
+        fieldsToValidate.forEach{
+            if (it.editText!!.text.isBlank()) {
+                it.error = REQUIRED
+                valid = false
+            } else {
+                it.error = null
+                valid = true
+            }
+        }
+
+        return valid
+    }
+
     override fun onDetach() {
+        if(validateFields())
+           addAdvToVM()
+        else if(!clickedButton) {
+            val text: CharSequence = "Fields are not valid. Advertisement not saved"
+            val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+            toast.show()
+        }
+
+        super.onDetach()
+    }
+
+    private fun addAdvToVM() {
         timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
         timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
         timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
         timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
 
-        val a = AdvertisementDetails (
+        val a = AdvertisementDetails(
             id = actualAdvId,
             title = editTextTitle.text.toString(),
             location = editTextLocation.text.toString(),
@@ -245,8 +292,6 @@ class TimeSlotEditFragment : Fragment() {
         )
         //There is an observer that update preferences
         advListViewModel.addOrUpdateElement(a)
-
-        super.onDetach()
     }
 
     override fun onDestroyView() {

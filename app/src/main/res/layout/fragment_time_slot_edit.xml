@@ -26,7 +26,6 @@
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_title"
                 app:startIconDrawable="@drawable/ic_advertisement_title"
-                app:helperText="Required"
                 app:errorEnabled="true" >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -42,7 +41,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_location"
-                app:helperText="Required"
                 app:errorEnabled="true"
                 app:startIconDrawable="@drawable/ic_location">
 
@@ -96,7 +94,6 @@
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_duration"
                 app:startIconDrawable="@drawable/ic_hourglass"
-                app:helperText="Required"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -113,7 +110,6 @@
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_description"
                 app:startIconDrawable="@drawable/ic_description"
-                app:helperText="Required"
                 app:counterEnabled="true"
                 app:counterMaxLength="160"
                 app:errorEnabled="true">
