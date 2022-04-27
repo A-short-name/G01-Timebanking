@@ -124,6 +124,17 @@
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:gravity="end">
+                <Button
+                    android:id="@+id/backAdvButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/back_adv_button_text" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

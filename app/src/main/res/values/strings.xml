@@ -71,5 +71,6 @@
     <string name="shr_hint_time">Time</string>
     <string name="confirm_adv_button_text">Confirm</string>
     <string name="cancel_adv_button_text">Cancel</string>
+    <string name="back_adv_button_text">Back</string>
 
 </resources>

@@ -3,6 +3,7 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -25,6 +26,7 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var textViewDate: EditText
     private lateinit var textViewTime: EditText
     private lateinit var textViewDescription: EditText
+    private lateinit var backButton : Button
 
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
@@ -55,6 +57,7 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewDate = view.findViewById(R.id.dateShowText)
         textViewTime = view.findViewById(R.id.timeShowText)
         textViewDescription = view.findViewById(R.id.descriptionShowText)
+        backButton = view.findViewById(R.id.backAdvButton)
 
         timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
             textViewTitle.setText(it)
@@ -75,6 +78,10 @@ class TimeSlotDetailsFragment : Fragment() {
         timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
             textViewDate.setText(it.fromDateToString())
             textViewTime.setText(it.fromTimeToString())
+        }
+
+        backButton.setOnClickListener {
+            activity?.onBackPressed()
         }
     }
 
