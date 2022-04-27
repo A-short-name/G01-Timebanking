@@ -22,7 +22,6 @@ import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -66,7 +65,7 @@ class EditProfileActivity : AppCompatActivity() {
         ivFullName = findViewById(R.id.editTextFullName)
         ivNickname = findViewById(R.id.editTextNickname)
         ivEmail = findViewById(R.id.editTextEmail)
-        ivLocation = findViewById(R.id.editTextLocation)
+        ivLocation = findViewById(R.id.locationTextInputLayout)
         ivBiography = findViewById(R.id.editTextBiography)
         ivSkills = findViewById(R.id.editTextAddSkills)
         profilePicture = findViewById(R.id.profilePicture)

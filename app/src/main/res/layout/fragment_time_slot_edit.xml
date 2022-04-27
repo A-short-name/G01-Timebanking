@@ -15,12 +15,11 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
             android:orientation="vertical"
             android:padding="16dp" >
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTitle"
+                android:id="@+id/titleTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -28,12 +27,13 @@
                 app:errorEnabled="true" >
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/titleEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextLocation"
+                android:id="@+id/locationTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -41,12 +41,13 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/locationEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextDate"
+                android:id="@+id/dateTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -55,13 +56,14 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusableInTouchMode="false"/>
+                    android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextTime"
+                android:id="@+id/timeTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -70,13 +72,14 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/timeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusableInTouchMode="false"/>
+                    android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextDuration"
+                android:id="@+id/durationTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -84,12 +87,13 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/durationEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextTextDescription"
+                android:id="@+id/descriptionTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -97,6 +101,7 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>

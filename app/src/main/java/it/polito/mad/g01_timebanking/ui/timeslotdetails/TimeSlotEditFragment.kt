@@ -9,10 +9,10 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -33,12 +33,12 @@ class TimeSlotEditFragment : Fragment() {
     private var desiredTimeDate = Calendar.getInstance()
 
     // Views to be handled
-    private lateinit var textInputTitle: TextInputLayout
-    private lateinit var textInputLocation: TextInputLayout
-    private lateinit var textInputDuration: TextInputLayout
-    private lateinit var textInputDate: TextInputLayout
-    private lateinit var textInputTime: TextInputLayout
-    private lateinit var textInputDescription: TextInputLayout
+    private lateinit var editTextTitle: EditText
+    private lateinit var editTextLocation: EditText
+    private lateinit var editTextDuration: EditText
+    private lateinit var editTextDate: EditText
+    private lateinit var editTextTime: EditText
+    private lateinit var editTextDescription: EditText
 
     private var _binding: FragmentTimeSlotEditBinding? = null
 
@@ -62,12 +62,12 @@ class TimeSlotEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         /* Get text views */
-        textInputTitle = view.findViewById(R.id.editTitle)
-        textInputLocation = view.findViewById(R.id.editTextLocation)
-        textInputDuration = view.findViewById(R.id.editTextDuration)
-        textInputDate = view.findViewById(R.id.editTextDate)
-        textInputTime = view.findViewById(R.id.editTextTime)
-        textInputDescription = view.findViewById(R.id.editTextTextDescription)
+        editTextTitle = view.findViewById(R.id.titleEditText)
+        editTextLocation = view.findViewById(R.id.locationEditText)
+        editTextDuration = view.findViewById(R.id.durationEditText)
+        editTextDate = view.findViewById(R.id.dateEditText)
+        editTextTime = view.findViewById(R.id.timeEditText)
+        editTextDescription = view.findViewById(R.id.descriptionEditText)
 
         /* Set fields */
         timeSlotDetailsViewModel.id.observe(this.viewLifecycleOwner) {
@@ -75,24 +75,24 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
-            textInputTitle.editText?.setText(it)
+            editTextTitle.setText(it)
         }
 
         timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
-            textInputLocation.editText?.setText(it)
+            editTextLocation.setText(it)
         }
 
         timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
-            textInputDuration.editText?.setText(it)
+            editTextDuration.setText(it)
         }
 
         timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
-            textInputDescription.editText?.setText(it)
+            editTextDescription.setText(it)
         }
 
         timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-            textInputDate.editText?.setText(fromDateToString(it.time))
-            textInputTime.editText?.setText(fromTimeToString(it.time))
+            editTextDate.setText(fromDateToString(it.time))
+            editTextTime.setText(fromTimeToString(it.time))
             actualTimeDate = it
         }
 
@@ -126,11 +126,6 @@ class TimeSlotEditFragment : Fragment() {
 
         // When a date is selected by the user this function is called.
         // It updates the date in the calendar object and the textInput shown to the user
-//        textInputDate.editText?.setOnFocusChangeListener { view, isFocused ->
-//            if (view.isInTouchMode && isFocused) {
-//                view.performClick()  // picks up first tap
-//            }
-//        }
 
         val date = OnDateSetListener { _, year, month, day ->
             nowTimeDate = Calendar.getInstance()
@@ -150,7 +145,7 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         // When the edit text is clicked, pop-up the date picker instead
-        textInputDate.editText?.setOnClickListener {
+        editTextDate.setOnClickListener {
             nowTimeDate = Calendar.getInstance()
 
             val dtDialog = DatePickerDialog(
@@ -196,7 +191,7 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         // When the edit text is clicked, pop-up the date picker instead
-        textInputTime.editText?.setOnClickListener {
+        editTextTime.setOnClickListener {
             TimePickerDialog(
                 this.requireContext(),
                 time,
@@ -209,18 +204,18 @@ class TimeSlotEditFragment : Fragment() {
     }
 
     override fun onDetach() {
-        timeSlotDetailsViewModel.setTitle(textInputTitle.editText?.text.toString())
-        timeSlotDetailsViewModel.setDuration(textInputDuration.editText?.text.toString())
-        timeSlotDetailsViewModel.setDescription(textInputDescription.editText?.text.toString())
-        timeSlotDetailsViewModel.setLocation(textInputLocation.editText?.text.toString())
+        timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
+        timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
+        timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
+        timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
 
         val a = AdvertisementDetails (
             id = actualAdvId,
-            title = textInputTitle.editText?.text.toString(),
-            location = textInputLocation.editText?.text.toString(),
+            title = editTextTitle.text.toString(),
+            location = editTextLocation.text.toString(),
             calendar = actualTimeDate,
-            duration = textInputDuration.editText?.text.toString(),
-            description = textInputDescription.editText?.text.toString()
+            duration = editTextDuration.text.toString(),
+            description = editTextDescription.text.toString()
         )
         //There is an observer that update preferences
         advListViewModel.addOrUpdateElement(a)
