@@ -12,8 +12,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
@@ -73,6 +75,13 @@ class TimeSlotEditFragment : Fragment() {
     ): View {
         _binding = FragmentTimeSlotEditBinding.inflate(inflater, container, false)
 
+        val viewLifeCycleOwner = this.viewLifecycleOwner
+        activity?.onBackPressedDispatcher?.addCallback(viewLifeCycleOwner) {
+            // If not rotating
+            timeSlotDetailsViewModel.id.removeObservers(viewLifeCycleOwner)
+            myOnBackPressedCallback()
+        }
+
         return binding.root
     }
 
@@ -125,19 +134,6 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
             actAdv = it
         }
-
-        // Check if the fragment is called from the FAB (so it has to be empty)
-//        if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
-//            timeSlotDetailsViewModel.setTitle("")
-//            timeSlotDetailsViewModel.setDuration("")
-//            timeSlotDetailsViewModel.setDescription("")
-//            timeSlotDetailsViewModel.setLocation("")
-//            val expTime = Calendar.getInstance()
-//            expTime.add(Calendar.HOUR_OF_DAY,+2)
-//            expTime.set(Calendar.MINUTE,0)
-//            timeSlotDetailsViewModel.setDateTime(expTime)
-//            timeSlotDetailsViewModel.setId(advListViewModel.count())
-//        }
 
         /* Code fragment to generate time and date picker  */
 
@@ -221,9 +217,8 @@ class TimeSlotEditFragment : Fragment() {
 
         // Cancel and confirm button listeners
         confirmAdvButton.setOnClickListener {
-            if(validateFields()) {
+            if(validateFields(true)) {
                 clickedButton = "confirm"
-                // Do not add the adv here, since it will be added onDetach
                 activity?.onBackPressed()
             }
         }
@@ -231,26 +226,6 @@ class TimeSlotEditFragment : Fragment() {
             clickedButton = "cancel"
             activity?.onBackPressed()
         }
-    }
-
-    private fun validateFields() : Boolean {
-        var valid = true
-
-        val fieldsToValidate = listOf(textInputTitle,
-                                        textInputDuration,
-                                        textInputLocation,
-                                        textInputDescription)
-
-        fieldsToValidate.forEach{
-            if (it.editText!!.text.isBlank()) {
-                it.error = REQUIRED
-                valid = false
-            } else {
-                it.error = null
-            }
-        }
-
-        return valid
     }
 
     override fun onDetach() {
@@ -262,31 +237,33 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
         timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
         timeSlotDetailsViewModel.setDateTime(actualTimeDate)
-        
-        when (clickedButton) {
-            "confirm" -> {
-                if(validateFields())
-                    confirm()
-                clickedButton=""
-            }
-            "cancel" -> {
-                clickedButton=""
-            }
-            else -> {
-                if(validateFields())
-                    confirm()
-                else {
-                    var text: CharSequence = "Fields not valid. Changes not saved"
-                    if(arguments?.getBoolean(HASTOBEEMPTY) == true)
-                        text = "Fields not valid. Advertisement not added"
 
-                    val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
-                    toast.show()
-                }
+        super.onDetach()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun validateFields(isConfirmedPressed: Boolean) : Boolean {
+        var valid = true
+
+        val fieldsToValidate = listOf(textInputTitle,
+            textInputDuration,
+            textInputLocation,
+            textInputDescription)
+
+        fieldsToValidate.forEach{
+            if (it.editText!!.text.isBlank()) {
+                if(isConfirmedPressed) it.error = REQUIRED
+                valid = false
+            } else {
+                if(isConfirmedPressed) it.error = null
             }
         }
 
-        super.onDetach()
+        return valid
     }
 
     private fun confirm() {
@@ -302,9 +279,31 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.setAdvertisement(a)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun myOnBackPressedCallback() {
+        when (clickedButton) {
+            "confirm" -> {
+                //If i'm here data is already validated, since onBackPressed is called only
+                // if validateFields() == true (see confirm onClickListener callback)
+                confirm()
+                clickedButton = ""
+            }
+            "cancel" -> {
+                clickedButton = ""
+            }
+            else -> {
+                if (validateFields(false))
+                    confirm()
+                else {
+                    var text: CharSequence = "Fields not valid. Changes not saved"
+                    if (arguments?.getBoolean(HASTOBEEMPTY) == true)
+                        text = "Fields not valid. Advertisement not added"
+
+                    val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                    toast.show()
+                }
+            }
+        }
+        requireView().findNavController().popBackStack()
     }
 
 }
