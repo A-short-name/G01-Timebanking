@@ -3,10 +3,18 @@ package it.polito.mad.g01_timebanking.ui.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import java.util.*
 
 class ProfileViewModel: ViewModel() {
+
+    //private val repo = PreferencesRepo()
+
+    private val pvtUser = MutableLiveData<UserInfo>().also {
+        it.value = UserInfo()
+    }
+    val user : LiveData<UserInfo> = pvtUser
 
     private val pvtFullName = MutableLiveData<String>().also {
         it.value = UserKey.FULL_NAME_PLACEHOLDER
@@ -87,5 +95,23 @@ class ProfileViewModel: ViewModel() {
                 }
                 else
                     false
+    }
+
+    fun persistData(user: UserInfo){
+        //repo.save(user)
+        pvtUser.value = user
+    }
+
+    fun loadData(){
+        //val u :UserInfo= repo.load("userinfo")
+        val u = UserInfo()
+        pvtUser.value = u
+        pvtFullName.value = u.fullName
+        pvtNickname.value = u.nickname
+        pvtEmail.value = u.email
+        pvtLocation.value = u.location
+        pvtBiography.value = u.biography
+        pvtProfilePicturePath.value = u.profilePicturePath
+        pvtSkills.value = u.skills
     }
 }

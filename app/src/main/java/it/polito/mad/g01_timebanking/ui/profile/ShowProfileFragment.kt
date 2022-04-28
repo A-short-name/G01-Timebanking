@@ -53,7 +53,7 @@ class ShowProfileFragment : Fragment() {
         //the only way to set height image to 1/3 of the screen is programmatically
         //This is ue to the fact that we use a scroll view with a bio with variable length
         arrangeViewByRatio(view)
-        initializeData()
+        initializeData()// alla creazione del vm, la main activity fa profileViewModel.loadData("userinfo")
 
         if(!FileHelper.isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
@@ -73,6 +73,28 @@ class ShowProfileFragment : Fragment() {
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
 
+        /*profileViewModel.user.observe(this.viewLifecycleOwner){
+            tvFullName.text = it.fullName
+            tvNickname.text = it.nickname
+            tvEmail.text = it.email
+            tvLocation.text = it.location
+            tvBiography.text = it.biography
+            if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it.profilePicturePath, ivProfilePicture)
+            }
+            skillGroup.removeAllViews()
+
+            if(it.skills.isEmpty())
+                noSkills.isVisible = true
+            else
+                it.forEach{ content ->
+                    val chip = Chip(context)
+                    chip.text = content
+                    chip.isCheckable = false
+                    chip.isClickable = true
+                    skillGroup.addView(chip)
+                }.also{noSkills.isVisible = false}
+        }*/
         profileViewModel.fullName.observe(this.viewLifecycleOwner) {
             tvFullName.text = it
         }

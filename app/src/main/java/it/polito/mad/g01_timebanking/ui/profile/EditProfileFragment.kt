@@ -9,8 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -23,23 +21,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import it.polito.mad.g01_timebanking.FileHelper
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
-import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.io.File
 import java.io.IOException
-import java.lang.reflect.Type
-import java.util.ArrayList
 
 
 class EditProfileFragment: Fragment() {
@@ -87,6 +80,7 @@ class EditProfileFragment: Fragment() {
 
             if(validateFields())
                 updatePreferences()
+            //profileViewModel.save(..u)
             else {
                 var text: CharSequence = "Fields not valid. Changes not saved"
                 //Attualmente la show ricarica ogni volta da file, anche se è nella onViewCreated? valutare se necessario
@@ -146,6 +140,7 @@ class EditProfileFragment: Fragment() {
         profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 FileHelper.readImage(it, profilePicture)
+                updateOnlyPhotoInPreferences(it)
             }
             currentProfilePicturePath = it
         }
@@ -464,5 +459,31 @@ class EditProfileFragment: Fragment() {
         profileViewModel.setProfilePicturePath(u.profilePicturePath)
         profileViewModel.setSkills(u.skills)
 
+    }
+    private fun updateOnlyPhotoInPreferences(newProfilePicturePath: String) {
+        val gson = Gson()
+        val sharedPref = context?.getSharedPreferences(
+            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
+        )
+        val s: String = sharedPref?.getString(getString(R.string.user_info), "" ) ?: ""
+
+        val uOld =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
+
+        val u = UserInfo (
+            fullName = uOld.fullName,
+            nickname = uOld.nickname,
+            email = uOld.email,
+            location = uOld.location,
+            biography = uOld.biography,
+            profilePicturePath = newProfilePicturePath,
+            skills = uOld.skills
+        )
+
+        val serializedUser: String = gson.toJson(u)
+
+        with(sharedPref?.edit() ?: return) {
+            putString(getString(R.string.user_info), serializedUser)
+            apply()
+        }
     }
 }
