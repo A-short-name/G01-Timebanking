@@ -1,4 +1,4 @@
-package it.polito.mad.g01_timebanking
+package it.polito.mad.g01_timebanking.helpers
 
 import android.content.Context
 import android.database.Cursor
@@ -25,8 +25,7 @@ class FileHelper {
                 ExifInterface.ORIENTATION_UNDEFINED
             )
 
-            var rotatedBitmap: Bitmap? = null
-            rotatedBitmap = when (orientation) {
+            val rotatedBitmap: Bitmap? = when (orientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(takenImage, 90)
                 ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(takenImage, 180)
                 ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(takenImage, 270)
@@ -48,9 +47,9 @@ class FileHelper {
         //@Throws(IOException::class)
         fun createImageFile(context: Context): File {
             // Create an image file name
-            val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+            val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(Date())
             //val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)  ///storage/sdcard0/Pictures
-            var baseFolder = if(isExternalStorageWritable()) {
+            val baseFolder = if(isExternalStorageWritable()) {
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath ?: ""  //storage/sdcard0/Pictures
             }
             // revert to using internal storage
@@ -85,7 +84,7 @@ class FileHelper {
             //The uri in the result data is in the form: content://com.android.externalstorage.documents/document/primary%3ADownload%2Fdownload.jpeg
             //So the authority is externalstorage and the path to return is built through the absolute path of Environment.get...
             if ("primary".equals(type, ignoreCase = true)) {
-                return Environment.getExternalStorageDirectory().absolutePath + "/" + id;
+                return Environment.getExternalStorageDirectory().absolutePath + "/" + id
                 //e.g. /storage/emulated/0/Download/download.jpeg
             }
             //The picture is choosen from recent or download or any anpther suggested pseudo-folder of the gallery

@@ -20,10 +20,10 @@ import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 class TimeSlotListFragment : Fragment() {
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
     private val timeSlotListViewModel : TimeSlotListViewModel by activityViewModels()
+
     private var _binding: FragmentTimeSlotListBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -31,9 +31,6 @@ class TimeSlotListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        val homeViewModel =
-//            ViewModelProvider(this)[TimeSlotListViewModel::class.java]
-
         _binding = FragmentTimeSlotListBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -58,16 +55,6 @@ class TimeSlotListFragment : Fragment() {
                 emptyAdvText.visibility = View.GONE
                 yourOffersText.visibility = View.VISIBLE
             }
-
-/*            val gson = Gson()
-            val serializedAdvList: String = gson.toJson(it)
-
-            val sharedPref =
-                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
-            with(sharedPref.edit()) {
-                putString(getString(R.string.adv_list), serializedAdvList)
-                apply()
-            }*/
 
             val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
             recyclerViewAdv.adapter = adapter

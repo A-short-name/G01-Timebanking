@@ -87,12 +87,6 @@ class AdvertisementAdapter(
         val callback: (v: View) -> Unit = {
             val pos = data.indexOf(adv)
             if (pos != -1) {
-                tsDetailsViewModel.setId(adv.id)
-                tsDetailsViewModel.setTitle(adv.title)
-                tsDetailsViewModel.setDuration(adv.duration)
-                tsDetailsViewModel.setDescription(adv.description)
-                tsDetailsViewModel.setLocation(adv.location)
-                tsDetailsViewModel.setDateTime(adv.calendar)
                 tsDetailsViewModel.setAdvertisement(adv)
                 Navigation.findNavController(it).navigate(action)
             }

@@ -1,23 +1,22 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlist
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
-class TimeSlotListViewModel : ViewModel() {
-    private var mAdvList : MutableList<AdvertisementDetails> = mutableListOf()
+class TimeSlotListViewModel(a: Application) : AndroidViewModel(a) {
+    private val repo = PreferencesRepository(a)
 
-    private val pvtList = MutableLiveData<MutableList<AdvertisementDetails>>().also {
+    private var mAdvList : MutableList<AdvertisementDetails> = repo.advertisementList.toMutableList()
+
+    private val pvtList = MutableLiveData<List<AdvertisementDetails>>().also {
         it.value = mAdvList
     }
 
-    val advList : LiveData<MutableList<AdvertisementDetails>> = pvtList
-
-    fun initializeAdvList(list:MutableList<AdvertisementDetails>) {
-        mAdvList = list
-        pvtList.value = mAdvList
-    }
+    val advList : LiveData<List<AdvertisementDetails>> = pvtList
 
     fun addOrUpdateElement(a: AdvertisementDetails){
         val pos = mAdvList.indexOf(a)
@@ -28,6 +27,7 @@ class TimeSlotListViewModel : ViewModel() {
         } else
            mAdvList.add(a)
 
+        repo.save(mAdvList.toList())
         pvtList.value = mAdvList
     }
 

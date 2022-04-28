@@ -3,9 +3,7 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
-import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -13,8 +11,8 @@ import androidx.navigation.ui.NavigationUI
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
-import java.text.SimpleDateFormat
-import java.util.*
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
 
 
 class TimeSlotDetailsFragment : Fragment() {
@@ -28,10 +26,11 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var textViewTime: EditText
     private lateinit var textViewDescription: EditText
 
+    private lateinit var actualAdvertisement : AdvertisementDetails
+
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -39,7 +38,6 @@ class TimeSlotDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentTimeSlotDetailsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -57,14 +55,16 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewTime = view.findViewById(R.id.timeShowText)
         textViewDescription = view.findViewById(R.id.descriptionShowText)
 
-/*        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
+        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
             textViewTitle.setText(it.title)
             textViewLocation.setText(it.location)
             textViewDuration.setText(it.duration)
             textViewDescription.setText(it.description)
             textViewDate.setText(it.calendar.fromDateToString())
-            textViewTime.setText(it.calendar.fromTimeToString())
-        }*/
+            textViewTime.setText(it.calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
+            actualAdvertisement = it
+        }
+
         timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
             textViewTitle.setText(it)
         }
@@ -83,7 +83,7 @@ class TimeSlotDetailsFragment : Fragment() {
 
         timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
             textViewDate.setText(it.fromDateToString())
-            textViewTime.setText(it.fromTimeToString())
+            textViewTime.setText(it.fromTimeToString(DateFormat.is24HourFormat(activity)))
         }
     }
 
@@ -109,17 +109,10 @@ class TimeSlotDetailsFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
-    private fun Calendar.fromTimeToString(): String? {
-        val myFormat = if (DateFormat.is24HourFormat(activity)) "HH:mm" else "hh:mm a"
-
-        val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-
-        return dateFormat.format(this.time)
+    override fun onPause() {
+        // This updates ViewModel if the show is disappearing because the edit is being opened
+        timeSlotDetailsViewModel.setAdvertisement(actualAdvertisement)
+        super.onPause()
     }
 
-    private fun Calendar.fromDateToString(): String? {
-        val myFormat = "dd/MM/yyyy"
-        val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-        return dateFormat.format(this.time)
-    }
 }

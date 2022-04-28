@@ -3,49 +3,55 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.app.Application
 import androidx.lifecycle.*
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
+    /* This will be the valid advertisement used by Show */
+    private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
+        it.value = placeholderAdvertisementDetails
+    }
+
+    val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
+
+    /* Ephemeral variables used from the Edit fragment to handle temporary save */
+
+    private val placeholderAdvertisementDetails = AdvertisementDetails(-1,
+        "Placeholder title",
+        "Placeholder location",
+        Calendar.getInstance(),
+        "Placeholder duration",
+        "Placeholder description")
+
     private val pvtId = MutableLiveData<Int>().also {
-        it.value = 10
+        it.value = placeholderAdvertisementDetails.id
     }
     val id : LiveData<Int> = pvtId
 
     private val pvtTitle = MutableLiveData<String>().also {
-        it.value = "No title"
+        it.value = placeholderAdvertisementDetails.title
     }
     val title : LiveData<String> = pvtTitle
 
     private val pvtDescription = MutableLiveData<String>().also {
-        it.value = "No description"
+        it.value = placeholderAdvertisementDetails.description
     }
     val description : LiveData<String> = pvtDescription
 
     private val pvtLocation = MutableLiveData<String>().also {
-        it.value = "No location"
+        it.value = placeholderAdvertisementDetails.location
     }
     val location : LiveData<String> = pvtLocation
 
     private val pvtCalendar = MutableLiveData<Calendar>().also {
-        it.value = Calendar.getInstance()
+        it.value = placeholderAdvertisementDetails.calendar
     }
     val calendar : LiveData<Calendar> = pvtCalendar
 
     private val pvtDuration = MutableLiveData<String>().also {
-        it.value = "No duration"
+        it.value = placeholderAdvertisementDetails.duration
     }
     val duration : LiveData<String> = pvtDuration
-
-    private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
-        it.value = AdvertisementDetails(-1,
-            "",
-            "",
-            Calendar.getInstance(),
-            "",
-            "")
-    }
-
-    val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
 
     fun setId(id: Int) {
         pvtId.value = id
@@ -79,5 +85,11 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
 
     fun setAdvertisement(adv: AdvertisementDetails) {
         pvtAdvertisement.value = adv
+        pvtId.value = adv.id
+        pvtTitle.value = adv.title
+        pvtLocation.value = adv.location
+        pvtDescription.value = adv.description
+        pvtDuration.value = adv.duration
+        pvtCalendar.value = adv.calendar
     }
 }
