@@ -2,6 +2,7 @@ package it.polito.mad.g01_timebanking
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -16,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
+import it.polito.mad.g01_timebanking.helpers.FileHelper
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
@@ -26,13 +28,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var navigationView: NavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // It creates the VM that will be used by fragments
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
-        ViewModelProvider(this)[ProfileViewModel::class.java]
+        val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -79,13 +83,22 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+        navigationView = findViewById(R.id.nav_view)
+        profileVM.profilePicturePath.observe(this) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it, navigationView.getHeaderView(0).findViewById(R.id.navHeaderProfilePicture))
+            }
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return false
+        //onBackPressed()
+        //return false
         //This is the good way if fragments are opened from push notification
-        //val navController = findNavController(R.id.nav_host_fragment_content_main)
-        //return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

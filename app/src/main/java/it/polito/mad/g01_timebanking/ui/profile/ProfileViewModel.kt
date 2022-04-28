@@ -1,9 +1,12 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
@@ -11,7 +14,7 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     private val repo = PreferencesRepository(a)
 
     // Official variable that contains UserInfo saved on preferences
-    private val _user = repo.userInfo
+    private var _user = repo.userInfo
     private val pvtUser = MutableLiveData<UserInfo>().also {
         it.value = _user
     }
@@ -109,5 +112,19 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     fun addOrUpdateData(user: UserInfo) {
         repo.save(user)
         pvtUser.value = user
+        _user = user
+    }
+
+    fun updatePhoto(newProfilePicturePath: String) {
+        val u = UserInfo (
+            fullName = _user.fullName,
+            nickname = _user.nickname,
+            email = _user.email,
+            location = _user.location,
+            biography = _user.biography,
+            profilePicturePath = newProfilePicturePath,
+            skills = _user.skills
+        )
+        addOrUpdateData(u)
     }
 }

@@ -78,22 +78,14 @@ class EditProfileFragment: Fragment() {
         //val myclass = myClass(requireView())
 
         activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
-            Toast.makeText(context,"Qualcuno ha fatto back", Toast.LENGTH_SHORT).show()
-            //updatePreferences()
-
             if(validateFields())
-                updatePreferences()
-            //profileViewModel.save(..u)
+                confirm()
             else {
                 val text: CharSequence = "Fields not valid. Changes not saved"
-                //Attualmente la show ricarica ogni volta da file, anche se è nella onViewCreated? valutare se necessario
-                restoreOldVMFromSharedPref()
                 val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
                 toast.show()
             }
             requireView().findNavController().popBackStack()
-
-
         }
         return root
     }
@@ -134,7 +126,7 @@ class EditProfileFragment: Fragment() {
         profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 FileHelper.readImage(it, profilePicture)
-                updateOnlyPhotoInPreferences(it)
+                profileViewModel.updatePhoto(it)
             }
             currentProfilePicturePath = it
         }
@@ -374,8 +366,7 @@ class EditProfileFragment: Fragment() {
     }
     override fun onDetach() {
         //Attualmente questi salvano nel vm per preservare alla rotazione
-        // la show dovrebbe caricare da file di preferenze comunque
-        // quindi basta non aggiornare il file di preferenze se qualcosa va storto
+        //Alternativamente si possono usare dei listener sugli editText che modificano il view model
         profileViewModel.setFullname(ivFullName.text.toString())
         profileViewModel.setNickname(ivNickname.text.toString())
         profileViewModel.setEmail(ivEmail.text.toString())
@@ -383,20 +374,9 @@ class EditProfileFragment: Fragment() {
         profileViewModel.setBiography(ivBiography.text.toString())
         //profileViewModel.setProfilePicturePath() is changed everytime
         //profileViewModel.setSkills() is changed everytime
-
-        //updatePreferences()
         super.onDetach()
     }
-    private fun updatePreferences() {
-/*        val u = UserInfo (
-            fullName = profileViewModel.fullName.value!!,
-            nickname = profileViewModel.nickname.value!!,
-            email = profileViewModel.email.value!!,
-            location = profileViewModel.location.value!!,
-            biography = profileViewModel.biography.value!!,
-            profilePicturePath = profileViewModel.profilePicturePath.value!!,
-            skills = profileViewModel.skills.value!!
-        )*/
+    private fun confirm() {
         val u = UserInfo (
             fullName = ivFullName.text.toString(),
             nickname = ivNickname.text.toString(),
@@ -407,16 +387,9 @@ class EditProfileFragment: Fragment() {
             skills = currentSkills
         )
 
-        val gson = Gson()
-        val serializedUser: String = gson.toJson(u)
-
-        val sharedPref =
-            context?.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
-                ?: return
-        with(sharedPref.edit()) {
-            putString(getString(R.string.user_info), serializedUser)
-            apply()
-        }
+        profileViewModel.addOrUpdateData(u)
+        //To erase ephemeral data
+        //profileViewModel.setUserInfo(u)
     }
 
     private fun validateFields() : Boolean {
@@ -431,56 +404,11 @@ class EditProfileFragment: Fragment() {
                 //it.error = UserKey.REQUIRED
                 valid = false
             } else {
-                it.error = null
+                //it.error = null
             }
         }
 
         return valid
     }
 
-    private fun restoreOldVMFromSharedPref() {
-        //reinitialize the variables reading from file
-        val gson = Gson()
-        val sharedPref = context?.getSharedPreferences(
-            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
-        )
-        val s: String = sharedPref?.getString(getString(R.string.user_info), "" ) ?: ""
-
-        val u =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
-
-        profileViewModel.setFullname(u.fullName)
-        profileViewModel.setNickname(u.nickname)
-        profileViewModel.setEmail(u.email)
-        profileViewModel.setLocation(u.location)
-        profileViewModel.setBiography(u.biography)
-        profileViewModel.setProfilePicturePath(u.profilePicturePath)
-        profileViewModel.setSkills(u.skills)
-
-    }
-    private fun updateOnlyPhotoInPreferences(newProfilePicturePath: String) {
-        val gson = Gson()
-        val sharedPref = context?.getSharedPreferences(
-            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
-        )
-        val s: String = sharedPref?.getString(getString(R.string.user_info), "" ) ?: ""
-
-        val uOld =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
-
-        val u = UserInfo (
-            fullName = uOld.fullName,
-            nickname = uOld.nickname,
-            email = uOld.email,
-            location = uOld.location,
-            biography = uOld.biography,
-            profilePicturePath = newProfilePicturePath,
-            skills = uOld.skills
-        )
-
-        val serializedUser: String = gson.toJson(u)
-
-        with(sharedPref?.edit() ?: return) {
-            putString(getString(R.string.user_info), serializedUser)
-            apply()
-        }
-    }
 }
