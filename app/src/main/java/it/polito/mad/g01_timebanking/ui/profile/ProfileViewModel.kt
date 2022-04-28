@@ -52,10 +52,10 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
     val profilePicturePath : LiveData<String> = pvtProfilePicturePath
 
-    private var tmpSkills : MutableSet<String> = mutableSetOf()
+    private var tmpSkills : MutableSet<String> = _user.skills
 
     private val pvtSkills = MutableLiveData<MutableSet<String>>().also {
-        it.value = _user.skills
+        it.value = tmpSkills
     }
     val skills :LiveData<MutableSet<String>> = pvtSkills
 
