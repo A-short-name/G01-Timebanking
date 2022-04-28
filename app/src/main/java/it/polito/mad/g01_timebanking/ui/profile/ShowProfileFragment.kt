@@ -1,24 +1,20 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.*
-import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
+import it.polito.mad.g01_timebanking.helpers.FileHelper
 
 class ShowProfileFragment : Fragment() {
     private val profileViewModel : ProfileViewModel by activityViewModels()
@@ -37,30 +33,23 @@ class ShowProfileFragment : Fragment() {
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
 
+    private lateinit var actUserInfo : UserInfo
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_show_profile, container, false)
+
         setHasOptionsMenu(true)
+
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeView(view)
-        //the only way to set height image to 1/3 of the screen is programmatically
-        //This is ue to the fact that we use a scroll view with a bio with variable length
-        arrangeViewByRatio(view)
-        initializeData()// alla creazione del vm, la main activity fa profileViewModel.loadData("userinfo")
 
-        if(!FileHelper.isExternalStorageWritable())
-            Log.e(TAG, "No external volume mounted")
-    }
-
-    private fun initializeView(view: View) {
-        Toast.makeText(context,"Caricando informazioni da file", Toast.LENGTH_SHORT).show()
         // Fetch views
         scrollView = view.findViewById(R.id.sv)
         frameView = view.findViewById(R.id.frameView1)
@@ -73,12 +62,14 @@ class ShowProfileFragment : Fragment() {
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
 
-        /*profileViewModel.user.observe(this.viewLifecycleOwner){
+        profileViewModel.user.observe(this.viewLifecycleOwner) {
+            actUserInfo = it
             tvFullName.text = it.fullName
             tvNickname.text = it.nickname
             tvEmail.text = it.email
             tvLocation.text = it.location
             tvBiography.text = it.biography
+
             if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 FileHelper.readImage(it.profilePicturePath, ivProfilePicture)
             }
@@ -87,48 +78,41 @@ class ShowProfileFragment : Fragment() {
             if(it.skills.isEmpty())
                 noSkills.isVisible = true
             else
-                it.forEach{ content ->
-                    val chip = Chip(context)
-                    chip.text = content
-                    chip.isCheckable = false
-                    chip.isClickable = true
-                    skillGroup.addView(chip)
-                }.also{noSkills.isVisible = false}
-        }*/
-        profileViewModel.fullName.observe(this.viewLifecycleOwner) {
-            tvFullName.text = it
+                it.skills
+                    .forEach{ content ->
+                        val chip = Chip(context)
+                        chip.text = content
+                        chip.isCheckable = false
+                        chip.isClickable = true
+                        skillGroup.addView(chip)
+                    }.also{ noSkills.isVisible = false }
         }
-        profileViewModel.nickname.observe(this.viewLifecycleOwner) {
-            tvNickname.text = it
-        }
-        profileViewModel.email.observe(this.viewLifecycleOwner) {
-            tvEmail.text = it
-        }
-        profileViewModel.location.observe(this.viewLifecycleOwner) {
-            tvLocation.text = it
-        }
-        profileViewModel.biography.observe(this.viewLifecycleOwner) {
-            tvBiography.text = it
-        }
-        profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
-            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                FileHelper.readImage(it, ivProfilePicture)
-            }
-        }
-        profileViewModel.skills.observe(this.viewLifecycleOwner) {
-            skillGroup.removeAllViews()
 
-            if(it.isEmpty())
-                noSkills.isVisible = true
-            else
-                it.forEach{ content ->
-                    val chip = Chip(context)
-                    chip.text = content
-                    chip.isCheckable = false
-                    chip.isClickable = true
-                    skillGroup.addView(chip)
-                }.also{noSkills.isVisible = false}
-        }
+        //the only way to set height image to 1/3 of the screen is programmatically
+        //This is ue to the fact that we use a scroll view with a bio with variable length
+        arrangeViewByRatio(view)
+
+        if(!FileHelper.isExternalStorageWritable())
+            Log.e(TAG, "No external volume mounted")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.user_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController())
+                || super.onOptionsItemSelected(item)
+    }
+
+    override fun onPause() {
+        // This updates ViewModel if the show is disappearing because the edit is being opened
+        profileViewModel.setUserInfo(actUserInfo)
+        super.onPause()
     }
 
     private fun arrangeViewByRatio(view: View) {
@@ -151,39 +135,6 @@ class ShowProfileFragment : Fragment() {
                 }
             })
         }
-    }
-
-    private fun initializeData() {
-        //initialize the variables reading from file
-        val gson = Gson()
-        val sharedPref = context?.getSharedPreferences(
-            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
-        )
-        val s: String = sharedPref?.getString(getString(R.string.user_info), "" ) ?: ""
-
-        val u =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
-
-        profileViewModel.setFullname(u.fullName)
-        profileViewModel.setNickname(u.nickname)
-        profileViewModel.setEmail(u.email)
-        profileViewModel.setLocation(u.location)
-        profileViewModel.setBiography(u.biography)
-        profileViewModel.setProfilePicturePath(u.profilePicturePath)
-        profileViewModel.setSkills(u.skills)
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.user_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle item selection
-        return NavigationUI.onNavDestinationSelected(
-            item,
-            requireView().findNavController())
-                || super.onOptionsItemSelected(item)
     }
 
 /*    private fun editProfile() {

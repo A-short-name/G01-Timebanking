@@ -1,54 +1,58 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import it.polito.mad.g01_timebanking.UserInfo
-import it.polito.mad.g01_timebanking.UserKey
-import java.util.*
+import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
-class ProfileViewModel: ViewModel() {
+class ProfileViewModel(a: Application): AndroidViewModel(a) {
+    private val repo = PreferencesRepository(a)
 
-    //private val repo = PreferencesRepo()
-
+    // Official variable that contains UserInfo saved on preferences
+    private val _user = repo.userInfo
     private val pvtUser = MutableLiveData<UserInfo>().also {
-        it.value = UserInfo()
+        it.value = _user
     }
     val user : LiveData<UserInfo> = pvtUser
 
+    /* Ephemeral variables used from the Edit fragment to handle temporary save */
+
     private val pvtFullName = MutableLiveData<String>().also {
-        it.value = UserKey.FULL_NAME_PLACEHOLDER
+        it.value = _user.fullName
     }
     val fullName : LiveData<String> = pvtFullName
 
     private val pvtNickname = MutableLiveData<String>().also {
-        it.value = UserKey.NICKNAME_PLACEHOLDER
+        it.value = _user.nickname
     }
     val nickname : LiveData<String> = pvtNickname
 
     private val pvtEmail = MutableLiveData<String>().also {
-        it.value = UserKey.EMAIL_PLACEHOLDER
+        it.value = _user.email
     }
     val email : LiveData<String> = pvtEmail
 
     private val pvtBiography = MutableLiveData<String>().also {
-        it.value = UserKey.BIOGRAPHY_PLACEHOLDER
+        it.value = _user.biography
     }
     val biography : LiveData<String> = pvtBiography
 
     private val pvtLocation = MutableLiveData<String>().also {
-        it.value = UserKey.LOCATION_PLACEHOLDER
+        it.value = _user.location
     }
     val location : LiveData<String> = pvtLocation
 
     private val pvtProfilePicturePath = MutableLiveData<String>().also {
-        it.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+        it.value = _user.profilePicturePath
     }
     val profilePicturePath : LiveData<String> = pvtProfilePicturePath
 
-    var tmpSkills : MutableSet<String> = mutableSetOf()
+    private var tmpSkills : MutableSet<String> = mutableSetOf()
+
     private val pvtSkills = MutableLiveData<MutableSet<String>>().also {
-        it.value = mutableSetOf<String>()
+        it.value = _user.skills
     }
     val skills :LiveData<MutableSet<String>> = pvtSkills
 
@@ -85,33 +89,25 @@ class ProfileViewModel: ViewModel() {
     fun removeSkill(skillText: String) {
         tmpSkills.remove(skillText)
         pvtSkills.value = tmpSkills
-        //pvtSkills.value.remove(skillText)
     }
 
     fun tryToAddSkill(skillText: String): Boolean {
-        return if(tmpSkills.add(skillText)){
-                    pvtSkills.value = tmpSkills
-                    true
-                }
-                else
-                    false
+        return if(tmpSkills.add(skillText)){ pvtSkills.value = tmpSkills; true } else false
     }
 
-    fun persistData(user: UserInfo){
-        //repo.save(user)
+    fun setUserInfo(userInfo: UserInfo) {
+        pvtUser.value = userInfo
+        pvtFullName.value = userInfo.fullName
+        pvtNickname.value = userInfo.nickname
+        pvtEmail.value = userInfo.email
+        pvtLocation.value = userInfo.location
+        pvtBiography.value = userInfo.biography
+        pvtProfilePicturePath.value = userInfo.profilePicturePath
+        pvtSkills.value = userInfo.skills
+    }
+
+    fun addOrUpdateData(user: UserInfo) {
+        repo.save(user)
         pvtUser.value = user
-    }
-
-    fun loadData(){
-        //val u :UserInfo= repo.load("userinfo")
-        val u = UserInfo()
-        pvtUser.value = u
-        pvtFullName.value = u.fullName
-        pvtNickname.value = u.nickname
-        pvtEmail.value = u.email
-        pvtLocation.value = u.location
-        pvtBiography.value = u.biography
-        pvtProfilePicturePath.value = u.profilePicturePath
-        pvtSkills.value = u.skills
     }
 }
