@@ -28,6 +28,9 @@ object UserKey {
     const val MINIMUM_SKILLS_LENGTH = 3
     const val HASTOBEEMPTY = "hasToBeEmpty"
     const val REQUIRED = "*Required"
+    const val CAPTURE_IMAGE_REQUEST = 1
+    const val PICK_IMAGE_REQUEST = 2
+    const val PERMISSION_CODE = 1001
     val SKILL_SUGGESTION : Array<String> = arrayOf(
         "Car maintenance",
         "Cleaning",

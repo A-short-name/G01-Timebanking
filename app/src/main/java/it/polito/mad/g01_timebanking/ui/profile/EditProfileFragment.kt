@@ -27,10 +27,13 @@ import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
-import it.polito.mad.g01_timebanking.FileHelper
+import it.polito.mad.g01_timebanking.helpers.FileHelper
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
+import it.polito.mad.g01_timebanking.UserKey.CAPTURE_IMAGE_REQUEST
+import it.polito.mad.g01_timebanking.UserKey.PERMISSION_CODE
+import it.polito.mad.g01_timebanking.UserKey.PICK_IMAGE_REQUEST
 import java.io.File
 import java.io.IOException
 
@@ -43,22 +46,22 @@ class EditProfileFragment: Fragment() {
     }
 
     // Views
-    lateinit var profilePicture: ImageView
-    lateinit var ivFullName: EditText
-    lateinit var ivNickname: EditText
-    lateinit var ivEmail: EditText
-    lateinit var ivLocation: EditText
-    lateinit var ivSkills: AutoCompleteTextView
-    lateinit var ivBiography: EditText
-    lateinit var skillGroup: ChipGroup
-    lateinit var noSkills: TextView
+    private lateinit var profilePicture: ImageView
+    private lateinit var ivFullName: EditText
+    private lateinit var ivNickname: EditText
+    private lateinit var ivEmail: EditText
+    private lateinit var ivLocation: EditText
+    private lateinit var ivSkills: AutoCompleteTextView
+    private lateinit var ivBiography: EditText
+    private lateinit var skillGroup: ChipGroup
+    private lateinit var noSkills: TextView
 
-    val CAPTURE_IMAGE_REQUEST = 1
-    val PICK_IMAGE_REQUEST = 2
-    val PERMISSION_CODE = 1001
+    private lateinit var currentProfilePicturePath: String
+    private lateinit var currentSkills: MutableSet<String>
 
-    lateinit var currentProfilePicturePath: String
-    lateinit var currentSkills: MutableSet<String>
+    //this variable is used in CAPTURE_IMAGE section of the onActivityResult
+    //to change the vm only when the picture is saved
+    private var tmpProfilePicturePath = ""
 
 /*    class myClass(val v: View): OnBackPressedCallback(true){
         override fun handleOnBackPressed() {
@@ -82,7 +85,7 @@ class EditProfileFragment: Fragment() {
                 updatePreferences()
             //profileViewModel.save(..u)
             else {
-                var text: CharSequence = "Fields not valid. Changes not saved"
+                val text: CharSequence = "Fields not valid. Changes not saved"
                 //Attualmente la show ricarica ogni volta da file, anche se è nella onViewCreated? valutare se necessario
                 restoreOldVMFromSharedPref()
                 val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
@@ -97,13 +100,7 @@ class EditProfileFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeView(view)
-        initializeSkillSuggestion(view)
 
-        if(!FileHelper.isExternalStorageWritable())
-            Log.e(EditProfileFragment.TAG, "No external volume mounted")
-    }
-    private fun initializeView(view: View) {
         // Fetch views
         ivFullName = view.findViewById(R.id.editTextFullName)
         ivNickname = view.findViewById(R.id.editTextNickname)
@@ -112,14 +109,11 @@ class EditProfileFragment: Fragment() {
         ivBiography = view.findViewById(R.id.editTextBiography)
         ivSkills = view.findViewById(R.id.editTextAddSkills)
         profilePicture = view.findViewById(R.id.profilePicture)
-        val profilePictureButton = view.findViewById<ImageButton>(R.id.profilePictureTransparentButton)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
 
-        // Set listener for picture clicks
+        val profilePictureButton = view.findViewById<ImageButton>(R.id.profilePictureTransparentButton)
         profilePictureButton.setOnClickListener { showPopup(profilePictureButton) }
-
-        // Initialize values
 
         profileViewModel.fullName.observe(this.viewLifecycleOwner) {
             if(it != ivFullName.text.toString())
@@ -152,7 +146,7 @@ class EditProfileFragment: Fragment() {
 
             it.forEach { content ->
                 val chip = Chip(context)
-                chip.isCloseIconVisible = true;
+                chip.isCloseIconVisible = true
                 chip.text = content
                 chip.isCheckable = false
                 chip.isClickable = false
@@ -164,41 +158,45 @@ class EditProfileFragment: Fragment() {
             }
             currentSkills = it
         }
-            // Set listener on "add skills" field
-            ivSkills.setOnEditorActionListener { v, actionId, event ->
-                // If user presses enter
-                if(actionId == EditorInfo.IME_ACTION_DONE){
 
-                    if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
-                        // Add skillText on set
-                        if(profileViewModel.tryToAddSkill(v.text.toString().lowercase())){
-                            // PillView is added to the PillGroup thanks to the observer
-                            // Reset editText field for new skills
-                            v.text = ""
-                        } else {
-                            Toast.makeText(context,"Skill already present", Toast.LENGTH_SHORT).show()
-                        }
+        // Set listener on "add skills" field
+        ivSkills.setOnEditorActionListener { v, actionId, _ ->
+            // If user presses enter
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
+                    // Add skillText on set
+                    if(profileViewModel.tryToAddSkill(v.text.toString().lowercase())){
+                        // PillView is added to the PillGroup thanks to the observer
+                        // Reset editText field for new skills
+                        v.text = ""
                     } else {
-                        Toast.makeText(context,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH+1} characters", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,"Skill already present", Toast.LENGTH_SHORT).show()
                     }
-                    true
                 } else {
-                    false
+                    Toast.makeText(context,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH+1} characters", Toast.LENGTH_SHORT).show()
                 }
+                true
+            } else {
+                false
             }
+        }
 
-        ivFullName.doAfterTextChanged { profileViewModel.setFullname(it.toString()) }
+        initializeSkillSuggestion(view)
+
+        if(!FileHelper.isExternalStorageWritable())
+            Log.e(TAG, "No external volume mounted")
     }
+
 
     private fun initializeSkillSuggestion(view: View) {
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line, UserKey.SKILL_SUGGESTION
-        );
+        )
         val actv = view.findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
         actv.setAdapter(adapter)
-        actv.setOnItemClickListener(AdapterView.OnItemClickListener { adapterView, view, i, l
-            ->
+        actv.setOnItemClickListener { adapterView, _, i, _ ->
             val selected: String = adapterView.getItemAtPosition(i) as String
             if (profileViewModel.tryToAddSkill(selected.lowercase())) {
                 // PillView is added to the PillGroup thanks to the observer
@@ -208,13 +206,13 @@ class EditProfileFragment: Fragment() {
                 Toast.makeText(context, "Skill already present", Toast.LENGTH_SHORT).show()
                 ivSkills.setText("")
             }
-        })
+        }
     }
 
     private fun showPopup(v: View) {
         val popup = PopupMenu(context, v)
         //Set on click listener for the menu
-        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item -> onMenuItemClick(item) })
+        popup.setOnMenuItemClickListener { item -> onMenuItemClick(item) }
         popup.inflate(R.menu.edit_profile_picture_menu)
         popup.show()
 
@@ -242,18 +240,18 @@ class EditProfileFragment: Fragment() {
             if (context?.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED){
                 //permission denied
-                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
+                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 //show popup to request runtime permission
-                requestPermissions(permissions, PERMISSION_CODE);
+                requestPermissions(permissions, PERMISSION_CODE)
             }
             else{
                 //permission already granted
-                dispatchChoosePictureIntent();
+                dispatchChoosePictureIntent()
             }
         }
         else{
             //system OS is < Marshmallow
-            dispatchChoosePictureIntent();
+            dispatchChoosePictureIntent()
         }
     }
     private fun dispatchChoosePictureIntent(){
@@ -265,9 +263,6 @@ class EditProfileFragment: Fragment() {
             Toast.makeText(context,"Error", Toast.LENGTH_SHORT).show()
         }
     }
-    //this variable is used in CAPTURE_IMAGE section of the onActivityResult
-    //to change the vm only when the picture is saved
-    var tmpProfilePicturePath = ""
 
     private fun dispatchTakePictureIntent() {
 
@@ -314,10 +309,12 @@ class EditProfileFragment: Fragment() {
     private fun galleryAddPic() {
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
             if(profileViewModel.profilePicturePath.value != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                val f = File(profileViewModel.profilePicturePath.value)
+                //val f = File(profileViewModel.profilePicturePath.value)
+                val f = File(currentProfilePicturePath)
                 mediaScanIntent.data = Uri.fromFile(f)
                 activity?.sendBroadcast(mediaScanIntent)
-            } else Log.e(TAG,"profilePicturePath is null")
+            } else
+                Log.e(TAG,"profilePicturePath is null")
         }
     }
 
@@ -410,7 +407,7 @@ class EditProfileFragment: Fragment() {
             skills = currentSkills
         )
 
-        val gson = Gson();
+        val gson = Gson()
         val serializedUser: String = gson.toJson(u)
 
         val sharedPref =
