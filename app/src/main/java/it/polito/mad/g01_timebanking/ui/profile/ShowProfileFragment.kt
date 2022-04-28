@@ -60,6 +60,7 @@ class ShowProfileFragment : Fragment() {
     }
 
     private fun initializeView(view: View) {
+        Toast.makeText(context,"Caricando informazioni da file", Toast.LENGTH_SHORT).show()
         // Fetch views
         scrollView = view.findViewById(R.id.sv)
         frameView = view.findViewById(R.id.frameView1)

@@ -30,6 +30,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import it.polito.mad.g01_timebanking.FileHelper
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
@@ -37,6 +38,8 @@ import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.io.File
 import java.io.IOException
+import java.lang.reflect.Type
+import java.util.ArrayList
 
 
 class EditProfileFragment: Fragment() {
@@ -61,6 +64,9 @@ class EditProfileFragment: Fragment() {
     val PICK_IMAGE_REQUEST = 2
     val PERMISSION_CODE = 1001
 
+    lateinit var currentProfilePicturePath: String
+    lateinit var currentSkills: MutableSet<String>
+
 /*    class myClass(val v: View): OnBackPressedCallback(true){
         override fun handleOnBackPressed() {
             v.findNavController().popBackStack()
@@ -76,9 +82,21 @@ class EditProfileFragment: Fragment() {
         //val myclass = myClass(requireView())
 
         activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
-            Toast.makeText(context,"Programmatore: ricordati di salvare i dati", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"Qualcuno ha fatto back", Toast.LENGTH_SHORT).show()
             //updatePreferences()
+
+            if(validateFields())
+                updatePreferences()
+            else {
+                var text: CharSequence = "Fields not valid. Changes not saved"
+                //Attualmente la show ricarica ogni volta da file, anche se è nella onViewCreated? valutare se necessario
+                restoreOldVMFromSharedPref()
+                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                toast.show()
+            }
             requireView().findNavController().popBackStack()
+
+
         }
         return root
     }
@@ -129,6 +147,7 @@ class EditProfileFragment: Fragment() {
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
                 FileHelper.readImage(it, profilePicture)
             }
+            currentProfilePicturePath = it
         }
         profileViewModel.skills.observe(this.viewLifecycleOwner) {
             skillGroup.removeAllViews()
@@ -148,6 +167,7 @@ class EditProfileFragment: Fragment() {
                 skillGroup.addView(chip)
                 noSkills.isVisible = false
             }
+            currentSkills = it
         }
             // Set listener on "add skills" field
             ivSkills.setOnEditorActionListener { v, actionId, event ->
@@ -361,6 +381,9 @@ class EditProfileFragment: Fragment() {
         }
     }
     override fun onDetach() {
+        //Attualmente questi salvano nel vm per preservare alla rotazione
+        // la show dovrebbe caricare da file di preferenze comunque
+        // quindi basta non aggiornare il file di preferenze se qualcosa va storto
         profileViewModel.setFullname(ivFullName.text.toString())
         profileViewModel.setNickname(ivNickname.text.toString())
         profileViewModel.setEmail(ivEmail.text.toString())
@@ -369,11 +392,11 @@ class EditProfileFragment: Fragment() {
         //profileViewModel.setProfilePicturePath() is changed everytime
         //profileViewModel.setSkills() is changed everytime
 
-        updatePreferences()
+        //updatePreferences()
         super.onDetach()
     }
     private fun updatePreferences() {
-        val u = UserInfo (
+/*        val u = UserInfo (
             fullName = profileViewModel.fullName.value!!,
             nickname = profileViewModel.nickname.value!!,
             email = profileViewModel.email.value!!,
@@ -381,6 +404,15 @@ class EditProfileFragment: Fragment() {
             biography = profileViewModel.biography.value!!,
             profilePicturePath = profileViewModel.profilePicturePath.value!!,
             skills = profileViewModel.skills.value!!
+        )*/
+        val u = UserInfo (
+            fullName = ivFullName.text.toString(),
+            nickname = ivNickname.text.toString(),
+            email = ivEmail.text.toString(),
+            location = ivLocation.text.toString(),
+            biography = ivBiography.text.toString(),
+            profilePicturePath = currentProfilePicturePath,
+            skills = currentSkills
         )
 
         val gson = Gson();
@@ -395,4 +427,42 @@ class EditProfileFragment: Fragment() {
         }
     }
 
+    private fun validateFields() : Boolean {
+        var valid = true
+
+        val fieldsToValidate = listOf(ivFullName,
+            ivNickname,
+            ivEmail)
+
+        fieldsToValidate.forEach{
+            if (it.text.isBlank()) {
+                //it.error = UserKey.REQUIRED
+                valid = false
+            } else {
+                it.error = null
+            }
+        }
+
+        return valid
+    }
+
+    private fun restoreOldVMFromSharedPref() {
+        //reinitialize the variables reading from file
+        val gson = Gson()
+        val sharedPref = context?.getSharedPreferences(
+            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
+        )
+        val s: String = sharedPref?.getString(getString(R.string.user_info), "" ) ?: ""
+
+        val u =  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
+
+        profileViewModel.setFullname(u.fullName)
+        profileViewModel.setNickname(u.nickname)
+        profileViewModel.setEmail(u.email)
+        profileViewModel.setLocation(u.location)
+        profileViewModel.setBiography(u.biography)
+        profileViewModel.setProfilePicturePath(u.profilePicturePath)
+        profileViewModel.setSkills(u.skills)
+
+    }
 }
