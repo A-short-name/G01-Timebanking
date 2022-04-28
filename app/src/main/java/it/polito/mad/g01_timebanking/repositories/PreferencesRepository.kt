@@ -1,7 +1,6 @@
 package it.polito.mad.g01_timebanking.repositories
 
 import android.app.Application
-import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -11,17 +10,19 @@ import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.lang.reflect.Type
 
 class PreferencesRepository(val a: Application) {
+    private val gson = Gson()
+    private val context = a.applicationContext
+
+    private val sharedPref = context.getSharedPreferences(
+        context.getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
+    )
+
     val userInfo = readUserInfo()
     val advertisementList = readAdvertisementList()
 
-    private val gson = Gson()
-    private val sharedPref = a.applicationContext.getSharedPreferences(
-        Resources.getSystem().getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
-    )
-
     private fun readUserInfo() : UserInfo {
         val s: String = sharedPref?.getString(
-            Resources.getSystem().getString(R.string.user_info),
+            context.getString(R.string.user_info),
             "") ?: ""
         return  if(s!="") gson.fromJson(s, UserInfo::class.java) else UserInfo()
     }
@@ -30,7 +31,7 @@ class PreferencesRepository(val a: Application) {
         val typeMyType: Type = object : TypeToken<ArrayList<AdvertisementDetails?>?>() {}.type
 
         val s: String = sharedPref.getString(
-            Resources.getSystem().getString(R.string.adv_list),
+            context.getString(R.string.adv_list),
             "") ?: ""
 
         return if(s!="") gson.fromJson(s, typeMyType) as List<AdvertisementDetails> else listOf()
@@ -46,7 +47,7 @@ class PreferencesRepository(val a: Application) {
 
         with(sharedPref.edit()) {
             putString(
-                Resources.getSystem().getString(requiredKey),
+                context.getString(requiredKey),
                 serializedObj)
             apply()
         }

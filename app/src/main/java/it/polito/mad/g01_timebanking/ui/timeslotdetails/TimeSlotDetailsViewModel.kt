@@ -3,10 +3,17 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.app.Application
 import androidx.lifecycle.*
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
-import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
+
+    private val placeholderAdvertisementDetails = AdvertisementDetails(-1,
+        "Placeholder title",
+        "Placeholder location",
+        Calendar.getInstance(),
+        "Placeholder duration",
+        "Placeholder description")
+
     /* This will be the valid advertisement used by Show */
     private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
         it.value = placeholderAdvertisementDetails
@@ -15,13 +22,6 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
 
     /* Ephemeral variables used from the Edit fragment to handle temporary save */
-
-    private val placeholderAdvertisementDetails = AdvertisementDetails(-1,
-        "Placeholder title",
-        "Placeholder location",
-        Calendar.getInstance(),
-        "Placeholder duration",
-        "Placeholder description")
 
     private val pvtId = MutableLiveData<Int>().also {
         it.value = placeholderAdvertisementDetails.id
