@@ -136,25 +136,5 @@ class ShowProfileFragment : Fragment() {
             })
         }
     }
-
-/*    private fun editProfile() {
-        val gson = Gson()
-        val serializedSkills: String = gson.toJson(skills)
-
-        val i = Intent(context, EditProfileActivity::class.java)
-        val b : Bundle = bundleOf(
-            UserKey.FULL_NAME_EXTRA_ID to tvFullName.text,
-            UserKey.NICKNAME_EXTRA_ID to tvNickname.text,
-            UserKey.EMAIL_EXTRA_ID to tvEmail.text,
-            UserKey.LOCATION_EXTRA_ID to tvLocation.text,
-            UserKey.BIOGRAPHY_EXTRA_ID to tvBiography.text,
-            UserKey.PROFILE_PICTURE_PATH_EXTRA_ID to profilePicturePath,
-            UserKey.SKILLS_EXTRA_ID to serializedSkills
-        )
-        i.putExtras(b)
-
-        startActivityForResult(i, UserKey.EDIT_ACTIVITY_REQUEST)
-
-    }*/
 }
 

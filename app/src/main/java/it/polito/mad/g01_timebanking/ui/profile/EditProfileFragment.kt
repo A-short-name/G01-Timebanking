@@ -2,7 +2,6 @@ package it.polito.mad.g01_timebanking.ui.profile
 
 import android.Manifest
 import android.content.ActivityNotFoundException
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -20,13 +19,11 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.helpers.FileHelper
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
@@ -62,12 +59,6 @@ class EditProfileFragment: Fragment() {
     //this variable is used in CAPTURE_IMAGE section of the onActivityResult
     //to change the vm only when the picture is saved
     private var tmpProfilePicturePath = ""
-
-/*    class myClass(val v: View): OnBackPressedCallback(true){
-        override fun handleOnBackPressed() {
-            v.findNavController().popBackStack()
-        }
-    }*/
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -352,7 +343,7 @@ class EditProfileFragment: Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode){
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] ==
+                if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED){
                     //permission from popup granted
                     dispatchChoosePictureIntent()

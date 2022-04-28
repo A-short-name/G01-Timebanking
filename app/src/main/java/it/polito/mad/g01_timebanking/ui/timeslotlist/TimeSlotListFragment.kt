@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
 import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
@@ -56,7 +54,7 @@ class TimeSlotListFragment : Fragment() {
                 yourOffersText.visibility = View.VISIBLE
             }
 
-            val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
+            val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel)
             recyclerViewAdv.adapter = adapter
         }
 

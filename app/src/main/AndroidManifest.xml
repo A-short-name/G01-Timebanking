@@ -28,13 +28,6 @@
             </intent-filter>
         </activity>
         <!-- https://developer.android.com/about/versions/11/privacy/storage#maintain-compatibility-android-10 -->
-        <activity
-            android:name=".EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ShowProfileActivity"
-            android:exported="false">
-        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -43,7 +36,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 
