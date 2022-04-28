@@ -127,17 +127,17 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         // Check if the fragment is called from the FAB (so it has to be empty)
-        if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
-            timeSlotDetailsViewModel.setTitle("")
-            timeSlotDetailsViewModel.setDuration("")
-            timeSlotDetailsViewModel.setDescription("")
-            timeSlotDetailsViewModel.setLocation("")
-            val expTime = Calendar.getInstance()
-            expTime.add(Calendar.HOUR_OF_DAY,+2)
-            expTime.set(Calendar.MINUTE,0)
-            timeSlotDetailsViewModel.setDateTime(expTime)
-            timeSlotDetailsViewModel.setId(advListViewModel.count())
-        }
+//        if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
+//            timeSlotDetailsViewModel.setTitle("")
+//            timeSlotDetailsViewModel.setDuration("")
+//            timeSlotDetailsViewModel.setDescription("")
+//            timeSlotDetailsViewModel.setLocation("")
+//            val expTime = Calendar.getInstance()
+//            expTime.add(Calendar.HOUR_OF_DAY,+2)
+//            expTime.set(Calendar.MINUTE,0)
+//            timeSlotDetailsViewModel.setDateTime(expTime)
+//            timeSlotDetailsViewModel.setId(advListViewModel.count())
+//        }
 
         /* Code fragment to generate time and date picker  */
 

@@ -92,4 +92,17 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         pvtDuration.value = adv.duration
         pvtCalendar.value = adv.calendar
     }
+
+    fun prepareNewAdvertisement(newId: Int) {
+        val expTime = Calendar.getInstance()
+        expTime.add(Calendar.HOUR_OF_DAY,+2)
+        expTime.set(Calendar.MINUTE,0)
+
+        pvtId.value = newId
+        pvtTitle.value = ""
+        pvtLocation.value = ""
+        pvtDescription.value = ""
+        pvtDuration.value = ""
+        pvtCalendar.value = expTime
+    }
 }

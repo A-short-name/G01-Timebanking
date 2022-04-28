@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // It creates the VM that will be used by fragments
-        ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
-        ViewModelProvider(this)[TimeSlotListViewModel::class.java]
+        val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
+        val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
         ViewModelProvider(this)[ProfileViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
         fab.setOnClickListener {
+            detailsVM.prepareNewAdvertisement(listVM.count())
             navController.navigate(
                 R.id.action_nav_your_offers_to_nav_edit_time_slot,
                 bundleOf(HASTOBEEMPTY to true)
