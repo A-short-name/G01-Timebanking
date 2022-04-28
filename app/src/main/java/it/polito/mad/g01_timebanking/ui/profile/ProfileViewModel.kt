@@ -1,12 +1,9 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
@@ -82,11 +79,6 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
 
     fun setProfilePicturePath(profilePicturePath: String) {
         pvtProfilePicturePath.value = profilePicturePath
-    }
-
-    fun setSkills(skills: MutableSet<String>) {
-        tmpSkills=skills
-        pvtSkills.value = skills
     }
 
     fun removeSkill(skillText: String) {

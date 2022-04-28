@@ -10,7 +10,6 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
-import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
 import java.util.*
 
 data class AdvertisementDetails (
@@ -39,8 +38,7 @@ data class AdvertisementDetails (
 
 class AdvertisementAdapter(
     private val data:List<AdvertisementDetails>,
-    private val tsDetailsViewModel: TimeSlotDetailsViewModel,
-    private val advListViewModel: TimeSlotListViewModel)
+    private val tsDetailsViewModel: TimeSlotDetailsViewModel)
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 
     class AdvertisementViewHolder(v:View): RecyclerView.ViewHolder(v) {
