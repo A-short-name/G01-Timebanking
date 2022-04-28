@@ -78,7 +78,7 @@ class TimeSlotEditFragment : Fragment() {
         val viewLifeCycleOwner = this.viewLifecycleOwner
         activity?.onBackPressedDispatcher?.addCallback(viewLifeCycleOwner) {
             // If not rotating
-            timeSlotDetailsViewModel.id.removeObservers(viewLifeCycleOwner)
+            // timeSlotDetailsViewModel.id.removeObservers(viewLifeCycleOwner)
             myOnBackPressedCallback()
         }
 
