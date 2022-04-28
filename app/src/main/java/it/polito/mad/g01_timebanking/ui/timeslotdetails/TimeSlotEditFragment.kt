@@ -269,7 +269,9 @@ class TimeSlotEditFragment : Fragment() {
                     confirm()
                 clickedButton=""
             }
-            "cancel" -> clickedButton=""
+            "cancel" -> {
+                clickedButton=""
+            }
             else -> {
                 if(validateFields())
                     confirm()

@@ -64,27 +64,6 @@ class TimeSlotDetailsFragment : Fragment() {
             textViewTime.setText(it.calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
             actualAdvertisement = it
         }
-
-        timeSlotDetailsViewModel.title.observe(this.viewLifecycleOwner) {
-            textViewTitle.setText(it)
-        }
-
-        timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
-            textViewLocation.setText(it)
-        }
-
-        timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
-            textViewDuration.setText(it)
-        }
-
-        timeSlotDetailsViewModel.description.observe(this.viewLifecycleOwner) {
-            textViewDescription.setText(it)
-        }
-
-        timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-            textViewDate.setText(it.fromDateToString())
-            textViewTime.setText(it.fromTimeToString(DateFormat.is24HourFormat(activity)))
-        }
     }
 
     override fun onDestroyView() {
