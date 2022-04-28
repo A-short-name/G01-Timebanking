@@ -25,6 +25,16 @@ data class AdvertisementDetails (
         other as AdvertisementDetails
         return id == other.id
     }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + title.hashCode()
+        result = 31 * result + location.hashCode()
+        result = 31 * result + calendar.hashCode()
+        result = 31 * result + duration.hashCode()
+        result = 31 * result + description.hashCode()
+        return result
+    }
 }
 
 class AdvertisementAdapter(
@@ -83,6 +93,7 @@ class AdvertisementAdapter(
                 tsDetailsViewModel.setDescription(adv.description)
                 tsDetailsViewModel.setLocation(adv.location)
                 tsDetailsViewModel.setDateTime(adv.calendar)
+                tsDetailsViewModel.setAdvertisement(adv)
                 Navigation.findNavController(it).navigate(action)
             }
         }

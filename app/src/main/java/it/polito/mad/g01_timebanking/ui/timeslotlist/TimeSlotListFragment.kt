@@ -8,16 +8,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
 import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
-import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
-import java.util.*
 
 
 class TimeSlotListFragment : Fragment() {
@@ -62,7 +59,7 @@ class TimeSlotListFragment : Fragment() {
                 yourOffersText.visibility = View.VISIBLE
             }
 
-            val gson = Gson();
+/*            val gson = Gson()
             val serializedAdvList: String = gson.toJson(it)
 
             val sharedPref =
@@ -70,7 +67,7 @@ class TimeSlotListFragment : Fragment() {
             with(sharedPref.edit()) {
                 putString(getString(R.string.adv_list), serializedAdvList)
                 apply()
-            }
+            }*/
 
             val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, timeSlotListViewModel)
             recyclerViewAdv.adapter = adapter

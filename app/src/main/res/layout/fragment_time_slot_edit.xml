@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.timeslotdetails.TimeSlotEditFragment">
+    tools:context=".ui.timeslotdetails.TimeSlotEditFragment" >
 
     <ScrollView
         android:id="@+id/sv"
@@ -15,112 +15,130 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp" >
 
-            <EditText
-                android:id="@+id/editTitle"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/titleTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="Insert your title here"
-                android:inputType="textPersonName"
-                android:minHeight="48dp"
-                android:textSize="24sp" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_title"
+                app:startIconDrawable="@drawable/ic_advertisement_title"
+                app:errorEnabled="true" >
 
-            <TextView
-                android:id="@+id/locationTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/location"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/titleEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextLocation"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/locationTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/locationHint"
-                android:inputType="textPostalAddress"
-                android:minHeight="48dp" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_location"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_location">
 
-            <TextView
-                android:id="@+id/dateTitle"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/locationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/dateTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                android:layout_margin="4dp"
+                android:clickable="false"
+                android:hint="@string/shr_hint_date"
+                app:errorEnabled="true"
+                app:startIconDrawable="@drawable/ic_calendar" >
 
-            <EditText
-                android:id="@+id/editTextDate"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dateEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/timeTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:focusable="false"
-                android:hint="@string/date_hint"
-                android:inputType="date"
-                android:minHeight="48dp" />
+                android:layout_margin="4dp"
+                android:clickable="false"
+                android:hint="@string/shr_hint_time"
+                app:startIconDrawable="@drawable/ic_clock"
+                app:errorEnabled="true">
 
-            <TextView
-                android:id="@+id/timeTitle"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/timeEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/durationTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/time"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_duration"
+                app:startIconDrawable="@drawable/ic_hourglass"
+                app:errorEnabled="true">
 
-            <EditText
-                android:id="@+id/editTextTime"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/durationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/descriptionTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/time_hint"
-                android:inputType="time"
-                android:focusable="false"
-                android:minHeight="48dp" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_description"
+                app:startIconDrawable="@drawable/ic_description"
+                app:counterEnabled="true"
+                app:counterMaxLength="160"
+                app:errorEnabled="true">
 
-            <TextView
-                android:id="@+id/durationTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/duration"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextDuration"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/time_hint"
-                android:inputType="time"
-                android:minHeight="48dp" />
+                android:layout_margin="4dp"
+                android:gravity="end">
+                <Button
+                    android:id="@+id/cancelAdvButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel_adv_button_text" />
 
-            <TextView
-                android:id="@+id/descriptionTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <Button
+                    android:id="@+id/confirmAdvButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/confirm_adv_button_text" />
 
-            <EditText
-                android:id="@+id/editTextTextDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/description_hint"
-                android:inputType="textPersonName"
-                android:minHeight="48dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

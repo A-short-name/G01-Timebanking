@@ -9,17 +9,24 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
+import it.polito.mad.g01_timebanking.UserKey.REQUIRED
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,12 +42,25 @@ class TimeSlotEditFragment : Fragment() {
     private var desiredTimeDate = Calendar.getInstance()
 
     // Views to be handled
+        // variable for validation
+    private lateinit var textInputTitle: TextInputLayout
+    private lateinit var textInputLocation: TextInputLayout
+    private lateinit var textInputDuration: TextInputLayout
+    private lateinit var textInputDescription: TextInputLayout
+
+        // edit text of the fields of the advertisement
     private lateinit var editTextTitle: EditText
     private lateinit var editTextLocation: EditText
     private lateinit var editTextDuration: EditText
     private lateinit var editTextDate: EditText
     private lateinit var editTextTime: EditText
     private lateinit var editTextDescription: EditText
+    private lateinit var confirmAdvButton: Button
+    private lateinit var cancelAdvButton: Button
+
+    // Variable to handle button state
+    private var clickedButton = ""
+    private lateinit var actAdv : AdvertisementDetails
 
     private var _binding: FragmentTimeSlotEditBinding? = null
 
@@ -57,19 +77,60 @@ class TimeSlotEditFragment : Fragment() {
     ): View {
         _binding = FragmentTimeSlotEditBinding.inflate(inflater, container, false)
 
+        activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
+            Toast.makeText(context,"Programmatore: ricordati di salvare i dati", Toast.LENGTH_SHORT).show()
+            //updatePreferences()
+
+            when (clickedButton) {
+                "confirm" -> {
+                    addAdvToVM()
+                    clickedButton=""
+                    requireView().findNavController().popBackStack()
+                }
+                "cancel" -> {
+                    if(arguments?.getBoolean(HASTOBEEMPTY) != true) {
+                        println("Premuto cancel!")
+                        restoreOldVMFromSharedPref()
+                    }
+                    clickedButton=""
+                    requireView().findNavController().popBackStack()
+                }
+                else -> {
+                    if(validateFields())
+                        addAdvToVM()
+                    else {
+                        var text: CharSequence = "Fields not valid. Changes not saved"
+                        if(arguments?.getBoolean(HASTOBEEMPTY) == true)
+                            text = "Fields are not valid. Advertisement not saved"
+
+                        val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                    requireView().findNavController().popBackStack()
+                }
+            }
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /* Get text input layout (material design wrapper) */
+        textInputTitle = view.findViewById(R.id.titleTextInputLayout)
+        textInputLocation = view.findViewById(R.id.locationTextInputLayout)
+        textInputDuration = view.findViewById(R.id.durationTextInputLayout)
+        textInputDescription = view.findViewById(R.id.descriptionTextInputLayout)
         /* Get text views */
-        editTextTitle = view.findViewById(R.id.editTitle)
-        editTextLocation = view.findViewById(R.id.editTextLocation)
-        editTextDuration = view.findViewById(R.id.editTextDuration)
-        editTextDate = view.findViewById(R.id.editTextDate)
-        editTextTime = view.findViewById(R.id.editTextTime)
-        editTextDescription = view.findViewById(R.id.editTextTextDescription)
+        editTextTitle = view.findViewById(R.id.titleEditText)
+        editTextLocation = view.findViewById(R.id.locationEditText)
+        editTextDuration = view.findViewById(R.id.durationEditText)
+        editTextDate = view.findViewById(R.id.dateEditText)
+        editTextTime = view.findViewById(R.id.timeEditText)
+        editTextDescription = view.findViewById(R.id.descriptionEditText)
+        confirmAdvButton = view.findViewById(R.id.confirmAdvButton)
+        cancelAdvButton = view.findViewById(R.id.cancelAdvButton)
 
         /* Set fields */
         timeSlotDetailsViewModel.id.observe(this.viewLifecycleOwner) {
@@ -93,23 +154,26 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         timeSlotDetailsViewModel.calendar.observe(this.viewLifecycleOwner) {
-            editTextDate.setText(fromDateToString(it.time))
-            editTextTime.setText(fromTimeToString(it.time))
+            editTextDate.setText(it.fromDateToString())
+            editTextTime.setText(it.fromTimeToString())
             actualTimeDate = it
         }
 
-//        advListViewModel.advList.observe(this.viewLifecycleOwner) {
-//            val gson = Gson();
-//            val serializedAdvList: String = gson.toJson(it)
-//            println(serializedAdvList);
-//
-//            val sharedPref =
-//                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
-//            with(sharedPref.edit()) {
-//                putString(getString(R.string.adv_list), serializedAdvList)
-//                apply()
-//            }
-//        }
+        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
+            actAdv = it
+        }
+        advListViewModel.advList.observe(this.viewLifecycleOwner) {
+            val gson = Gson();
+            val serializedAdvList: String = gson.toJson(it)
+            println(serializedAdvList);
+
+            val sharedPref =
+                context?.getSharedPreferences(getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE) ?: return@observe
+            with(sharedPref.edit()) {
+                putString(getString(R.string.adv_list), serializedAdvList)
+                apply()
+            }
+        }
 
         // Check if the fragment is called from the FAB (so it has to be empty)
         if (arguments?.getBoolean(HASTOBEEMPTY) == true) {
@@ -118,7 +182,7 @@ class TimeSlotEditFragment : Fragment() {
             timeSlotDetailsViewModel.setDescription("")
             timeSlotDetailsViewModel.setLocation("")
             val expTime = Calendar.getInstance()
-            expTime.add(Calendar.HOUR_OF_DAY,+12)
+            expTime.add(Calendar.HOUR_OF_DAY,+1)
             expTime.set(Calendar.MINUTE,0)
             timeSlotDetailsViewModel.setDateTime(expTime)
             timeSlotDetailsViewModel.setId(advListViewModel.count())
@@ -127,7 +191,8 @@ class TimeSlotEditFragment : Fragment() {
         /* Code fragment to generate time and date picker  */
 
         // When a date is selected by the user this function is called.
-        // It updates the date in the calendar object and the editText shown to the user
+        // It updates the date in the calendar object and the textInput shown to the user
+
         val date = OnDateSetListener { _, year, month, day ->
             nowTimeDate = Calendar.getInstance()
 
@@ -161,7 +226,7 @@ class TimeSlotEditFragment : Fragment() {
         }
 
         // When a time is selected by the user this function is called.
-        // It updates the time in the calendar object and the editText shown to the user
+        // It updates the time in the calendar object and the textInput shown to the user
         val time = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
 
             nowTimeDate = Calendar.getInstance()
@@ -202,6 +267,39 @@ class TimeSlotEditFragment : Fragment() {
             ).show()
         }
         /* End of Code fragment to generate time and date picker */
+
+        // Cancel and confirm button listeners
+        confirmAdvButton.setOnClickListener {
+            if(validateFields()) {
+                clickedButton = "confirm"
+                // Do not add the adv here, since it will be added onDetach
+                activity?.onBackPressed()
+            }
+        }
+        cancelAdvButton.setOnClickListener {
+            clickedButton = "cancel"
+            activity?.onBackPressed()
+        }
+    }
+
+    private fun validateFields() : Boolean {
+        var valid = true
+
+        val fieldsToValidate = listOf(textInputTitle,
+                                        textInputDuration,
+                                        textInputLocation,
+                                        textInputDescription)
+
+        fieldsToValidate.forEach{
+            if (it.editText!!.text.isBlank()) {
+                it.error = REQUIRED
+                valid = false
+            } else {
+                it.error = null
+            }
+        }
+
+        return valid
     }
 
     override fun onDetach() {
@@ -209,8 +307,18 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
         timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
         timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+        timeSlotDetailsViewModel.setDateTime(actualTimeDate)
 
-        val a = AdvertisementDetails (
+        super.onDetach()
+    }
+
+    private fun addAdvToVM() {
+        timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
+        timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
+        timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
+        timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+
+        val a = AdvertisementDetails(
             id = actualAdvId,
             title = editTextTitle.text.toString(),
             location = editTextLocation.text.toString(),
@@ -220,26 +328,72 @@ class TimeSlotEditFragment : Fragment() {
         )
         //There is an observer that update preferences
         advListViewModel.addOrUpdateElement(a)
-
-        super.onDetach()
+        timeSlotDetailsViewModel.setAdvertisement(a)
     }
+/*
+    private fun saveAdv() {
+        timeSlotDetailsViewModel.setTitle(editTextTitle.text.toString())
+        timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
+        timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
+        timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+
+        val a = AdvertisementDetails(
+            id = actualAdvId,
+            title = editTextTitle.text.toString(),
+            location = editTextLocation.text.toString(),
+            calendar = actualTimeDate,
+            duration = editTextDuration.text.toString(),
+            description = editTextDescription.text.toString()
+        )
+        //There is an observer that update preferences
+        advListViewModel.addOrUpdateElement(a)
+        savePreferences(advListViewModel.advList.value!!)
+        timeSlotDetailsViewModel.setAdvertisement(a)
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    private fun fromTimeToString(date : Date): String? {
+    private fun Calendar.fromTimeToString(): String? {
         val myFormat = if (DateFormat.is24HourFormat(activity)) "HH:mm" else "hh:mm a"
 
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
 
-        return dateFormat.format(date)
+        return dateFormat.format(this.time)
     }
 
-    private fun fromDateToString(date: Date): String? {
+    private fun Calendar.fromDateToString(): String? {
         val myFormat = "dd/MM/yyyy"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-        return dateFormat.format(date)
+        return dateFormat.format(this.time)
+    }
+
+    private fun restoreOldVMFromSharedPref(){
+        // Populate advertisements
+        val typeMyType: Type = object : TypeToken<ArrayList<AdvertisementDetails?>?>() {}.type
+        val gson = Gson()
+
+        val sharedPref = context?.getSharedPreferences(
+            getString(R.string.preference_file_key), AppCompatActivity.MODE_PRIVATE
+        )
+        val s: String = sharedPref?.getString(getString(R.string.adv_list), "") ?: ""
+
+        val l : MutableList<AdvertisementDetails> =
+            if(s!="")
+                gson.fromJson(s, typeMyType) as MutableList<AdvertisementDetails>
+            else
+                mutableListOf()
+
+        var restoredAdv : AdvertisementDetails
+        if(arguments?.getBoolean(HASTOBEEMPTY) != true) {
+            restoredAdv= l.get(actualAdvId)
+            timeSlotDetailsViewModel.setTitle(restoredAdv.title)
+            timeSlotDetailsViewModel.setDuration(restoredAdv.duration)
+            timeSlotDetailsViewModel.setDescription(restoredAdv.description)
+            timeSlotDetailsViewModel.setLocation(restoredAdv.location)
+            timeSlotDetailsViewModel.setDateTime(restoredAdv.calendar)
+        }
     }
 }

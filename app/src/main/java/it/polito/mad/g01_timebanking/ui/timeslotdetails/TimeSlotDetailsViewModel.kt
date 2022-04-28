@@ -2,6 +2,7 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 
 import android.app.Application
 import androidx.lifecycle.*
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
@@ -35,6 +36,17 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     }
     val duration : LiveData<String> = pvtDuration
 
+    private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
+        it.value = AdvertisementDetails(-1,
+            "",
+            "",
+            Calendar.getInstance(),
+            "",
+            "")
+    }
+
+    val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
+
     fun setId(id: Int) {
         pvtId.value = id
     }
@@ -63,5 +75,9 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
             set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
             set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
         }
+    }
+
+    fun setAdvertisement(adv: AdvertisementDetails) {
+        pvtAdvertisement.value = adv
     }
 }

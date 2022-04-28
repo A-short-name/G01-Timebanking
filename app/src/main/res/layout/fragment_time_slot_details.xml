@@ -1,81 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sv"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.timeslotdetails.TimeSlotEditFragment" >
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/title_time_slot_details"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:text="@string/title_placeholder"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:orientation="vertical"
+            android:padding="16dp" >
 
-        <TextView
-            android:id="@+id/date_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/date"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/titleShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_title"
+                app:startIconDrawable="@drawable/ic_advertisement_title" >
 
-        <TextView
-            android:id="@+id/date_body_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/date_placeholder"
-            android:textColorHint="#757575" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/titleShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/duration_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/duration"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/locationShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_location"
+                app:startIconDrawable="@drawable/ic_location" >
 
-        <TextView
-            android:id="@+id/duration_body_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/duration_placeholder"
-            android:textColorHint="#757575" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/locationShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/location_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/location"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/dateShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:clickable="false"
+                android:hint="@string/shr_hint_date"
+                app:startIconDrawable="@drawable/ic_calendar" >
 
-        <TextView
-            android:id="@+id/location_body_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/locationPlaceholder"
-            android:textColorHint="#757575" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dateShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/description_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/timeShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:clickable="false"
+                android:hint="@string/shr_hint_time"
+                app:startIconDrawable="@drawable/ic_clock">
 
-        <TextView
-            android:id="@+id/description_body_time_slot_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/description_placeholder"
-            android:textColorHint="#757575" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/timeShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-</ScrollView>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/durationShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_duration"
+                app:startIconDrawable="@drawable/ic_hourglass" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/durationShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/descriptionShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_description"
+                app:startIconDrawable="@drawable/ic_description"
+                app:counterEnabled="true"
+                app:counterMaxLength="160" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
