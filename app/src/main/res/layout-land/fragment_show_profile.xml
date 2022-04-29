@@ -7,47 +7,52 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ScrollView
-        android:id="@+id/sv"
+    <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <FrameLayout
+            android:id="@+id/frameView1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1">
 
             <!--Dimension set programmatically-->
-            <FrameLayout
-                android:id="@+id/frameView1"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_weight="1">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <!--Dimension set programmatically-->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/imageCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="10dp">
+                <ImageView
+                    android:id="@+id/profilePicture"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:padding="0px"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avatar" />
+            </androidx.cardview.widget.CardView>
+        </FrameLayout>
 
-                    <ImageView
-                        android:id="@+id/profilePicture"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="0px"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avatar" />
-                </androidx.cardview.widget.CardView>
-            </FrameLayout>
+        <ScrollView
+            android:id="@+id/sv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="2">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -128,6 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/locationPlaceholder"
+                    android:text="@string/locationPlaceholder"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textSize="16sp" />
 
@@ -191,7 +197,7 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+    </LinearLayout>
 </RelativeLayout>
