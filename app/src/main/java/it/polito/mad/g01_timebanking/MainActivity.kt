@@ -62,15 +62,6 @@ class MainActivity : AppCompatActivity() {
 //                .setAction("Action", null).show()
         }
 
-        val profileCardView = navHeader.findViewById<CardView>(R.id.profileCardView)
-        profileCardView.setOnClickListener {
-            drawerLayout.closeDrawers() // Close nav bar
-            navController.navigate( // Navigate to new fragment
-                R.id.action_nav_your_offers_to_nav_show_profile)
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
-        }
-
         // This code hides the FAB when it is NOT showing the TimeSlotListFragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when ((destination as FragmentNavigator.Destination).className) {

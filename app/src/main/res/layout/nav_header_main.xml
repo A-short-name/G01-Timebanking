@@ -20,8 +20,9 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:cardCornerRadius="100dp"
-        app:cardElevation="10dp">
+        android:innerRadius="0dp"
+        android:shape="ring"
+        app:cardCornerRadius="40dp">
 
         <RelativeLayout
             android:layout_width="80dp"
