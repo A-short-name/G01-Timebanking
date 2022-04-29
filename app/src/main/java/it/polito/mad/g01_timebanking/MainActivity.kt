@@ -3,6 +3,7 @@ package it.polito.mad.g01_timebanking
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -56,6 +57,16 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_nav_your_offers_to_nav_edit_time_slot,
                 bundleOf(HASTOBEEMPTY to true)
             )
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
+        }
+
+        val profileCardView = navView.getHeaderView(0).findViewById<CardView>(R.id.profileCardView)
+        profileCardView.setOnClickListener {
+            drawerLayout.closeDrawers()
+            navController.navigate(
+                R.id.action_nav_your_offers_to_nav_show_profile,
+                )
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
         }
