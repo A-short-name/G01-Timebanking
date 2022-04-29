@@ -2,6 +2,8 @@ package it.polito.mad.g01_timebanking
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
@@ -28,12 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var navigationView: NavigationView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // It creates the VM that will be used by fragments
+        // Activity creates the VMs that will be used by fragments
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
@@ -43,12 +43,13 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        // Get views from navigation drawer
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navHeader = navView.getHeaderView(0)
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // Get fab view to set listener
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
         fab.setOnClickListener {
@@ -61,12 +62,11 @@ class MainActivity : AppCompatActivity() {
 //                .setAction("Action", null).show()
         }
 
-        val profileCardView = navView.getHeaderView(0).findViewById<CardView>(R.id.profileCardView)
+        val profileCardView = navHeader.findViewById<CardView>(R.id.profileCardView)
         profileCardView.setOnClickListener {
-            drawerLayout.closeDrawers()
-            navController.navigate(
-                R.id.action_nav_your_offers_to_nav_show_profile,
-                )
+            drawerLayout.closeDrawers() // Close nav bar
+            navController.navigate( // Navigate to new fragment
+                R.id.action_nav_your_offers_to_nav_show_profile)
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
         }
@@ -94,12 +94,17 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        /* This code fetch user info to be shown on navigation bar */
+        val nameProfileTextView = navHeader.findViewById<TextView>(R.id.profileNameTextView)
+        val emailProfileTextView = navHeader.findViewById<TextView>(R.id.profileEmailTextView)
+        val profilePicture = navHeader.findViewById<ImageView>(R.id.navHeaderProfilePicture)
 
-        navigationView = findViewById(R.id.nav_view)
-        profileVM.profilePicturePath.observe(this) {
-            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                FileHelper.readImage(it, navigationView.getHeaderView(0).findViewById(R.id.navHeaderProfilePicture))
+        profileVM.user.observe(this) {
+            if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it.profilePicturePath, profilePicture)
             }
+            nameProfileTextView.text = it.fullName
+            emailProfileTextView.text = it.email
         }
 
     }
