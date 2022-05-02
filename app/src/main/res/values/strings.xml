@@ -57,8 +57,8 @@
     <string name="your_offers">Your offers</string>
 
     <!--    navbar strings -->
-    <string name="menu_your_offers">Home</string>
-    <string name="menu_show_profile">Profile</string>
+    <string name="menu_your_offers">Advertisements</string>
+    <string name="menu_show_profile">My Profile</string>
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
