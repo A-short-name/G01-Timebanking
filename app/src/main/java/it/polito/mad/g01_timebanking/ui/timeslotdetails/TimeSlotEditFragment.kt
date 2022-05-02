@@ -16,6 +16,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
@@ -308,26 +309,34 @@ class TimeSlotEditFragment : Fragment() {
     }
 
     private fun myOnBackPressedCallback() {
+        var text: CharSequence
         when (clickedButton) {
             "confirm" -> {
                 //If i'm here data is already validated, since onBackPressed is called only
                 // if validateFields() == true (see confirm onClickListener callback)
+                text = "Successfully saved changes"
+                view?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
                 confirm()
                 clickedButton = ""
             }
             "cancel" -> {
+                text = "Changes discarded"
+                view?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
                 clickedButton = ""
             }
             else -> {
-                if (validateFields(false))
+                if (validateFields(false)) {
+                    text = "Successfully saved changes"
+                    view?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
                     confirm()
-                else {
-                    var text: CharSequence = "Fields not valid. Changes not saved"
+                } else {
+                    text = "Fields not valid. Changes not saved"
                     if (arguments?.getBoolean(HASTOBEEMPTY) == true)
                         text = "Fields not valid. Advertisement not added"
 
-                    val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
-                    toast.show()
+                    view?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
+//                    val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+//                    toast.show()
                 }
             }
         }

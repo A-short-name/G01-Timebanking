@@ -24,6 +24,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.snackbar.Snackbar
 import it.polito.mad.g01_timebanking.helpers.FileHelper
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
@@ -69,12 +70,14 @@ class EditProfileFragment: Fragment() {
         //val myclass = myClass(requireView())
 
         activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner){
-            if(validateFields())
+            val text: CharSequence
+            if(validateFields()) {
+                text = "Successfully updated profile details"
+                Snackbar.make(root, text, Snackbar.LENGTH_LONG).show()
                 confirm()
-            else {
-                val text: CharSequence = "Fields not valid. Changes not saved"
-                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
-                toast.show()
+            } else {
+                text = "Fields not valid. Changes not saved"
+                Snackbar.make(root, text, Snackbar.LENGTH_LONG).show()
             }
             requireView().findNavController().popBackStack()
         }
