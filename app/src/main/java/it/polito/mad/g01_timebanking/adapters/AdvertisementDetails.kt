@@ -1,5 +1,7 @@
 package it.polito.mad.g01_timebanking.adapters
 
+import android.annotation.SuppressLint
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,8 @@ import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.util.*
 
@@ -41,15 +45,17 @@ class AdvertisementAdapter(
     private val tsDetailsViewModel: TimeSlotDetailsViewModel)
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 
-    class AdvertisementViewHolder(v:View): RecyclerView.ViewHolder(v) {
+    class AdvertisementViewHolder(private val parent: ViewGroup, v:View): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advDate)
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
         private val cardView: CardView = v.findViewById(R.id.advCardView)
 
+        @SuppressLint("SetTextI18n")
         fun bind(adv: AdvertisementDetails, buttonAction: (v: View) -> Unit, cardAction: (v: View) -> Unit) {
             title.text = adv.title
-            date.text = adv.calendar.time.toString()
+            date.text = "${adv.calendar.fromDateToString()} ${adv.calendar.fromTimeToString(
+                DateFormat.is24HourFormat(parent.context))}"
             button.setOnClickListener(buttonAction)
             cardView.setOnClickListener(cardAction)
         }
@@ -60,7 +66,7 @@ class AdvertisementAdapter(
         val v : View = LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.single_advertisement_layout, parent,false)
-        return AdvertisementViewHolder(v)
+        return AdvertisementViewHolder(parent,v)
     }
 
     override fun onBindViewHolder(holder: AdvertisementViewHolder, position: Int) {
