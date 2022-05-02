@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/nav_show_time_slot"
         android:name="it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsFragment"
-        android:label="@string/menu_show_profile"
-        tools:layout="@layout/fragment_time_slot_details" >
+        android:label="@string/menu_show_time_slot"
+        tools:layout="@layout/fragment_time_slot_details">
         <action
             android:id="@+id/action_nav_show_time_slot_to_nav_edit_time_slot"
             app:destination="@id/nav_edit_time_slot"
@@ -23,7 +23,7 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
