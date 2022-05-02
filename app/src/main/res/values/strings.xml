@@ -78,6 +78,7 @@
     <string name="shr_hint_email">Email</string>
     <string name="shr_hint_biography">Biography</string>
     <string name="shr_hint_skills">Insert your skill here</string>
+    <string name="add_new_advertisement">Add new advertisement</string>
 
 
 </resources>
