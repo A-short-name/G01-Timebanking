@@ -102,7 +102,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fullNameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="yes"
+                    android:inputType="textPersonName|textCapWords"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -118,7 +120,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nicknameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="yes"
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -134,7 +138,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="yes"
+                    android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -150,7 +156,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/locationEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="yes"
+                    android:inputType="textPostalAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -166,7 +174,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/biographyEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="textLongMessage" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
