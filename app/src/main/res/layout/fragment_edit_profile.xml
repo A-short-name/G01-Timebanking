@@ -90,21 +90,22 @@
                 android:textSize="24sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:id="@+id/fullNameTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_fullName"
-                app:startIconDrawable="@drawable/ic_description"
-                app:errorEnabled="true" >
+                app:errorEnabled="true"
+                app:helperText="*Required"
+                app:startIconDrawable="@drawable/ic_description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fullNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="yes"
-                    android:inputType="textPersonName|textCapWords"/>
+                    android:inputType="textPersonName|textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -114,6 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_nickname"
+                app:helperText="*Required"
                 app:startIconDrawable="@drawable/ic_description"
                 app:errorEnabled="true" >
 
@@ -132,6 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_email"
+                app:helperText="*Required"
                 app:startIconDrawable="@drawable/ic_email"
                 app:errorEnabled="true" >
 

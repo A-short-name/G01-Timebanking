@@ -94,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_fullName"
+                app:helperText="*Required"
                 app:startIconDrawable="@drawable/ic_description"
                 app:errorEnabled="true" >
 
@@ -111,6 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                app:helperText="*Required"
                 android:hint="@string/shr_hint_nickname"
                 app:startIconDrawable="@drawable/ic_description"
                 app:errorEnabled="true" >
@@ -129,6 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                app:helperText="*Required"
                 android:hint="@string/shr_hint_email"
                 app:startIconDrawable="@drawable/ic_email"
                 app:errorEnabled="true" >
