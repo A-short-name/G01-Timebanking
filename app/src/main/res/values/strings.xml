@@ -28,7 +28,6 @@
     <string name="emailHint">Insert your email here</string>
     <string name="locationHint">Insert your location here</string>
     <string name="biographyHint">Insert your biography here</string>
-    <string name="skillHint">Insert your skill here</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -78,6 +77,7 @@
     <string name="shr_hint_nickname">Nickname</string>
     <string name="shr_hint_email">Email</string>
     <string name="shr_hint_biography">Biography</string>
+    <string name="shr_hint_skills">Insert your skill here</string>
 
 
 </resources>

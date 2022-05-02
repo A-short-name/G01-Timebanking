@@ -11,10 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigator
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
@@ -101,9 +98,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        /** Test **/
+//        val navController = findNavController(R.id.nav_host_fragment_content_main)
+//        val count = supportFragmentManager.backStackEntryCount
+//
+//        println("Contatore sta a: $count")
+//        if (count == 0) {
+//            return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+//        }
+//        else onBackPressed()
+//        return false
+        /** Test **/
+
+
         //onBackPressed()
         //return false
         //This is the good way if fragments are opened from push notification
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

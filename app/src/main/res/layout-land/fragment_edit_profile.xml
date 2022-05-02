@@ -209,16 +209,26 @@
                     android:text="@string/skill3" />
             </com.google.android.material.chip.ChipGroup>
 
-            <AutoCompleteTextView
-                android:id="@+id/editTextAddSkills"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/skillsTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/skillHint"
-                android:importantForAutofill="no"
-                android:inputType="textPersonName"
-                android:textSize="16sp" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_skills"
+                app:startIconDrawable="@drawable/ic_description"
+                app:errorEnabled="true" >
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/editTextAddSkills"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:importantForAutofill="no"
+                    android:inputType="textPersonName"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>
