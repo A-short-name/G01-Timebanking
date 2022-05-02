@@ -30,8 +30,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="10dp">
+                    app:cardElevation="10dp"
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    app:cardCornerRadius="0dp">
 
                     <ImageView
                         android:id="@+id/profilePicture"
