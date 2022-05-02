@@ -53,10 +53,6 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     }
     val duration : LiveData<String> = pvtDuration
 
-    fun setId(id: Int) {
-        pvtId.value = id
-    }
-
     fun setTitle(title: String) {
         pvtTitle.value = title
     }

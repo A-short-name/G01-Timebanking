@@ -2,16 +2,16 @@ package it.polito.mad.g01_timebanking
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigator
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
@@ -27,12 +27,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var navigationView: NavigationView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // It creates the VM that will be used by fragments
+        // Activity creates the VMs that will be used by fragments
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
@@ -42,12 +40,13 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        // Get views from navigation drawer
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navHeader = navView.getHeaderView(0)
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // Get fab view to set listener
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
         fab.setOnClickListener {
@@ -83,20 +82,39 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        /* This code fetch user info to be shown on navigation bar */
+        val nameProfileTextView = navHeader.findViewById<TextView>(R.id.profileNameTextView)
+        val emailProfileTextView = navHeader.findViewById<TextView>(R.id.profileEmailTextView)
+        val profilePicture = navHeader.findViewById<ImageView>(R.id.navHeaderProfilePicture)
 
-        navigationView = findViewById(R.id.nav_view)
-        profileVM.profilePicturePath.observe(this) {
-            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                FileHelper.readImage(it, navigationView.getHeaderView(0).findViewById(R.id.navHeaderProfilePicture))
+        profileVM.user.observe(this) {
+            if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it.profilePicturePath, profilePicture)
             }
+            nameProfileTextView.text = it.fullName
+            emailProfileTextView.text = it.email
         }
 
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        /** Test **/
+//        val navController = findNavController(R.id.nav_host_fragment_content_main)
+//        val count = supportFragmentManager.backStackEntryCount
+//
+//        println("Contatore sta a: $count")
+//        if (count == 0) {
+//            return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+//        }
+//        else onBackPressed()
+//        return false
+        /** Test **/
+
+
         //onBackPressed()
         //return false
         //This is the good way if fragments are opened from push notification
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

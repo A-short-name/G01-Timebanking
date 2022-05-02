@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="surfaceColor">#121212</color>
+    <color name="red">#E4FF0000</color>
+    <color name="secondaryColor">#69f0ae</color>
+    <color name="secondaryDarkColor">#9fffe0</color>
+    <color name="secondaryLightColor">#2bbd7e</color>
+    <color name="primaryColor">#7986cb</color>
+    <color name="primaryDarkColor">#aab6fe</color>
+    <color name="primaryLightColor">#49599a</color>
+    <color name="primaryTextColor">#F3000000</color>
+    <color name="secondaryTextColor">#F3000000</color>
+</resources>

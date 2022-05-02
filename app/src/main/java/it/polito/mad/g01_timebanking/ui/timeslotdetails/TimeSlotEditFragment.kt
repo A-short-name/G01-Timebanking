@@ -215,6 +215,34 @@ class TimeSlotEditFragment : Fragment() {
         }
         /* End of Code fragment to generate time and date picker */
 
+        /* Code fragment to generate time picker for duration */
+
+        val duration = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+
+            val tempCal = Calendar.getInstance()
+
+            tempCal.set(Calendar.HOUR_OF_DAY, hour)
+            tempCal.set(Calendar.MINUTE, minute)
+
+            // If the selected date is today, make sure the time selected is not passed
+            timeSlotDetailsViewModel.setDuration(tempCal.fromTimeToString(true))
+        }
+
+        // When the edit text is clicked, pop-up the date picker instead
+        editTextDuration.setOnClickListener {
+            val tpd = TimePickerDialog(
+                this.requireContext(),
+                duration,
+                0,
+                0,
+                true
+            )
+            tpd.show()
+        }
+
+        /* End of code fragment to generate time picker for duration */
+
+
         // Cancel and confirm button listeners
         confirmAdvButton.setOnClickListener {
             if(validateFields(true)) {

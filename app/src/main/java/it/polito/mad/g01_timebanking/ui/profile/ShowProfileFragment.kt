@@ -132,6 +132,8 @@ class ShowProfileFragment : Fragment() {
                     cardView.layoutParams.width = relativeDimension
                     cardView.layoutParams.height = relativeDimension
                     //different from before because cardView doesn't work with LinearLayout.LayoutP....
+
+                    cardView.radius = (relativeDimension/2).toFloat()
                 }
             })
         }

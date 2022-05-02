@@ -8,14 +8,22 @@
     <fragment
         android:id="@+id/nav_show_time_slot"
         android:name="it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsFragment"
-        android:label="@string/menu_show_profile"
-        tools:layout="@layout/fragment_time_slot_details" >
+        android:label="@string/menu_show_time_slot"
+        tools:layout="@layout/fragment_time_slot_details">
         <action
             android:id="@+id/action_nav_show_time_slot_to_nav_edit_time_slot"
-            app:destination="@id/nav_edit_time_slot" />
+            app:destination="@id/nav_edit_time_slot"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_nav_show_time_slot_to_nav_your_offers"
-            app:destination="@id/nav_your_offers" />
+            app:destination="@id/nav_your_offers"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -25,7 +33,11 @@
         tools:layout="@layout/fragment_time_slot_edit" >
         <action
             android:id="@+id/action_nav_edit_time_slot_to_nav_show_time_slot"
-            app:destination="@id/nav_show_time_slot" />
+            app:destination="@id/nav_show_time_slot"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_your_offers"
@@ -46,6 +58,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_your_offers_to_nav_show_profile"
+            app:destination="@id/nav_show_profile"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_edit_profile"
@@ -54,15 +73,23 @@
         <action
             android:id="@+id/action_nav_edit_profile_to_nav_show_profile"
             app:destination="@id/nav_show_profile"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/nav_show_profile"
         android:name="it.polito.mad.g01_timebanking.ui.profile.ShowProfileFragment"
-        android:label="@string/menu_show_profile" >
+        android:label="@string/menu_show_profile">
         <action
             android:id="@+id/action_nav_show_profile_to_nav_edit_profile"
-            app:destination="@id/nav_edit_profile" />
+            app:destination="@id/nav_edit_profile"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
 </navigation>

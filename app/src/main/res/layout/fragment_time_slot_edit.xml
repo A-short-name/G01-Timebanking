@@ -31,7 +31,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/titleEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:importantForAutofill="yes"
+                    android:inputType="textCapSentences"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -47,7 +50,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/locationEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="yes"
+                    android:inputType="textPostalAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -65,6 +70,7 @@
                     android:id="@+id/dateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="date"
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,6 +89,7 @@
                     android:id="@+id/timeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="time"
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,6 +98,7 @@
                 android:id="@+id/durationTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_duration"
                 app:startIconDrawable="@drawable/ic_hourglass"
@@ -99,7 +107,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/durationEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:focusableInTouchMode="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -117,7 +127,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/descriptionEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="textLongMessage"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -136,7 +147,8 @@
                     android:id="@+id/confirmAdvButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/confirm_adv_button_text" />
+                    android:text="@string/confirm_adv_button_text"
+                    tools:ignore="ButtonStyle" />
 
             </LinearLayout>
 

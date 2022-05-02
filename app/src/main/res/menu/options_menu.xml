@@ -4,5 +4,5 @@
     <item
         android:id="@+id/nav_edit_time_slot"
         android:title="Edit advertisement"
-        android:menuCategory="secondary" />
+        android:menuCategory="secondary"/>
 </menu>

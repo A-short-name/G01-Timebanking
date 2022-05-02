@@ -28,7 +28,6 @@
     <string name="emailHint">Insert your email here</string>
     <string name="locationHint">Insert your location here</string>
     <string name="biographyHint">Insert your biography here</string>
-    <string name="skillHint">Insert your skill here</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -58,21 +57,27 @@
     <string name="your_offers">Your offers</string>
 
     <!--    navbar strings -->
-    <string name="menu_your_offers">Your offers</string>
-    <string name="menu_show_profile">My Account</string>
-    <string name="menu_edit_profile">Edit Account</string>
+    <string name="menu_your_offers">Advertisements</string>
+    <string name="menu_show_profile">My Profile</string>
+    <string name="menu_edit_profile">Edit Profile</string>
+    <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
 
     <!-- Advertisements Hints -->
     <string name="shr_hint_title">Advertisement title</string>
     <string name="shr_hint_location">Location</string>
     <string name="shr_hint_description">Description</string>
-    <string name="shr_hint_duration">Duration</string>
+    <string name="shr_hint_duration">Duration (hh:mm)</string>
     <string name="shr_hint_date">Date</string>
     <string name="shr_hint_time">Time</string>
     <string name="confirm_adv_button_text">Confirm</string>
     <string name="cancel_adv_button_text">Cancel</string>
     <string name="back_adv_button_text">Back</string>
+    <string name="shr_hint_fullName">Full name</string>
+    <string name="shr_hint_nickname">Nickname</string>
+    <string name="shr_hint_email">Email</string>
+    <string name="shr_hint_biography">Biography</string>
+    <string name="shr_hint_skills">Insert your skill here</string>
 
 
 </resources>
