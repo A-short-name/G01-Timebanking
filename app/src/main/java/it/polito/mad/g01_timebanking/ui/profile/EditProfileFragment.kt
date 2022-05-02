@@ -85,11 +85,11 @@ class EditProfileFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Fetch views
-        ivFullName = view.findViewById(R.id.editTextFullName)
-        ivNickname = view.findViewById(R.id.editTextNickname)
-        ivEmail = view.findViewById(R.id.editTextEmail)
-        ivLocation = view.findViewById(R.id.editTextLocation)
-        ivBiography = view.findViewById(R.id.editTextBiography)
+        ivFullName = view.findViewById(R.id.fullNameEditText)
+        ivNickname = view.findViewById(R.id.nicknameEditText)
+        ivEmail = view.findViewById(R.id.emailEditText)
+        ivLocation = view.findViewById(R.id.locationEditText)
+        ivBiography = view.findViewById(R.id.biographyEditText)
         ivSkills = view.findViewById(R.id.editTextAddSkills)
         profilePicture = view.findViewById(R.id.profilePicture)
         skillGroup = view.findViewById(R.id.skillgroup)

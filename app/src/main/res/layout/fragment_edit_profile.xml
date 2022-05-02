@@ -89,110 +89,86 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/fullNameTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/editTextFullName"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/fullNameTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/nameHint"
-                android:importantForAutofill="yes"
-                android:inputType="textPersonName|textCapWords"
-                android:textSize="16sp"
-                tools:ignore="LabelFor" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_fullName"
+                app:startIconDrawable="@drawable/ic_advertisement_title"
+                app:errorEnabled="true" >
 
-            <TextView
-                android:id="@+id/nicknameTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/nickname"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fullNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextNickname"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/nicknameTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/nicknameHint"
-                android:importantForAutofill="yes"
-                android:inputType="textPersonName"
-                android:textSize="16sp"
-                tools:ignore="LabelFor" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_nickname"
+                app:startIconDrawable="@drawable/ic_advertisement_title"
+                app:errorEnabled="true" >
 
-            <TextView
-                android:id="@+id/emailTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/email"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nicknameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextEmail"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/emailTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/emailHint"
-                android:importantForAutofill="yes"
-                android:inputType="textEmailAddress"
-                android:textSize="16sp"
-                tools:ignore="LabelFor" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_email"
+                app:startIconDrawable="@drawable/ic_advertisement_title"
+                app:errorEnabled="true" >
 
-            <TextView
-                android:id="@+id/locationTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/location"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextLocation"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/locationTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/locationHint"
-                android:importantForAutofill="yes"
-                android:inputType="textPostalAddress"
-                android:textSize="16sp"
-                tools:ignore="LabelFor" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_location"
+                app:startIconDrawable="@drawable/ic_advertisement_title"
+                app:errorEnabled="true" >
 
-            <TextView
-                android:id="@+id/biographyTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/biography"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/locationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextBiography"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/biographyTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/biographyHint"
-                android:importantForAutofill="yes"
-                android:inputType="textLongMessage"
-                android:textSize="16sp"
-                tools:ignore="LabelFor" />
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_biography"
+                app:startIconDrawable="@drawable/ic_advertisement_title"
+                app:errorEnabled="true" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/biographyEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/skillsTitle"

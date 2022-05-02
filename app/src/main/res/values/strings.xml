@@ -73,6 +73,10 @@
     <string name="confirm_adv_button_text">Confirm</string>
     <string name="cancel_adv_button_text">Cancel</string>
     <string name="back_adv_button_text">Back</string>
+    <string name="shr_hint_fullName">Full name</string>
+    <string name="shr_hint_nickname">Nickname</string>
+    <string name="shr_hint_email">Email</string>
+    <string name="shr_hint_biography">Biography</string>
 
 
 </resources>
