@@ -16,6 +16,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import it.polito.mad.g01_timebanking.R
@@ -75,6 +76,7 @@ class TimeSlotEditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTimeSlotEditBinding.inflate(inflater, container, false)
+
 
         val viewLifeCycleOwner = this.viewLifecycleOwner
         activity?.onBackPressedDispatcher?.addCallback(viewLifeCycleOwner) {

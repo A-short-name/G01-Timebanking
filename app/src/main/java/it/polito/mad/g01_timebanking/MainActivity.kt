@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_show_profile, R.id.nav_your_offers,
+                R.id.nav_show_profile, R.id.nav_your_offers
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -92,6 +93,11 @@ class MainActivity : AppCompatActivity() {
             }
             nameProfileTextView.text = it.fullName
             emailProfileTextView.text = it.email
+        }
+
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot)
+                findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).navigationIcon= null
         }
 
     }

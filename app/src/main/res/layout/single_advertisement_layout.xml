@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    >
 
     <androidx.cardview.widget.CardView
         android:id="@+id/advCardView"
@@ -14,21 +14,22 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@color/secondaryLightColor"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="10dp"
+
         app:cardPreventCornerOverlap="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:elevation="8dp"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0.0px"
-        android:clipToPadding="false"
-        android:clipChildren="false">
+
+        app:cardUseCompatPadding="true"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_height="match_parent">
 
             <TextView
@@ -37,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="Title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/advDate"
                 app:layout_constraintEnd_toStartOf="@+id/editAdvButton"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -55,8 +57,6 @@
 
             <ImageButton
                 android:id="@+id/editAdvButton"
-                android:layout_marginRight="4dp"
-                android:layout_marginLeft="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="Edit button"

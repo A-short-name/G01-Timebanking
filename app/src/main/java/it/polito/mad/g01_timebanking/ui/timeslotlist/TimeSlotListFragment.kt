@@ -41,17 +41,14 @@ class TimeSlotListFragment : Fragment() {
         recyclerViewAdv.layoutManager = LinearLayoutManager(context)
 
         val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
-        val yourOffersText = view.findViewById<TextView>(R.id.offersTitle)
 
         timeSlotListViewModel.advList.observe(this.viewLifecycleOwner){
             if (it.isEmpty()) {
                 recyclerViewAdv.visibility = View.GONE
                 emptyAdvText.visibility = View.VISIBLE
-                yourOffersText.visibility = View.GONE
             } else {
                 recyclerViewAdv.visibility = View.VISIBLE
                 emptyAdvText.visibility = View.GONE
-                yourOffersText.visibility = View.VISIBLE
             }
 
             val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel)
