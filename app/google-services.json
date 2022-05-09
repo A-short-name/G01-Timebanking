@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "580911530380",
+    "project_id": "g01---time-banking",
+    "storage_bucket": "g01---time-banking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580911530380:android:43baed6baf38783f2556a9",
+        "android_client_info": {
+          "package_name": "it.polito.mad.g01_timebanking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "580911530380-eh7kid46vf4fo5jqamie8l8doqkul47s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyE3aYYpTgp9zY4f5whpBaDZEznvxnvrQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "580911530380-eh7kid46vf4fo5jqamie8l8doqkul47s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

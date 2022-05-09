@@ -2,6 +2,7 @@ package it.polito.mad.g01_timebanking.repositories
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import it.polito.mad.g01_timebanking.R
