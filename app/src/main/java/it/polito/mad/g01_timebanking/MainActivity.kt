@@ -1,14 +1,10 @@
 package it.polito.mad.g01_timebanking
 
-import android.content.ContentValues.TAG
 import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -16,14 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.ui.*
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
@@ -38,9 +29,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
+
+        if(auth.currentUser == null) {
+            // Launch login activity
+            val i = Intent(applicationContext, MainActivity::class.java)
+            startActivity(i)
+        }
 
         // Activity creates the VMs that will be used by fragments
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]

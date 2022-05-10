@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -98,7 +97,7 @@ class SignInActivity : AppCompatActivity() {
                 // do nothing and continue presenting the signed-out UI.
 
                 /* Starting sign-up flow */
-                Log.d(ContentValues.TAG, e.localizedMessage)
+                Log.d(ContentValues.TAG, e.localizedMessage ?: "Starting sign-up flow")
                 oneTapClient.beginSignIn(signUpRequest)
                     .addOnSuccessListener(this) { result ->
                         try {
@@ -122,7 +121,7 @@ class SignInActivity : AppCompatActivity() {
                             "Google account is necessary to use the app. Add at least one to your device",
                             Toast.LENGTH_SHORT
                         ).show()
-                        Log.d(ContentValues.TAG, e.localizedMessage)
+                        Log.d(ContentValues.TAG, e.localizedMessage ?: "No google accounts found")
                     }
             }
     }
@@ -137,7 +136,6 @@ class SignInActivity : AppCompatActivity() {
                     val credential = oneTapClient.getSignInCredentialFromIntent(data)
                     val idToken = credential.googleIdToken
                     val username = credential.id
-                    val password = credential.password
                     when {
                         idToken != null -> {
                             // Got an ID token from Google. Use it to authenticate
@@ -150,22 +148,19 @@ class SignInActivity : AppCompatActivity() {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(ContentValues.TAG, "signInWithCredential:success")
                                         val user = auth.currentUser
-                                        //updateUI(user)
+
+                                        val i = Intent(applicationContext, MainActivity::class.java)
+                                        //val b = Bundle()
+                                        //b.putString
+                                        //startActivity(i,b)
+                                        startActivity(i)
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w(ContentValues.TAG, "signInWithCredential:failure", task.exception)
                                         //updateUI(null)
                                     }
                                 }
-
-                            val i = Intent(applicationContext, MainActivity::class.java)
-                            startActivity(i)
                             Log.d(ContentValues.TAG, "Got ID token.")
-                        }
-                        password != null -> {
-                            // Got a saved username and password. Use them to authenticate
-                            // with your backend.
-                            Log.d(ContentValues.TAG, "Got password.")
                         }
                         else -> {
                             // Shouldn't happen.
