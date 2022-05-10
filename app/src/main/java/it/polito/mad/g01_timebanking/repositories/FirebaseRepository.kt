@@ -1,6 +1,7 @@
 package it.polito.mad.g01_timebanking.repositories
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,6 +11,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
+import java.io.File
 
 class FirebaseRepository(val a: Application, val profilevm: ProfileViewModel) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -57,6 +59,31 @@ class FirebaseRepository(val a: Application, val profilevm: ProfileViewModel) {
             .addOnFailureListener{
                 Log.d("Firebase", "Exception: ${it.message}")
             }
+    }
+
+    fun uploadPhoto(profilePicturePath: String) {
+        val file = Uri.fromFile(File(profilePicturePath))
+        val riversRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
+        val uploadTask = riversRef.putFile(file)
+
+        uploadTask
+            .addOnSuccessListener {
+                Log.d("PICTURE_UPLOAD","Successfully updated picture")
+            }
+            .addOnFailureListener{
+                Log.d("PICTURE_UPLOAD","Failed to upload picture")
+            }
+    }
+
+    fun downloadPhoto() {
+        val riversRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
+        val localFile = File.createTempFile("images","jpg")
+
+        riversRef.getFile(localFile).addOnSuccessListener {
+            profilevm.setProfilePicturePath(localFile.absolutePath)
+        }.addOnFailureListener{
+            Log.d("DOWNLOAD_PICTURE", "Failed downloading picture")
+        }
     }
 
     fun clear() {

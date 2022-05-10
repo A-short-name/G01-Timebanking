@@ -96,7 +96,6 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
 
     fun setUserInfo(userInfo: UserInfo) {
-        Log.d("TESTING","Email: ${userInfo.email}")
         _user = userInfo
         pvtUser.value = userInfo
         pvtFullName.value = userInfo.fullName
