@@ -21,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
 import it.polito.mad.g01_timebanking.helpers.FileHelper
+import it.polito.mad.g01_timebanking.login.SignInActivity
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         if(auth.currentUser == null) {
             // Launch login activity
-            val i = Intent(applicationContext, MainActivity::class.java)
+            val i = Intent(applicationContext, SignInActivity::class.java)
             startActivity(i)
         }
 
