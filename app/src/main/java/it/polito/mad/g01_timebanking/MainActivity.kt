@@ -1,3 +1,5 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package it.polito.mad.g01_timebanking
 
 import android.content.ContentValues.TAG
@@ -44,7 +46,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signUpRequest: BeginSignInRequest
 
     private val REQ_ONE_TAP = 2
-    private var showOneTapUI = true
 
     private lateinit var auth: FirebaseAuth
 
@@ -191,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                             Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
                         }
                     }
-                    .addOnFailureListener(this) { e ->
+                    .addOnFailureListener(this) { _ ->
                         // No Google Accounts found. Just continue presenting the signed-out UI.
                         // Signed-out UI is unwanted so the app is closed
                         Toast.makeText(this,"Google account is necessary to use the app. Add at least one to your device",Toast.LENGTH_SHORT).show()
