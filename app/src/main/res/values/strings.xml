@@ -80,6 +80,7 @@
     <string name="shr_hint_skills">Insert your skill here</string>
     <string name="add_new_advertisement">Add new advertisement</string>
     <string name="g01_web_client_id">109354753026-08kb3t7cbl9gt82d3a82mcqb1fpft1kk.apps.googleusercontent.com</string>
+    <string name="SignInActivity">SignInActivity</string>
 
 
 </resources>

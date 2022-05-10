@@ -91,5 +91,9 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
+    <activity
+        android:id="@+id/signInActivity"
+        android:name="it.polito.mad.g01_timebanking.login.SignInActivity"
+        android:label="SignInActivity" />
 
 </navigation>

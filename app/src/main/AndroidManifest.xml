@@ -17,16 +17,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.G01Timebanking">
+
+        <activity
+            android:name=".login.SignInActivity"
+            android:exported="true"
+            android:label="@string/SignInActivity"
+            android:theme="@style/Theme.G01Timebanking.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.G01Timebanking.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- https://developer.android.com/about/versions/11/privacy/storage#maintain-compatibility-android-10 -->
 
