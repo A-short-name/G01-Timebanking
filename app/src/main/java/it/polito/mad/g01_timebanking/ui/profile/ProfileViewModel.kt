@@ -1,6 +1,7 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,12 +12,13 @@ import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
 class ProfileViewModel(a: Application): AndroidViewModel(a) {
     private val repo = PreferencesRepository(a)
-    private val repo2 = FirebaseRepository(a)
+    private val repo2 = FirebaseRepository(a,this)
 
     // Official variable that contains UserInfo saved on preferences
-    private var _user = repo2.getUserInfo()
+    private var _user = UserInfo()
     private val pvtUser = MutableLiveData<UserInfo>().also {
         it.value = _user
+        repo2.getUserInfo()
     }
     val user : LiveData<UserInfo> = pvtUser
 
@@ -94,6 +96,8 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
 
     fun setUserInfo(userInfo: UserInfo) {
+        Log.d("TESTING","Email: ${userInfo.email}")
+        _user = userInfo
         pvtUser.value = userInfo
         pvtFullName.value = userInfo.fullName
         pvtNickname.value = userInfo.nickname

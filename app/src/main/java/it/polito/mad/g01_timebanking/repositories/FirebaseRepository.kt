@@ -2,41 +2,42 @@ package it.polito.mad.g01_timebanking.repositories
 
 import android.app.Application
 import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import it.polito.mad.g01_timebanking.R
+import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
+import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 
-class FirebaseRepository(val a: Application) {
+class FirebaseRepository(val a: Application, val profilevm: ProfileViewModel) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var l : ListenerRegistration
     private val auth = Firebase.auth
+    private val storageRef = Firebase.storage.reference
+    private val imagesRef = storageRef.child("userImages")
 
-    fun getUserInfo() : UserInfo {
-        var userInfo : UserInfo? = null
+    fun getUserInfo() {
         l = db.collection("users").document(auth.currentUser!!.uid)
             .addSnapshotListener{ v, e ->
-                if(e==null) {
-                    userInfo = v!!.toUserInfo()
+                if (v != null) {
+                    if(e==null && v.exists()) {
+                        Log.d("TESTING","Setting user info")
+                        profilevm.setUserInfo(v.toUserInfo())
+                    } else {
+                        Log.d("TESTING","Setting new user info")
+                        val newUser = UserInfo().apply {
+                            email = auth.currentUser!!.email.toString()
+                            //profilePicturePath = auth.currentUser!!.photoUrl.toString()
+                            fullName = auth.currentUser!!.displayName.toString()
+                        }
+
+                        insertOrUpdateUserInfo(newUser)
+                        profilevm.setUserInfo(newUser)
+                    }
                 }
             }
-
-        if(userInfo == null) {
-            userInfo = UserInfo().apply {
-                email = auth.currentUser!!.email.toString()
-                //profilePicturePath = auth.currentUser!!.photoUrl.toString()
-                fullName = auth.currentUser!!.displayName.toString()
-            }
-
-            insertOrUpdateUserInfo(userInfo!!)
-        }
-        return userInfo!!
     }
 
     fun insertOrUpdateUserInfo(toBeSaved: UserInfo) {
@@ -48,6 +49,7 @@ class FirebaseRepository(val a: Application) {
                 "biography" to toBeSaved.biography,
                 "profilePicturePath" to toBeSaved.profilePicturePath,
                 "location" to toBeSaved.location,
+                "skills" to toBeSaved.skills.toList()
             ))
             .addOnSuccessListener { it ->
                 Log.d("Firebase","Success ${it.toString()}")
@@ -64,7 +66,7 @@ class FirebaseRepository(val a: Application) {
 
 private fun DocumentSnapshot.toUserInfo(): UserInfo {
     return try {
-        val fullName = get("fullname").toString()
+        val fullName = get("fullName").toString()
         val nickname = get("nickname").toString()
         val email = get("email").toString()
         val location = get("location").toString()
@@ -72,6 +74,7 @@ private fun DocumentSnapshot.toUserInfo(): UserInfo {
         val profilePicturePath = get("profilePicturePath").toString()
         val skills : MutableSet<String> = (get("skills") as List<*>).map{it -> it.toString()}.toMutableSet()
 
+        Log.d("TESTING","Inside to user, email is $email")
         UserInfo().apply {
             this.fullName = fullName
             this.nickname = nickname
@@ -82,6 +85,7 @@ private fun DocumentSnapshot.toUserInfo(): UserInfo {
             this.skills = skills
         }
     }catch(ex: Exception) {
+        Log.d("TESTING","Exception while toUser: ${ex.message}")
         return UserInfo()
     }
 }
