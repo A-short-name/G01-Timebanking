@@ -42,7 +42,13 @@ class SignInActivity : AppCompatActivity() {
             signIn()
         }
 
-        signIn()
+        if(Firebase.auth.currentUser == null)
+           signIn()
+        else {
+            // User already logged-in, close this activity
+            val i = Intent(applicationContext, MainActivity::class.java)
+            startActivity(i)
+        }
     }
 
     private fun signIn() {
@@ -150,9 +156,6 @@ class SignInActivity : AppCompatActivity() {
                                         val user = auth.currentUser
 
                                         val i = Intent(applicationContext, MainActivity::class.java)
-                                        //val b = Bundle()
-                                        //b.putString
-                                        //startActivity(i,b)
                                         startActivity(i)
                                     } else {
                                         // If sign in fails, display a message to the user.
