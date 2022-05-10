@@ -13,7 +13,7 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     // Official variable that contains UserInfo saved on preferences
     private var _user = repo.userInfo
     private val pvtUser = MutableLiveData<UserInfo>().also {
-        it.value = _user
+        it.value = repo.getV
     }
     val user : LiveData<UserInfo> = pvtUser
 
