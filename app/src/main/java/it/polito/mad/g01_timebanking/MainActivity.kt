@@ -8,7 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -123,6 +123,10 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        oneTapSignIn()
+    }
+
+    private fun oneTapSignIn() {
         /* Building sign-up request code */
         oneTapClient = Identity.getSignInClient(this)
         signUpRequest = BeginSignInRequest.builder()
@@ -133,14 +137,17 @@ class MainActivity : AppCompatActivity() {
                     .setServerClientId(getString(R.string.g01_web_client_id))
                     // Show all accounts on the device.
                     .setFilterByAuthorizedAccounts(false)
-                    .build())
+                    .build()
+            )
             .build()
 
         /* Building Google Sign-in code */
         signInRequest = BeginSignInRequest.builder()
-            .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                .setSupported(true)
-                .build())
+            .setPasswordRequestOptions(
+                BeginSignInRequest.PasswordRequestOptions.builder()
+                    .setSupported(true)
+                    .build()
+            )
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
@@ -148,7 +155,8 @@ class MainActivity : AppCompatActivity() {
                     .setServerClientId(getString(R.string.g01_web_client_id))
                     // Only show accounts previously used to sign in.
                     .setFilterByAuthorizedAccounts(true)
-                    .build())
+                    .build()
+            )
             // Automatically sign in when exactly one credential is retrieved.
             .setAutoSelectEnabled(true)
             .build()
@@ -159,7 +167,8 @@ class MainActivity : AppCompatActivity() {
                 try {
                     startIntentSenderForResult(
                         result.pendingIntent.intentSender, REQ_ONE_TAP,
-                        null, 0, 0, 0, null)
+                        null, 0, 0, 0, null
+                    )
                 } catch (e: IntentSender.SendIntentException) {
                     Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
                 }
@@ -173,16 +182,20 @@ class MainActivity : AppCompatActivity() {
                 oneTapClient.beginSignIn(signUpRequest)
                     .addOnSuccessListener(this) { result ->
                         try {
-                            Log.d(TAG,"Starting sign-up request")
+                            Log.d(TAG, "Starting sign-up request")
                             startIntentSenderForResult(
                                 result.pendingIntent.intentSender, REQ_ONE_TAP,
-                                null, 0, 0, 0)
+                                null, 0, 0, 0
+                            )
                         } catch (e: IntentSender.SendIntentException) {
                             Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
                         }
                     }
                     .addOnFailureListener(this) { e ->
                         // No Google Accounts found. Just continue presenting the signed-out UI.
+                        // Signed-out UI is unwanted so the app is closed
+                        Toast.makeText(this,"Google account is necessary to use the app. Add at least one to your device",Toast.LENGTH_SHORT).show()
+                        finish()
                         Log.d(TAG, e.localizedMessage)
                     }
             }
@@ -242,7 +255,6 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-
                             Log.d(TAG, "Got ID token.")
                         }
                         password != null -> {
@@ -256,12 +268,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 } catch (e: ApiException) {
-                    // ...
+                    Toast.makeText(this,"Google account is necessary to use the app.",Toast.LENGTH_SHORT).show()
+                    finish()
                     Log.d(TAG, "Api exception thrown from activityResult: ${e.message}")
                 }
             }
         }
     }
-    // ...
 
 }
