@@ -105,7 +105,7 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
 
     fun addOrUpdateData(user: UserInfo) {
-        repo.save(user)
+        repo2.insertOrUpdateUserInfo(user)
         pvtUser.value = user
         _user = user
     }

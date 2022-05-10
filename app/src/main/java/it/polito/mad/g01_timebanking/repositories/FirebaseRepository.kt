@@ -2,29 +2,53 @@ package it.polito.mad.g01_timebanking.repositories
 
 import android.app.Application
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.auth.User
+import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 
 class FirebaseRepository(val a: Application) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var l : ListenerRegistration
+    private val auth = Firebase.auth
 
     fun getUserInfo() : UserInfo {
         var userInfo : UserInfo? = null
-        l = db.collection("users").document("userInfo")
+        l = db.collection("users").document(auth.currentUser!!.uid)
             .addSnapshotListener{ v, e ->
                 if(e==null) {
                     userInfo = v!!.toUserInfo()
                 }
             }
-        Log.d("Firebase", "Called getUserInfo() method")
-        return userInfo ?: UserInfo()
+
+        if(userInfo == null) {
+            userInfo = UserInfo().apply {
+                email = auth.currentUser!!.email.toString()
+                //profilePicturePath = auth.currentUser!!.photoUrl.toString()
+                fullName = auth.currentUser!!.displayName.toString()
+            }
+
+            insertOrUpdateUserInfo(userInfo!!)
+        }
+        return userInfo!!
     }
 
-    fun create() {
-        db.collection("users").document().set(mapOf("key" to "value"))
+    fun insertOrUpdateUserInfo(toBeSaved: UserInfo) {
+        db.collection("users").document(auth.currentUser!!.uid)
+            .set(mapOf(
+                "fullName" to toBeSaved.fullName,
+                "nickname" to toBeSaved.nickname,
+                "email" to toBeSaved.email,
+                "biography" to toBeSaved.biography,
+                "profilePicturePath" to toBeSaved.profilePicturePath,
+                "location" to toBeSaved.location,
+            ))
             .addOnSuccessListener { it ->
                 Log.d("Firebase","Success ${it.toString()}")
             }
