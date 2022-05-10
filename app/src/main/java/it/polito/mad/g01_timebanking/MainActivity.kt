@@ -221,7 +221,7 @@ class MainActivity : AppCompatActivity() {
                     val idToken = credential.googleIdToken
                     val username = credential.id
                     val password = credential.password
-                    Log.d(TAG, "Token credentials: $idToken")
+                    Log.d(TAG, "usernane: $username \t password: $password")
                     when {
                         idToken != null -> {
                             // Got an ID token from Google. Use it to authenticate
@@ -255,10 +255,9 @@ class MainActivity : AppCompatActivity() {
                             Log.d(TAG, "No ID token or password!")
                         }
                     }
-                    Log.d(TAG, "Not in the when")
                 } catch (e: ApiException) {
                     // ...
-                    Log.d(TAG, "Exception thrown from activityResult: ${e.message}")
+                    Log.d(TAG, "Api exception thrown from activityResult: ${e.message}")
                 }
             }
         }
