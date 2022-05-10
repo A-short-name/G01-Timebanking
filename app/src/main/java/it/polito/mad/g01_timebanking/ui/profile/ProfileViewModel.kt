@@ -4,16 +4,19 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserInfo
+import it.polito.mad.g01_timebanking.repositories.FirebaseRepository
 import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
 class ProfileViewModel(a: Application): AndroidViewModel(a) {
     private val repo = PreferencesRepository(a)
+    private val repo2 = FirebaseRepository(a)
 
     // Official variable that contains UserInfo saved on preferences
-    private var _user = repo.userInfo
+    private var _user = repo2.getUserInfo()
     private val pvtUser = MutableLiveData<UserInfo>().also {
-        it.value = repo.getV
+        it.value = _user
     }
     val user : LiveData<UserInfo> = pvtUser
 
