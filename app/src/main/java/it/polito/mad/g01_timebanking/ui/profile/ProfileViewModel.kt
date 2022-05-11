@@ -1,8 +1,10 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
 import android.app.Application
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +15,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
+import java.io.ByteArrayOutputStream
 
 
 import java.io.File
@@ -63,7 +66,7 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     val location: LiveData<String> = pvtLocation
 
     private val pvtProfilePicturePath = MutableLiveData<String>().also {
-        it.value = _user.profilePicturePath
+        it.value = ""
     }
     val profilePicturePath: LiveData<String> = pvtProfilePicturePath
 
@@ -118,7 +121,6 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         pvtEmail.value = userInfo.email
         pvtLocation.value = userInfo.location
         pvtBiography.value = userInfo.biography
-        pvtProfilePicturePath.value = userInfo.profilePicturePath
         pvtSkills.value = userInfo.skills.toMutableSet()
     }
 
@@ -128,31 +130,18 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         _user = user
     }
 
-    fun updatePhoto(newProfilePicturePath: String) {
-        uploadPhoto(newProfilePicturePath)
-        val u = UserInfo(
-            fullName = _user.fullName,
-            nickname = _user.nickname,
-            email = _user.email,
-            location = _user.location,
-            biography = _user.biography,
-            profilePicturePath = newProfilePicturePath,
-            skills = _user.skills
-        )
-        addOrUpdateData(u)
-    }
-
     private fun getUserInfo() {
         userInfoListener = db.collection("users").document(auth.currentUser!!.uid)
             .addSnapshotListener { v, e ->
                 if (e == null && v?.exists() == true) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
+                    downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
                     val newUser = UserInfo().apply {
                         email = auth.currentUser!!.email.toString()
-                        //profilePicturePath = auth.currentUser!!.photoUrl.toString()
+                        downloadPhoto()
                         fullName = auth.currentUser!!.displayName.toString()
                     }
 
@@ -172,10 +161,21 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
             }
     }
 
-    private fun uploadPhoto(profilePicturePath: String) {
-        val file = Uri.fromFile(File(profilePicturePath))
+    fun uploadPhoto(imageView: ImageView) {
+        // Get the data from an ImageView as bytes
+        if(imageView.width == 0 || imageView.height == 0)
+            return
+
+        val bitmap = Bitmap.createBitmap(imageView.width, imageView.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        imageView.draw(canvas)
+
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
         val userPicRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
-        val uploadTask = userPicRef.putFile(file)
+        val uploadTask = userPicRef.putBytes(data)
 
         uploadTask
             .addOnSuccessListener {
@@ -187,13 +187,21 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     }
 
     private fun downloadPhoto() {
-        val riversRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
-        val localFile = File.createTempFile("images", "jpg")
+        Log.d("PICTURE_DOWNLOAD", "Started download function")
+        val userPicRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
 
-        riversRef.getFile(localFile).addOnSuccessListener {
-            setProfilePicturePath(localFile.absolutePath)
+        val maximumSizeOneMegabyte: Long = 1024 * 1024
+        userPicRef.getBytes(maximumSizeOneMegabyte).addOnSuccessListener {
+            Log.d("PICTURE_DOWNLOAD", "Successfully downloaded picture")
+
+            val localFile = File.createTempFile("images", ".jpg")
+            localFile.writeBytes(it)
+
+            Log.d("PICTURE_DOWNLOAD", "Path file: ${localFile.absolutePath}")
+            pvtProfilePicturePath.value = localFile.absolutePath
         }.addOnFailureListener {
-            Log.d("DOWNLOAD_PICTURE", "Failed downloading picture")
+            // Handle any errors
+            Log.d("PICTURE_DOWNLOAD", "Failed downloading picture: ${it.message}")
         }
     }
 

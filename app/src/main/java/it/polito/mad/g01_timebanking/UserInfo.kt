@@ -23,10 +23,6 @@ data class UserInfo(
     @get:PropertyName("biography")
     var biography: String = UserKey.BIOGRAPHY_PLACEHOLDER,
 
-    @set:PropertyName("profilePicturePath")
-    @get:PropertyName("profilePicturePath")
-    var profilePicturePath: String = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER,
-
     @set:PropertyName("skills")
     @get:PropertyName("skills")
     var skills: MutableList<String> = mutableListOf()

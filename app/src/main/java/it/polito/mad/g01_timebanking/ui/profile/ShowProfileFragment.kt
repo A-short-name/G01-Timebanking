@@ -70,9 +70,6 @@ class ShowProfileFragment : Fragment() {
             tvLocation.text = it.location
             tvBiography.text = it.biography
 
-            if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                FileHelper.readImage(it.profilePicturePath, ivProfilePicture)
-            }
             skillGroup.removeAllViews()
 
             if(it.skills.isEmpty())
@@ -88,6 +85,11 @@ class ShowProfileFragment : Fragment() {
                     }.also{ noSkills.isVisible = false }
         }
 
+        profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it, ivProfilePicture)
+            }
+        }
         //the only way to set height image to 1/3 of the screen is programmatically
         //This is ue to the fact that we use a scroll view with a bio with variable length
         arrangeViewByRatio(view)

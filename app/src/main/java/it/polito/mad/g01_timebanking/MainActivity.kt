@@ -102,11 +102,14 @@ class MainActivity : AppCompatActivity() {
         val profilePicture = navHeader.findViewById<ImageView>(R.id.navHeaderProfilePicture)
 
         profileVM.user.observe(this) {
-            if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                FileHelper.readImage(it.profilePicturePath, profilePicture)
-            }
             nameProfileTextView.text = it.fullName
             emailProfileTextView.text = it.email
+        }
+
+        profileVM.profilePicturePath.observe(this) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it, profilePicture)
+            }
         }
 
         navController.addOnDestinationChangedListener{ _, destination, _ ->

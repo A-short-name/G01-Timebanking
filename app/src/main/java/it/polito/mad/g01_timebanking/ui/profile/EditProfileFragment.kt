@@ -118,9 +118,10 @@ class   EditProfileFragment: Fragment() {
             ivBiography.setText(it)
         }
         profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
-            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER && it.isNotEmpty()) {
+                Log.d("UPDATE_PICTURE", "Path is $it")
                 FileHelper.readImage(it, profilePicture)
-                profileViewModel.updatePhoto(it)
+                profileViewModel.uploadPhoto(profilePicture)
             }
             currentProfilePicturePath = it
         }
@@ -377,7 +378,6 @@ class   EditProfileFragment: Fragment() {
             email = ivEmail.text.toString(),
             location = ivLocation.text.toString(),
             biography = ivBiography.text.toString(),
-            profilePicturePath = currentProfilePicturePath,
             skills = currentSkills.toMutableList()
         )
 
