@@ -13,18 +13,16 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
-import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 
 
 import java.io.File
 
-class ProfileViewModel(a: Application): AndroidViewModel(a) {
+class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val storageRef = Firebase.storage.reference
     private val auth = Firebase.auth
 
-    private lateinit var l : ListenerRegistration
-
-    private val storageRef = Firebase.storage.reference
+    private lateinit var userInfoListener: ListenerRegistration
 
     // Initialization placeholder variable
     private var _user = UserInfo()
@@ -35,46 +33,46 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
         it.value = _user
         getUserInfo()
     }
-    val user : LiveData<UserInfo> = pvtUser
+    val user: LiveData<UserInfo> = pvtUser
 
     /* Ephemeral variables used from the Edit fragment to handle temporary save */
 
     private val pvtFullName = MutableLiveData<String>().also {
         it.value = _user.fullName
     }
-    val fullName : LiveData<String> = pvtFullName
+    val fullName: LiveData<String> = pvtFullName
 
     private val pvtNickname = MutableLiveData<String>().also {
         it.value = _user.nickname
     }
-    val nickname : LiveData<String> = pvtNickname
+    val nickname: LiveData<String> = pvtNickname
 
     private val pvtEmail = MutableLiveData<String>().also {
         it.value = _user.email
     }
-    val email : LiveData<String> = pvtEmail
+    val email: LiveData<String> = pvtEmail
 
     private val pvtBiography = MutableLiveData<String>().also {
         it.value = _user.biography
     }
-    val biography : LiveData<String> = pvtBiography
+    val biography: LiveData<String> = pvtBiography
 
     private val pvtLocation = MutableLiveData<String>().also {
         it.value = _user.location
     }
-    val location : LiveData<String> = pvtLocation
+    val location: LiveData<String> = pvtLocation
 
     private val pvtProfilePicturePath = MutableLiveData<String>().also {
         it.value = _user.profilePicturePath
     }
-    val profilePicturePath : LiveData<String> = pvtProfilePicturePath
+    val profilePicturePath: LiveData<String> = pvtProfilePicturePath
 
-    private var tmpSkills : MutableSet<String> = _user.skills.toMutableSet()
+    private var tmpSkills: MutableSet<String> = _user.skills.toMutableSet()
 
     private val pvtSkills = MutableLiveData<MutableSet<String>>().also {
         it.value = tmpSkills
     }
-    val skills :LiveData<MutableSet<String>> = pvtSkills
+    val skills: LiveData<MutableSet<String>> = pvtSkills
 
 
     fun setFullname(fullname: String) {
@@ -107,7 +105,9 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
 
     fun tryToAddSkill(skillText: String): Boolean {
-        return if(tmpSkills.add(skillText)){ pvtSkills.value = tmpSkills; true } else false
+        return if (tmpSkills.add(skillText)) {
+            pvtSkills.value = tmpSkills; true
+        } else false
     }
 
     fun setUserInfo(userInfo: UserInfo) {
@@ -130,7 +130,7 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
 
     fun updatePhoto(newProfilePicturePath: String) {
         uploadPhoto(newProfilePicturePath)
-        val u = UserInfo (
+        val u = UserInfo(
             fullName = _user.fullName,
             nickname = _user.nickname,
             email = _user.email,
@@ -143,73 +143,62 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
 
     private fun getUserInfo() {
-        l = db.collection("users").document(auth.currentUser!!.uid)
-            .addSnapshotListener{ v, e ->
-                if (v != null) {
-                    if(e==null && v.exists()) {
-                        Log.d("TESTING","Setting user info")
-                        setUserInfo(v.toUserInfo())
-                    } else {
-                        Log.d("TESTING","Setting new user info")
-                        val newUser = UserInfo().apply {
-                            email = auth.currentUser!!.email.toString()
-                            //profilePicturePath = auth.currentUser!!.photoUrl.toString()
-                            fullName = auth.currentUser!!.displayName.toString()
-                        }
-
-                        insertOrUpdateUserInfo(newUser)
-                        setUserInfo(newUser)
+        userInfoListener = db.collection("users").document(auth.currentUser!!.uid)
+            .addSnapshotListener { v, e ->
+                if (e == null && v?.exists() == true) {
+                    Log.d("UserInfo_Listener", "Data found on database. Updating!")
+                    pvtUser.value = v.toUserInfo()
+                } else if (e == null) {
+                    Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
+                    val newUser = UserInfo().apply {
+                        email = auth.currentUser!!.email.toString()
+                        //profilePicturePath = auth.currentUser!!.photoUrl.toString()
+                        fullName = auth.currentUser!!.displayName.toString()
                     }
+
+                    insertOrUpdateUserInfo(newUser)
+                    pvtUser.value = newUser
                 }
             }
     }
 
     private fun insertOrUpdateUserInfo(toBeSaved: UserInfo) {
-        db.collection("users").document(auth.currentUser!!.uid)
-            .set(mapOf(
-                "fullName" to toBeSaved.fullName,
-                "nickname" to toBeSaved.nickname,
-                "email" to toBeSaved.email,
-                "biography" to toBeSaved.biography,
-                "profilePicturePath" to toBeSaved.profilePicturePath,
-                "location" to toBeSaved.location,
-                "skills" to toBeSaved.skills.toList()
-            ))
-            .addOnSuccessListener { it ->
-                Log.d("Firebase","Success ${it.toString()}")
+        db.collection("users").document(auth.currentUser!!.uid).set(toBeSaved)
+            .addOnSuccessListener {
+                Log.d("InsertOrUpdateUserInfo", "Success: $it")
             }
-            .addOnFailureListener{
-                Log.d("Firebase", "Exception: ${it.message}")
+            .addOnFailureListener {
+                Log.d("InsertOrUpdateUserInfo", "Exception: ${it.message}")
             }
     }
 
     private fun uploadPhoto(profilePicturePath: String) {
         val file = Uri.fromFile(File(profilePicturePath))
-        val riversRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
-        val uploadTask = riversRef.putFile(file)
+        val userPicRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
+        val uploadTask = userPicRef.putFile(file)
 
         uploadTask
             .addOnSuccessListener {
-                Log.d("PICTURE_UPLOAD","Successfully updated picture")
+                Log.d("PICTURE_UPLOAD", "Successfully updated picture")
             }
-            .addOnFailureListener{
-                Log.d("PICTURE_UPLOAD","Failed to upload picture")
+            .addOnFailureListener {
+                Log.d("PICTURE_UPLOAD", "Failed to upload picture")
             }
     }
 
-    fun downloadPhoto() {
+    private fun downloadPhoto() {
         val riversRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
-        val localFile = File.createTempFile("images","jpg")
+        val localFile = File.createTempFile("images", "jpg")
 
         riversRef.getFile(localFile).addOnSuccessListener {
             setProfilePicturePath(localFile.absolutePath)
-        }.addOnFailureListener{
+        }.addOnFailureListener {
             Log.d("DOWNLOAD_PICTURE", "Failed downloading picture")
         }
     }
 
     fun clear() {
-        l.remove()
+        userInfoListener.remove()
     }
 }
 
