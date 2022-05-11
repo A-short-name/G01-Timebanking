@@ -135,9 +135,45 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     }
 
     fun addOrUpdateData(user: UserInfo) {
+        addOrUpdateSkills(user.skills)
         insertOrUpdateUserInfo(user)
         pvtUser.value = user
         _user = user
+    }
+
+    fun addOrUpdateSkills(newUserSkillsName :MutableList<String>){
+        var oldUser = db.collection("users").document(auth.currentUser!!.uid).get()
+            .addOnSuccessListener {
+                val oldUser = it.toUserInfo()
+                for (oldUserSkillName in oldUser.skills) {
+                    if(! newUserSkillsName.contains(oldUserSkillName))
+                        decrementUsageInUserSkill(oldUserSkillName)
+
+                }
+                for (newUserSkillName in newUserSkillsName) {
+                    if(! oldUser.skills.contains(newUserSkillName))
+                        insertOrincrementUsageInUserSkill(newUserSkillName)
+                }
+            }
+
+    }
+
+    private fun insertOrincrementUsageInUserSkill(newUserSkillName: String) {
+        TODO("Not yet implemented, like the decrement it should search for the old skill if present update the usage," +
+                " if not present a new skill should be create")
+    }
+
+    fun decrementUsageInUserSkill(skillName : String){
+        db.collection("suggestedSkills").document(skillName).get().addOnSuccessListener { oldSkillFromDb ->
+            var tempSkill = oldSkillFromDb.toSkill()
+            tempSkill.usageInUser--
+            db.collection("suggestedSkills").document(skillName).set(tempSkill).addOnSuccessListener {
+                Log.d("UpdateSkillUsageUser", "Success: $it")
+            }
+                .addOnFailureListener {
+                    Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+                }
+        }
     }
 
     private fun getSuggestedSkills(){
