@@ -136,7 +136,6 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
                 if (e == null && v?.exists() == true) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
-                    downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
                     val newUser = UserInfo().apply {
