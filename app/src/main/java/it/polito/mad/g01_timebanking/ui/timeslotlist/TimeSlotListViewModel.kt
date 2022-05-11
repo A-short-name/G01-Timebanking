@@ -50,7 +50,7 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
 
     fun addOrUpdateElement(toBeSaved: AdvertisementDetails) {
         val id = if (toBeSaved.id == UserKey.ID_PLACEHOLDER)
-            db.collection("collection_name").document().id
+            db.collection("advertisements").document().id
         else
             toBeSaved.id
 
