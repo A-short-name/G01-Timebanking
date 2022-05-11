@@ -2,7 +2,6 @@ package it.polito.mad.g01_timebanking
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,6 +22,7 @@ import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
 import it.polito.mad.g01_timebanking.helpers.FileHelper
 import it.polito.mad.g01_timebanking.login.SignInActivity
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
+import it.polito.mad.g01_timebanking.ui.skillslist.SkillsListViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
+        val skillsVM = ViewModelProvider(this)[SkillsListViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_show_profile, R.id.nav_your_offers
+                R.id.nav_show_profile, R.id.nav_your_offers, R.id.nav_skills_list
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

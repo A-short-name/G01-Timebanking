@@ -58,6 +58,7 @@
 
     <!--    navbar strings -->
     <string name="menu_your_offers">My Advertisements</string>
+    <string name="menu_skills_list">Home</string>
     <string name="menu_show_profile">My Profile</string>
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>

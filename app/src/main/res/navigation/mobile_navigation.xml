@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_your_offers">
+    app:startDestination="@id/nav_skills_list">
 
     <fragment
         android:id="@+id/nav_show_time_slot"
@@ -91,9 +91,9 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
-    <activity
-        android:id="@+id/signInActivity"
-        android:name="it.polito.mad.g01_timebanking.login.SignInActivity"
-        android:label="SignInActivity" />
+    <fragment
+        android:id="@+id/nav_skills_list"
+        android:name="it.polito.mad.g01_timebanking.ui.skillslist.SkillsListFragment"
+        android:label="@string/menu_skills_list" />
 
 </navigation>
