@@ -19,16 +19,19 @@ import it.polito.mad.g01_timebanking.repositories.PreferencesRepository
 import java.io.File
 
 class ProfileViewModel(a: Application): AndroidViewModel(a) {
-    private val repo = PreferencesRepository(a)
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private lateinit var l : ListenerRegistration
     private val auth = Firebase.auth
-    private val storageRef = Firebase.storage.reference
-    private val imagesRef = storageRef.child("userImages")
 
-    // Official variable that contains UserInfo saved on preferences
+    private lateinit var l : ListenerRegistration
+
+    private val storageRef = Firebase.storage.reference
+
+    // Initialization placeholder variable
     private var _user = UserInfo()
+
+    // This variable contains user info synchronized with the database
     private val pvtUser = MutableLiveData<UserInfo>().also {
+        // Initial values, then database query
         it.value = _user
         getUserInfo()
     }
@@ -66,7 +69,7 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
     }
     val profilePicturePath : LiveData<String> = pvtProfilePicturePath
 
-    private var tmpSkills : MutableSet<String> = _user.skills
+    private var tmpSkills : MutableSet<String> = _user.skills.toMutableSet()
 
     private val pvtSkills = MutableLiveData<MutableSet<String>>().also {
         it.value = tmpSkills
@@ -116,7 +119,7 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
         pvtLocation.value = userInfo.location
         pvtBiography.value = userInfo.biography
         pvtProfilePicturePath.value = userInfo.profilePicturePath
-        pvtSkills.value = userInfo.skills
+        pvtSkills.value = userInfo.skills.toMutableSet()
     }
 
     fun addOrUpdateData(user: UserInfo) {
@@ -211,27 +214,5 @@ class ProfileViewModel(a: Application): AndroidViewModel(a) {
 }
 
 private fun DocumentSnapshot.toUserInfo(): UserInfo {
-    return try {
-        val fullName = get("fullName").toString()
-        val nickname = get("nickname").toString()
-        val email = get("email").toString()
-        val location = get("location").toString()
-        val biography = get("biography").toString()
-        val profilePicturePath = get("profilePicturePath").toString()
-        val skills : MutableSet<String> = (get("skills") as List<*>).map{it -> it.toString()}.toMutableSet()
-
-        Log.d("TESTING","Inside to user, email is $email")
-        UserInfo().apply {
-            this.fullName = fullName
-            this.nickname = nickname
-            this.email = email
-            this.location = location
-            this.biography = biography
-            this.profilePicturePath = profilePicturePath
-            this.skills = skills
-        }
-    }catch(ex: Exception) {
-        Log.d("TESTING","Exception while toUser: ${ex.message}")
-        return UserInfo()
-    }
+    return this.toObject(UserInfo::class.java) ?: UserInfo()
 }

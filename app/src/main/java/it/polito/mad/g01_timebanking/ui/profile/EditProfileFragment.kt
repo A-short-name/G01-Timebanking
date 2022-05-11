@@ -378,7 +378,7 @@ class   EditProfileFragment: Fragment() {
             location = ivLocation.text.toString(),
             biography = ivBiography.text.toString(),
             profilePicturePath = currentProfilePicturePath,
-            skills = currentSkills
+            skills = currentSkills.toMutableList()
         )
 
         profileViewModel.addOrUpdateData(u)

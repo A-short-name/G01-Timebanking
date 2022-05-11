@@ -29,5 +29,5 @@ data class UserInfo(
 
     @set:PropertyName("skills")
     @get:PropertyName("skills")
-    var skills: MutableSet<String> = mutableSetOf()
+    var skills: MutableList<String> = mutableListOf()
 )
