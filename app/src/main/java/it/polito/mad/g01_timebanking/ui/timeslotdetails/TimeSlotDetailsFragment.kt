@@ -13,6 +13,7 @@ import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
+import java.util.*
 
 
 class TimeSlotDetailsFragment : Fragment() {
@@ -60,8 +61,11 @@ class TimeSlotDetailsFragment : Fragment() {
             textViewLocation.setText(it.location)
             textViewDuration.setText(it.duration)
             textViewDescription.setText(it.description)
-            textViewDate.setText(it.calendar.fromDateToString())
-            textViewTime.setText(it.calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
+
+            val calendar = Calendar.getInstance()
+            calendar.time = it.calendar
+            textViewDate.setText(calendar.fromDateToString())
+            textViewTime.setText(calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
             actualAdvertisement = it
         }
     }

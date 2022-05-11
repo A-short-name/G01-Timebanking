@@ -304,7 +304,7 @@ class TimeSlotEditFragment : Fragment() {
             id = actualAdvId,
             title = editTextTitle.text.toString(),
             location = editTextLocation.text.toString(),
-            calendar = actualTimeDate,
+            calendar = actualTimeDate.time,
             duration = editTextDuration.text.toString(),
             description = editTextDescription.text.toString(),
             uid = Firebase.auth.currentUser!!.uid

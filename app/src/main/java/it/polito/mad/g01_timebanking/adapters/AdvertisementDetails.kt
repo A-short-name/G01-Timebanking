@@ -17,13 +17,13 @@ import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.util.*
 
 data class AdvertisementDetails (
-    var id: Int,
-    var title: String,
-    var location: String,
-    var calendar: Calendar,
-    var duration: String,
-    var description: String,
-    var uid: String
+    var id: Int = -1,
+    var title: String = "",
+    var location: String = "",
+    var calendar: Date = Calendar.getInstance().time,
+    var duration: String = "",
+    var description: String = "",
+    var uid: String = ""
     ){
     override fun equals(other: Any?): Boolean {
         other as AdvertisementDetails
@@ -56,7 +56,10 @@ class AdvertisementAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(adv: AdvertisementDetails, buttonAction: (v: View) -> Unit, cardAction: (v: View) -> Unit) {
             title.text = adv.title
-            date.text = "${adv.calendar.fromDateToString()} ${adv.calendar.fromTimeToString(
+            val calendar = Calendar.getInstance()
+            calendar.time = adv.calendar
+
+            date.text = "${calendar.fromDateToString()} ${calendar.fromTimeToString(
                 DateFormat.is24HourFormat(parent.context))}"
             button.setOnClickListener(buttonAction)
             cardView.setOnClickListener(cardAction)

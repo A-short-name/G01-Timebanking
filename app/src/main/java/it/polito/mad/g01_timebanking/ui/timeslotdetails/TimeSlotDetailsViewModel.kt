@@ -11,7 +11,7 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         -1,
         "Placeholder title",
         "Placeholder location",
-        Calendar.getInstance(),
+        Calendar.getInstance().time,
         "Placeholder duration",
         "Placeholder description",
         "Placeholder uid"
@@ -47,7 +47,9 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     val location : LiveData<String> = pvtLocation
 
     private val pvtCalendar = MutableLiveData<Calendar>().also {
-        it.value = placeholderAdvertisementDetails.calendar
+        val calendar = Calendar.getInstance()
+        calendar.time = placeholderAdvertisementDetails.calendar
+        it.value = calendar
     }
     val calendar : LiveData<Calendar> = pvtCalendar
 
@@ -89,7 +91,9 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         pvtLocation.value = adv.location
         pvtDescription.value = adv.description
         pvtDuration.value = adv.duration
-        pvtCalendar.value = adv.calendar
+        val calendar = Calendar.getInstance()
+        calendar.time = adv.calendar
+        pvtCalendar.value = calendar
     }
 
     fun prepareNewAdvertisement(newId: Int) {
