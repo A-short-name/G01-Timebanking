@@ -36,7 +36,7 @@ import java.io.File
 import java.io.IOException
 
 
-class EditProfileFragment: Fragment() {
+class   EditProfileFragment: Fragment() {
     private val profileViewModel : ProfileViewModel by activityViewModels()
 
     companion object {
