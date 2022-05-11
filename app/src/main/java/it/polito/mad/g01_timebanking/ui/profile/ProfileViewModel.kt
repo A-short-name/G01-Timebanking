@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
@@ -26,6 +27,7 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     private val auth = Firebase.auth
 
     private lateinit var userInfoListener: ListenerRegistration
+    private lateinit var suggestedSkillsListener: ListenerRegistration
 
     // Initialization placeholder variable
     private var _user = UserInfo()
@@ -76,6 +78,15 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         it.value = tmpSkills
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
+
+    private var tmpSuggestedSkills: MutableSet<String> = _user.skills.toMutableSet()
+
+    private val pvtSuggestedSkills = MutableLiveData<MutableSet<String>>().also {
+        it.value = tmpSuggestedSkills
+        getSuggestedSkills()
+    }
+    val suggestedSkills: LiveData<MutableSet<String>> = pvtSuggestedSkills
+
 
 
     fun setFullname(fullname: String) {
@@ -128,6 +139,15 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         insertOrUpdateUserInfo(user)
         pvtUser.value = user
         _user = user
+    }
+
+    private fun getSuggestedSkills(){
+        suggestedSkillsListener = db.collection("suggestedSkills")
+            .addSnapshotListener { value, error ->
+                if (error == null && value != null){
+                    pvtSuggestedSkills.value = value.documents.toMutableSet()
+                }
+            }
     }
 
     private fun getUserInfo() {

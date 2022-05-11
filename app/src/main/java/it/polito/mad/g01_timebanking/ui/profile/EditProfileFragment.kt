@@ -56,6 +56,7 @@ class   EditProfileFragment: Fragment() {
 
     private lateinit var currentProfilePicturePath: String
     private lateinit var currentSkills: MutableSet<String>
+    private lateinit var suggestedSkills: MutableSet<String>
 
     //this variable is used in CAPTURE_IMAGE section of the onActivityResult
     //to change the vm only when the picture is saved
@@ -146,6 +147,11 @@ class   EditProfileFragment: Fragment() {
             currentSkills = it
         }
 
+        /* Dynamic Suggested Skills list  */
+        profileViewModel.suggestedSkills.observe(this.viewLifecycleOwner){
+            suggestedSkills = it
+        }
+
         // Set listener on "add skills" field
         ivSkills.setOnEditorActionListener { v, actionId, _ ->
             // If user presses enter
@@ -179,7 +185,7 @@ class   EditProfileFragment: Fragment() {
     private fun initializeSkillSuggestion(view: View) {
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireContext(),
-            android.R.layout.simple_dropdown_item_1line, UserKey.SKILL_SUGGESTION
+            android.R.layout.simple_dropdown_item_1line, suggestedSkills.toList()
         )
         val actv = view.findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
         actv.setAdapter(adapter)
