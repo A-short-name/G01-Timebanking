@@ -15,6 +15,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
+import it.polito.mad.g01_timebanking.UserKey
 import java.io.ByteArrayOutputStream
 
 
@@ -136,14 +137,13 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
                 if (e == null && v?.exists() == true) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
+                    downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
                     val newUser = UserInfo().apply {
                         email = auth.currentUser!!.email.toString()
-                        downloadPhoto()
                         fullName = auth.currentUser!!.displayName.toString()
                     }
-
                     insertOrUpdateUserInfo(newUser)
                     pvtUser.value = newUser
                 }
@@ -190,6 +190,7 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         val userPicRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
 
         val maximumSizeOneMegabyte: Long = 1024 * 1024
+
         userPicRef.getBytes(maximumSizeOneMegabyte).addOnSuccessListener {
             Log.d("PICTURE_DOWNLOAD", "Successfully downloaded picture")
 
@@ -201,6 +202,7 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         }.addOnFailureListener {
             // Handle any errors
             Log.d("PICTURE_DOWNLOAD", "Failed downloading picture: ${it.message}")
+            pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
         }
     }
 
