@@ -22,6 +22,7 @@
             android:name=".login.SignInActivity"
             android:exported="true"
             android:label="@string/SignInActivity"
+            android:noHistory="true"
             android:theme="@style/Theme.G01Timebanking.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
