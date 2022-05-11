@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
         fab.setOnClickListener {
-            detailsVM.prepareNewAdvertisement(listVM.count())
+            detailsVM.prepareNewAdvertisement()
             navController.navigate(
                 R.id.action_nav_your_offers_to_nav_edit_time_slot,
                 bundleOf(HASTOBEEMPTY to true)

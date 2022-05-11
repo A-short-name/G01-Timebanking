@@ -16,7 +16,7 @@ data class SkillDetails (
     var title: String
 ){
     override fun equals(other: Any?): Boolean {
-        other as AdvertisementDetails
+        other as SkillDetails
         return id == other.id
     }
 

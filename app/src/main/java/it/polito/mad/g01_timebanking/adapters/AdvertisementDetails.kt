@@ -17,7 +17,7 @@ import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.util.*
 
 data class AdvertisementDetails (
-    var id: Int = -1,
+    var id: String = "",
     var title: String = "",
     var location: String = "",
     var calendar: Date = Calendar.getInstance().time,
@@ -31,7 +31,7 @@ data class AdvertisementDetails (
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = id.hashCode()
         result = 31 * result + title.hashCode()
         result = 31 * result + location.hashCode()
         result = 31 * result + calendar.hashCode()

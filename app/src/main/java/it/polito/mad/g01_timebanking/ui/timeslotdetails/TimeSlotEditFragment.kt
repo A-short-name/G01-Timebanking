@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.UserKey.REQUIRED
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -70,7 +71,7 @@ class TimeSlotEditFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private var actualAdvId = -1
+    private var actualAdvId = UserKey.ID_PLACEHOLDER
 
     override fun onCreateView(
         inflater: LayoutInflater,

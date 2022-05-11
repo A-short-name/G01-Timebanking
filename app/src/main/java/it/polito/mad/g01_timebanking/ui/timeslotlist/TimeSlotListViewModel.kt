@@ -9,7 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.auth.User
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 
 class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
@@ -37,23 +39,31 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
                 } else {
                     val advertisements = mutableListOf<AdvertisementDetails>()
 
-                    for (doc in value)
+                    for (doc in value) {
                         advertisements.add(doc.toObject(AdvertisementDetails::class.java))
-
+                    }
+                    mAdvList = advertisements
                     pvtList.value = advertisements
                 }
             }
     }
 
-    fun addOrUpdateElement(toBeSaved: AdvertisementDetails){
-        db.collection("advertisements").add(toBeSaved)
+    fun addOrUpdateElement(toBeSaved: AdvertisementDetails) {
+        val id = if (toBeSaved.id == UserKey.ID_PLACEHOLDER)
+            db.collection("collection_name").document().id
+        else
+            toBeSaved.id
+
+        toBeSaved.id = id
+
+        db.collection("advertisements").document(id).set(toBeSaved)
             .addOnSuccessListener {
                 Log.d("updateAdvertisement", "Success!")
                 val pos = mAdvList.indexOf(toBeSaved)
 
-                if(pos != -1){
+                if (pos != -1) {
                     mAdvList.removeAt(pos)
-                    mAdvList.add(pos,toBeSaved)
+                    mAdvList.add(pos, toBeSaved)
                 } else
                     mAdvList.add(toBeSaved)
 
@@ -61,7 +71,11 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
             }
             .addOnFailureListener {
                 Log.d("updateAdvertisement", "Exception: ${it.message}")
-                Toast.makeText(a.applicationContext,"Failed updating data. Try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    a.applicationContext,
+                    "Failed updating data. Try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 

@@ -2,13 +2,14 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 
 import android.app.Application
 import androidx.lifecycle.*
+import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
 
     private val placeholderAdvertisementDetails = AdvertisementDetails(
-        -1,
+        UserKey.ID_PLACEHOLDER,
         "Placeholder title",
         "Placeholder location",
         Calendar.getInstance().time,
@@ -26,10 +27,10 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
 
     /* Ephemeral variables used from the Edit fragment to handle temporary save */
 
-    private val pvtId = MutableLiveData<Int>().also {
+    private val pvtId = MutableLiveData<String>().also {
         it.value = placeholderAdvertisementDetails.id
     }
-    val id : LiveData<Int> = pvtId
+    val id : LiveData<String> = pvtId
 
     private val pvtTitle = MutableLiveData<String>().also {
         it.value = placeholderAdvertisementDetails.title
@@ -96,12 +97,12 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         pvtCalendar.value = calendar
     }
 
-    fun prepareNewAdvertisement(newId: Int) {
+    fun prepareNewAdvertisement() {
         val expTime = Calendar.getInstance()
         expTime.add(Calendar.HOUR_OF_DAY,+2)
         expTime.set(Calendar.MINUTE,0)
 
-        pvtId.value = newId
+        pvtId.value = UserKey.ID_PLACEHOLDER
         pvtTitle.value = ""
         pvtLocation.value = ""
         pvtDescription.value = ""
