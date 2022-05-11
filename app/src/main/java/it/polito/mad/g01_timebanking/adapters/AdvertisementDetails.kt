@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -105,7 +106,12 @@ class AdvertisementAdapter(
             val pos = data.indexOf(adv)
             if (pos != -1) {
                 tsDetailsViewModel.setAdvertisement(adv)
-                Navigation.findNavController(it).navigate(action)
+
+                if(isAdvBySkill) {
+                    val b = bundleOf("HideOptionMenu" to true)
+                    Navigation.findNavController(it).navigate(action, b)
+                } else
+                    Navigation.findNavController(it).navigate(action)
             }
         }
         return callback
