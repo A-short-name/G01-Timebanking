@@ -7,12 +7,15 @@ import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
 
-    private val placeholderAdvertisementDetails = AdvertisementDetails(-1,
+    private val placeholderAdvertisementDetails = AdvertisementDetails(
+        -1,
         "Placeholder title",
         "Placeholder location",
         Calendar.getInstance(),
         "Placeholder duration",
-        "Placeholder description")
+        "Placeholder description",
+        "Placeholder uid"
+    )
 
     /* This will be the valid advertisement used by Show */
     private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {

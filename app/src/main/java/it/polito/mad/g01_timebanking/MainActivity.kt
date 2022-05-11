@@ -50,6 +50,11 @@ class MainActivity : AppCompatActivity() {
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
         val skillsVM = ViewModelProvider(this)[SkillsListViewModel::class.java]
 
+        // Retrive user info from database
+        profileVM.getUserInfo()
+        // Retrieve advertisements of the user
+        listVM.getAdvertisementList()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

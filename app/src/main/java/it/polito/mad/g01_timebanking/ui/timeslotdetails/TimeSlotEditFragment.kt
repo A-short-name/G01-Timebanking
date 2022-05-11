@@ -19,6 +19,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.UserKey.REQUIRED
@@ -304,7 +306,8 @@ class TimeSlotEditFragment : Fragment() {
             location = editTextLocation.text.toString(),
             calendar = actualTimeDate,
             duration = editTextDuration.text.toString(),
-            description = editTextDescription.text.toString()
+            description = editTextDescription.text.toString(),
+            uid = Firebase.auth.currentUser!!.uid
         )
         advListViewModel.addOrUpdateElement(a)
         timeSlotDetailsViewModel.setAdvertisement(a)

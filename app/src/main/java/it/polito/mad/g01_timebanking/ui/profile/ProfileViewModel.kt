@@ -34,9 +34,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     // This variable contains user info synchronized with the database
     private val pvtUser = MutableLiveData<UserInfo>().also {
-        // Initial values, then database query
+        // Initial values, then database query will arise from activity
         it.value = _user
-        getUserInfo()
     }
     val user: LiveData<UserInfo> = pvtUser
 
@@ -153,7 +152,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-    private fun getUserInfo() {
+    fun getUserInfo() {
         userInfoListener = db.collection("users").document(auth.currentUser!!.uid)
             .addSnapshotListener { v, e ->
                 if (e == null && v?.exists() == true) {

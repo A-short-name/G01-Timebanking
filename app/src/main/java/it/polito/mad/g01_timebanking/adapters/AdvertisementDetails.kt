@@ -22,7 +22,8 @@ data class AdvertisementDetails (
     var location: String,
     var calendar: Calendar,
     var duration: String,
-    var description: String
+    var description: String,
+    var uid: String
     ){
     override fun equals(other: Any?): Boolean {
         other as AdvertisementDetails
@@ -36,6 +37,7 @@ data class AdvertisementDetails (
         result = 31 * result + calendar.hashCode()
         result = 31 * result + duration.hashCode()
         result = 31 * result + description.hashCode()
+        result = 31 * result + uid.hashCode()
         return result
     }
 }
