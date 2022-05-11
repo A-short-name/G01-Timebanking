@@ -116,6 +116,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun setUserInfo(userInfo: UserInfo) {
+        _user = userInfo
         pvtUser.value = userInfo
         pvtFullName.value = userInfo.fullName
         pvtNickname.value = userInfo.nickname
@@ -125,11 +126,26 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         pvtSkills.value = userInfo.skills.toMutableSet()
     }
 
+    fun updatePhoto(newProfilePicturePath: String, imageView: ImageView) {
+        uploadPhoto(imageView)
+        val u = UserInfo (
+            fullName = _user.fullName,
+            nickname = _user.nickname,
+            email = _user.email,
+            location = _user.location,
+            biography = _user.biography,
+            profilePicturePath = newProfilePicturePath,
+            skills = _user.skills
+        )
+        addOrUpdateData(u)
+    }
+
     fun addOrUpdateData(toBeSaved: UserInfo) {
         db.collection("users").document(auth.currentUser!!.uid).set(toBeSaved)
             .addOnSuccessListener {
                 Log.d("InsertOrUpdateUserInfo", "Success: $it")
                 pvtUser.value = toBeSaved
+                _user = toBeSaved
             }
             .addOnFailureListener {
                 Log.d("InsertOrUpdateUserInfo", "Exception: ${it.message}")
@@ -143,6 +159,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                 if (e == null && v?.exists() == true) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
+                    _user = v.toUserInfo()
                     downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")

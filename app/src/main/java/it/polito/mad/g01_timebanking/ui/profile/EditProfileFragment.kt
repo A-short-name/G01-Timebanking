@@ -121,7 +121,7 @@ class   EditProfileFragment: Fragment() {
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER && it.isNotEmpty()) {
                 Log.d("UPDATE_PICTURE", "Path is $it")
                 FileHelper.readImage(it, profilePicture)
-                profileViewModel.uploadPhoto(profilePicture)
+                profileViewModel.updatePhoto(it,profilePicture)
             }
             currentProfilePicturePath = it
         }
