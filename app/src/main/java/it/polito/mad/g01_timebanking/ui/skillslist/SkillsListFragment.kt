@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.SkillAdapter
 import it.polito.mad.g01_timebanking.databinding.FragmentSkillsListBinding
+import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
 
 class SkillsListFragment : Fragment() {
     private val skillsListViewModel : SkillsListViewModel by activityViewModels()
+    private val tsListBySkillViewModel: TimeSlotListBySkillViewModel by activityViewModels()
 
     private var _binding: FragmentSkillsListBinding? = null
 
@@ -48,7 +50,7 @@ class SkillsListFragment : Fragment() {
                 emptySkillsText.visibility = View.GONE
             }
 
-            val adapter = SkillAdapter(it)
+            val adapter = SkillAdapter(it, tsListBySkillViewModel)
             recyclerViewSkills.adapter = adapter
         }
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
@@ -44,10 +45,11 @@ data class AdvertisementDetails (
 
 class AdvertisementAdapter(
     private val data:List<AdvertisementDetails>,
-    private val tsDetailsViewModel: TimeSlotDetailsViewModel)
+    private val tsDetailsViewModel: TimeSlotDetailsViewModel,
+    private val isAdvBySkill: Boolean)
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 
-    class AdvertisementViewHolder(private val parent: ViewGroup, v:View): RecyclerView.ViewHolder(v) {
+    class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvBySkill: Boolean): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advDate)
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
@@ -61,7 +63,13 @@ class AdvertisementAdapter(
 
             date.text = "${calendar.fromDateToString()} ${calendar.fromTimeToString(
                 DateFormat.is24HourFormat(parent.context))}"
-            button.setOnClickListener(buttonAction)
+
+            if(!isAdvBySkill) {
+                button.setOnClickListener(buttonAction)
+                button.visibility = View.VISIBLE
+            } else
+                button.visibility = View.GONE
+
             cardView.setOnClickListener(cardAction)
         }
     }
@@ -71,7 +79,7 @@ class AdvertisementAdapter(
         val v : View = LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.single_advertisement_layout, parent,false)
-        return AdvertisementViewHolder(parent,v)
+        return AdvertisementViewHolder(parent,v,isAdvBySkill)
     }
 
     override fun onBindViewHolder(holder: AdvertisementViewHolder, position: Int) {
@@ -89,7 +97,7 @@ class AdvertisementAdapter(
     private fun defineCallbacks(adv: AdvertisementDetails, destination: String): (v: View) -> Unit {
         val action = when (destination) {
             "button" -> R.id.action_nav_your_offers_to_nav_edit_time_slot
-            "cardView" -> R.id.action_nav_your_offers_to_nav_show_time_slot
+            "cardView" -> if(!isAdvBySkill) R.id.action_nav_your_offers_to_nav_show_time_slot else R.id.action_nav_adv_list_by_skill_to_nav_show_time_slot
             else -> -1
         }
 

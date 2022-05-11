@@ -94,6 +94,26 @@
     <fragment
         android:id="@+id/nav_skills_list"
         android:name="it.polito.mad.g01_timebanking.ui.skillslist.SkillsListFragment"
-        android:label="@string/menu_skills_list" />
+        android:label="@string/menu_skills_list" >
+        <action
+            android:id="@+id/action_nav_skills_list_to_timeSlotListBySkillFragment"
+            app:destination="@id/nav_adv_list_by_skill"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_adv_list_by_skill"
+        android:name="it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillFragment"
+        android:label="@string/adv_list_by_skill">
+        <action
+            android:id="@+id/action_nav_adv_list_by_skill_to_nav_show_time_slot"
+            app:destination="@id/nav_show_time_slot"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
 
 </navigation>

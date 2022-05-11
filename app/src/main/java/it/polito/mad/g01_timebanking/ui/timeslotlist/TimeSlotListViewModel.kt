@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -24,6 +23,8 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
 
     private val pvtList = MutableLiveData<List<AdvertisementDetails>>().also {
         it.value = mAdvList
+        // Retrieve advertisements of the user
+        getAdvertisementList()
     }
 
     val advList : LiveData<List<AdvertisementDetails>> = pvtList
@@ -36,6 +37,8 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
                     Log.d("Advertisement_Listener", "Error retrieving data.")
                 } else if (value!!.isEmpty) {
                     Log.d("Advertisement_Listener", "No advertisements on database.")
+                    mAdvList = mutableListOf()
+                    pvtList.value = mAdvList
                 } else {
                     val advertisements = mutableListOf<AdvertisementDetails>()
 
@@ -43,7 +46,7 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
                         advertisements.add(doc.toObject(AdvertisementDetails::class.java))
                     }
                     mAdvList = advertisements
-                    pvtList.value = advertisements
+                    pvtList.value = mAdvList
                 }
             }
     }
@@ -79,5 +82,7 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-    fun count() = mAdvList.size
+    override fun onCleared() {
+        timeslotsListener.remove()
+    }
 }

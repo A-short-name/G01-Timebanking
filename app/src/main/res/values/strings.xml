@@ -63,7 +63,7 @@
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
-
+    <string name="adv_list_by_skill">Advertisements</string>
     <!-- Advertisements Hints -->
     <string name="shr_hint_title">Advertisement title</string>
     <string name="shr_hint_location">Location</string>

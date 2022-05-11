@@ -26,6 +26,8 @@ import it.polito.mad.g01_timebanking.ui.skillslist.SkillsListViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
+import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillFragment
+import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,11 +51,7 @@ class MainActivity : AppCompatActivity() {
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
         val skillsVM = ViewModelProvider(this)[SkillsListViewModel::class.java]
-
-        // Retrive user info from database
-        profileVM.getUserInfo()
-        // Retrieve advertisements of the user
-        listVM.getAdvertisementList()
+        val listSkillVM = ViewModelProvider(this)[TimeSlotListBySkillViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

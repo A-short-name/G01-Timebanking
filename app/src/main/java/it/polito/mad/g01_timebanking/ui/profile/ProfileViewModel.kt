@@ -36,6 +36,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     private val pvtUser = MutableLiveData<UserInfo>().also {
         // Initial values, then database query will arise from activity
         it.value = _user
+        // Retrive user info from database
+        getUserInfo()
     }
     val user: LiveData<UserInfo> = pvtUser
 
@@ -227,7 +229,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         }
     }
 
-    fun clear() {
+    override fun onCleared() {
         userInfoListener.remove()
     }
 }
