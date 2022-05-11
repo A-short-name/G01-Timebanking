@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,7 +22,7 @@ import java.io.ByteArrayOutputStream
 
 import java.io.File
 
-class ProfileViewModel(a: Application) : AndroidViewModel(a) {
+class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storageRef = Firebase.storage.reference
     private val auth = Firebase.auth
@@ -115,7 +116,6 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     }
 
     fun setUserInfo(userInfo: UserInfo) {
-        _user = userInfo
         pvtUser.value = userInfo
         pvtFullName.value = userInfo.fullName
         pvtNickname.value = userInfo.nickname
@@ -125,10 +125,16 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
         pvtSkills.value = userInfo.skills.toMutableSet()
     }
 
-    fun addOrUpdateData(user: UserInfo) {
-        insertOrUpdateUserInfo(user)
-        pvtUser.value = user
-        _user = user
+    fun addOrUpdateData(toBeSaved: UserInfo) {
+        db.collection("users").document(auth.currentUser!!.uid).set(toBeSaved)
+            .addOnSuccessListener {
+                Log.d("InsertOrUpdateUserInfo", "Success: $it")
+                pvtUser.value = toBeSaved
+            }
+            .addOnFailureListener {
+                Log.d("InsertOrUpdateUserInfo", "Exception: ${it.message}")
+                Toast.makeText(a.applicationContext,"Failed updating data. Try again.", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun getUserInfo() {
@@ -144,19 +150,8 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
                         email = auth.currentUser!!.email.toString()
                         fullName = auth.currentUser!!.displayName.toString()
                     }
-                    insertOrUpdateUserInfo(newUser)
-                    pvtUser.value = newUser
+                    addOrUpdateData(newUser)
                 }
-            }
-    }
-
-    private fun insertOrUpdateUserInfo(toBeSaved: UserInfo) {
-        db.collection("users").document(auth.currentUser!!.uid).set(toBeSaved)
-            .addOnSuccessListener {
-                Log.d("InsertOrUpdateUserInfo", "Success: $it")
-            }
-            .addOnFailureListener {
-                Log.d("InsertOrUpdateUserInfo", "Exception: ${it.message}")
             }
     }
 
@@ -187,22 +182,32 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
 
     private fun downloadPhoto() {
         Log.d("PICTURE_DOWNLOAD", "Started download function")
-        val userPicRef = storageRef.child("images/${auth.currentUser!!.uid}.jpg")
+        val imagesRef = storageRef.child("images/")
+        val userPicRef = imagesRef.child("${auth.currentUser!!.uid}.jpg")
 
-        val maximumSizeOneMegabyte: Long = 1024 * 1024
+        // Check if file exists
+        imagesRef.listAll().addOnSuccessListener {
+            // If file exists download it
+            if(it.items.contains(userPicRef)) {
+                val maximumSizeOneMegabyte: Long = 1024 * 1024
 
-        userPicRef.getBytes(maximumSizeOneMegabyte).addOnSuccessListener {
-            Log.d("PICTURE_DOWNLOAD", "Successfully downloaded picture")
+                userPicRef.getBytes(maximumSizeOneMegabyte).addOnSuccessListener {
+                    Log.d("PICTURE_DOWNLOAD", "Successfully downloaded picture")
 
-            val localFile = File.createTempFile("images", ".jpg")
-            localFile.writeBytes(it)
+                    val localFile = File.createTempFile("images", ".jpg")
+                    localFile.writeBytes(it)
 
-            Log.d("PICTURE_DOWNLOAD", "Path file: ${localFile.absolutePath}")
-            pvtProfilePicturePath.value = localFile.absolutePath
-        }.addOnFailureListener {
-            // Handle any errors
-            Log.d("PICTURE_DOWNLOAD", "Failed downloading picture: ${it.message}")
-            pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+                    Log.d("PICTURE_DOWNLOAD", "Path file: ${localFile.absolutePath}")
+                    pvtProfilePicturePath.value = localFile.absolutePath
+                }.addOnFailureListener {
+                    // Handle any errors
+                    Log.d("PICTURE_DOWNLOAD", "Failed downloading picture: ${it.message}")
+                    pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+                }
+            }else{
+                Log.d("PICTURE_DOWNLOAD", "No picture on database")
+                pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+            }
         }
     }
 
