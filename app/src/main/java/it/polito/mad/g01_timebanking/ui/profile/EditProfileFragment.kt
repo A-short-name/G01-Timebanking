@@ -56,7 +56,7 @@ class   EditProfileFragment: Fragment() {
 
     private lateinit var currentProfilePicturePath: String
     private lateinit var currentSkills: MutableSet<String>
-    private lateinit var suggestedSkills: MutableSet<String>
+    private  var suggestedSkills: MutableList<String> = mutableListOf()
 
     //this variable is used in CAPTURE_IMAGE section of the onActivityResult
     //to change the vm only when the picture is saved
@@ -148,8 +148,9 @@ class   EditProfileFragment: Fragment() {
         }
 
         /* Dynamic Suggested Skills list  */
-        profileViewModel.suggestedSkills.observe(this.viewLifecycleOwner){
-            suggestedSkills = it
+        profileViewModel.suggestedSkills.observe(this.viewLifecycleOwner){ it1 ->
+            suggestedSkills = it1.map { it.name }.toMutableList()
+            initializeSkillSuggestion(view)
         }
 
         // Set listener on "add skills" field

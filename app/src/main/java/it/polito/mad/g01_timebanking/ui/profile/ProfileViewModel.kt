@@ -15,6 +15,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserInfo
 import java.io.ByteArrayOutputStream
 
@@ -79,15 +80,13 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
 
-    private var tmpSuggestedSkills: MutableSet<String> = _user.skills.toMutableSet()
+    private var tmpSuggestedSkills: MutableSet<Skill> = _user.skills.map{Skill(name = it)}.toMutableSet()
 
-    private val pvtSuggestedSkills = MutableLiveData<MutableSet<String>>().also {
+    private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
         it.value = tmpSuggestedSkills
         getSuggestedSkills()
     }
-    val suggestedSkills: LiveData<MutableSet<String>> = pvtSuggestedSkills
-
-
+    val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
 
     fun setFullname(fullname: String) {
         pvtFullName.value = fullname
@@ -142,10 +141,11 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
     }
 
     private fun getSuggestedSkills(){
+
         suggestedSkillsListener = db.collection("suggestedSkills")
             .addSnapshotListener { value, error ->
                 if (error == null && value != null){
-                    pvtSuggestedSkills.value = value.documents.toMutableSet()
+                    pvtSuggestedSkills.value = value.documents.map { it.toSkill() }.toMutableSet()
                 }
             }
     }
@@ -231,4 +231,8 @@ class ProfileViewModel(a: Application) : AndroidViewModel(a) {
 
 private fun DocumentSnapshot.toUserInfo(): UserInfo {
     return this.toObject(UserInfo::class.java) ?: UserInfo()
+}
+
+private fun DocumentSnapshot.toSkill(): Skill {
+    return this.toObject(Skill::class.java) ?: Skill()
 }
