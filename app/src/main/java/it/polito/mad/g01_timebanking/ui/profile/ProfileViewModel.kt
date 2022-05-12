@@ -168,19 +168,19 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     fun addOrUpdateSkills(newUserSkillsName :MutableList<String>){
         //TODO: evitare di usare la get
-        var oldUser = db.collection("users").document(auth.currentUser!!.uid).get()
-            .addOnSuccessListener {
-                val oldUser = it.toUserInfo()
-                for (oldUserSkillName in oldUser.skills) {
-                    if(! newUserSkillsName.contains(oldUserSkillName))
-                        decrementUsageInUserSkill(oldUserSkillName)
 
-                }
-                for (newUserSkillName in newUserSkillsName) {
-                    if(! oldUser.skills.contains(newUserSkillName))
-                        insertOrincrementUsageInUserSkill(newUserSkillName)
-                }
-            }
+        //TODO: scrivere una query unica
+        val oldUser = _user
+        for (oldUserSkillName in oldUser.skills) {
+            if(! newUserSkillsName.contains(oldUserSkillName))
+                decrementUsageInUserSkill(oldUserSkillName)
+
+        }
+        for (newUserSkillName in newUserSkillsName) {
+            if(! oldUser.skills.contains(newUserSkillName))
+                insertOrincrementUsageInUserSkill(newUserSkillName)
+        }
+
 
     }
 
