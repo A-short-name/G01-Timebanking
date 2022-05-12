@@ -47,6 +47,6 @@ object UserKey {
         "Tidying up the house",
         "Basic plumbing",
         "Vacuuming",
-        "Washing car"
+        "Car washing"
     )
 }

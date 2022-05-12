@@ -13,8 +13,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import java.io.ByteArrayOutputStream
@@ -28,6 +30,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     private val auth = Firebase.auth
 
     private lateinit var userInfoListener: ListenerRegistration
+    private lateinit var suggestedSkillsListener: ListenerRegistration
 
     // Initialization placeholder variable
     private var _user = UserInfo()
@@ -80,6 +83,13 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
 
+    private var tmpSuggestedSkills: MutableSet<Skill> = _user.skills.map{Skill(name = it)}.toMutableSet()
+
+    private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
+        it.value = tmpSuggestedSkills
+        getSuggestedSkills()
+    }
+    val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
 
     fun setFullname(fullname: String) {
         pvtFullName.value = fullname
@@ -142,6 +152,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun addOrUpdateData(toBeSaved: UserInfo) {
+        addOrUpdateSkills(toBeSaved.skills)
         db.collection("users").document(auth.currentUser!!.uid).set(toBeSaved)
             .addOnSuccessListener {
                 Log.d("InsertOrUpdateUserInfo", "Success: $it")
@@ -151,6 +162,53 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
             .addOnFailureListener {
                 Log.d("InsertOrUpdateUserInfo", "Exception: ${it.message}")
                 Toast.makeText(a.applicationContext,"Failed updating data. Try again.", Toast.LENGTH_SHORT).show()
+            }
+
+    }
+
+    fun addOrUpdateSkills(newUserSkillsName :MutableList<String>){
+        //TODO: evitare di usare la get
+        var oldUser = db.collection("users").document(auth.currentUser!!.uid).get()
+            .addOnSuccessListener {
+                val oldUser = it.toUserInfo()
+                for (oldUserSkillName in oldUser.skills) {
+                    if(! newUserSkillsName.contains(oldUserSkillName))
+                        decrementUsageInUserSkill(oldUserSkillName)
+
+                }
+                for (newUserSkillName in newUserSkillsName) {
+                    if(! oldUser.skills.contains(newUserSkillName))
+                        insertOrincrementUsageInUserSkill(newUserSkillName)
+                }
+            }
+
+    }
+
+    private fun insertOrincrementUsageInUserSkill(newUserSkillName: String) {
+        TODO("Not yet implemented, like the decrement it should search for the old skill if present update the usage," +
+                " if not present a new skill should be create")
+    }
+
+    fun decrementUsageInUserSkill(skillName : String){
+        db.collection("suggestedSkills").document(skillName).get().addOnSuccessListener { oldSkillFromDb ->
+            var tempSkill = oldSkillFromDb.toSkill()
+            tempSkill.usageInUser--
+            db.collection("suggestedSkills").document(skillName).set(tempSkill).addOnSuccessListener {
+                Log.d("UpdateSkillUsageUser", "Success: $it")
+            }
+                .addOnFailureListener {
+                    Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+                }
+        }
+    }
+
+    private fun getSuggestedSkills(){
+
+        suggestedSkillsListener = db.collection("suggestedSkills")
+            .addSnapshotListener { value, error ->
+                if (error == null && value != null){
+                    pvtSuggestedSkills.value = value.documents.map { it.toSkill() }.toMutableSet()
+                }
             }
     }
 
@@ -236,4 +294,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
 private fun DocumentSnapshot.toUserInfo(): UserInfo {
     return this.toObject(UserInfo::class.java) ?: UserInfo()
+}
+
+private fun DocumentSnapshot.toSkill(): Skill {
+    return this.toObject(Skill::class.java) ?: Skill()
 }
