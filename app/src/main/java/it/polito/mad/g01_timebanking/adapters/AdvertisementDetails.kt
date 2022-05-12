@@ -11,10 +11,12 @@ import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
+import it.polito.mad.g01_timebanking.ui.AdvDiffCallback
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.util.*
 
@@ -45,7 +47,7 @@ data class AdvertisementDetails (
 }
 
 class AdvertisementAdapter(
-    private val data:List<AdvertisementDetails>,
+    private var data:List<AdvertisementDetails>,
     private val tsDetailsViewModel: TimeSlotDetailsViewModel,
     private val isAdvBySkill: Boolean)
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
@@ -115,6 +117,12 @@ class AdvertisementAdapter(
             }
         }
         return callback
+    }
+
+    fun setAdvertaisements(newAdvs: List<AdvertisementDetails>) {
+        val diffs = DiffUtil.calculateDiff( AdvDiffCallback(data, newAdvs) )
+        data = newAdvs //update data
+        diffs.dispatchUpdatesTo(this) //animate UI
     }
 
     override fun getItemCount(): Int = data.size

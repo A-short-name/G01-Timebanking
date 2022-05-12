@@ -6,9 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.PropertyName
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.ui.AdvDiffCallback
+import it.polito.mad.g01_timebanking.ui.SkillDiffCallback
 import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
 
 data class SkillDetails (
@@ -35,7 +38,7 @@ data class SkillDetails (
 }
 
 class SkillAdapter(
-    private val data:List<SkillDetails>,
+    private var data:List<SkillDetails>,
     private val tsListBySkillViewModel: TimeSlotListBySkillViewModel)
     : RecyclerView.Adapter<SkillAdapter.SkillViewHolder>() {
 
@@ -70,6 +73,12 @@ class SkillAdapter(
             }
         }
 
+    }
+
+    fun setSkills(newSkills: List<SkillDetails>) {
+        val diffs = DiffUtil.calculateDiff( SkillDiffCallback(data, newSkills) )
+        data = newSkills //update data
+        diffs.dispatchUpdatesTo(this) //animate UI
     }
 
 
