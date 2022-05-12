@@ -41,6 +41,9 @@ class SkillsListFragment : Fragment() {
 
         val emptySkillsText = view.findViewById<TextView>(R.id.emptySkillsText)
 
+        val adapter = SkillAdapter(listOf(), tsListBySkillViewModel)
+        recyclerViewSkills.adapter = adapter
+
         skillsListViewModel.skillList.observe(this.viewLifecycleOwner){
             if (it.isEmpty()) {
                 recyclerViewSkills.visibility = View.GONE
@@ -50,8 +53,7 @@ class SkillsListFragment : Fragment() {
                 emptySkillsText.visibility = View.GONE
             }
 
-            val adapter = SkillAdapter(it, tsListBySkillViewModel)
-            recyclerViewSkills.adapter = adapter
+            adapter.setSkills(it)
         }
 
     }

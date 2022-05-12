@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
 import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 
 
@@ -42,6 +43,10 @@ class TimeSlotListBySkillFragment : Fragment() {
 
         val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
 
+
+        val adapter = AdvertisementAdapter(listOf(), timeSlotDetailsViewModel, true)
+        recyclerViewAdv.adapter = adapter
+
         timeSlotListBySkillViewModel.advList.observe(this.viewLifecycleOwner){
             if (it.isEmpty()) {
                 recyclerViewAdv.visibility = View.GONE
@@ -51,8 +56,7 @@ class TimeSlotListBySkillFragment : Fragment() {
                 emptyAdvText.visibility = View.GONE
             }
 
-            val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, true)
-            recyclerViewAdv.adapter = adapter
+            adapter.setAdvertisements(it)
         }
 
     }

@@ -47,6 +47,9 @@ class TimeSlotListFragment : Fragment() {
 
         val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
 
+        val adapter = AdvertisementAdapter(listOf(), timeSlotDetailsViewModel, false)
+        recyclerViewAdv.adapter = adapter
+
         timeSlotListViewModel.advList.observe(this.viewLifecycleOwner){
             if (it.isEmpty()) {
                 recyclerViewAdv.visibility = View.GONE
@@ -56,8 +59,7 @@ class TimeSlotListFragment : Fragment() {
                 emptyAdvText.visibility = View.GONE
             }
 
-            val adapter = AdvertisementAdapter(it, timeSlotDetailsViewModel, false)
-            recyclerViewAdv.adapter = adapter
+            adapter.setAdvertisements(it)
         }
 
     }
