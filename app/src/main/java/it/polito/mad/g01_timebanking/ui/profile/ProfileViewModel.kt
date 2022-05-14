@@ -13,6 +13,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -39,7 +40,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     private val pvtUser = MutableLiveData<UserInfo>().also {
         // Initial values, then database query will arise from activity
         it.value = _user
-        // Retrive user info from database
+        // Retrieve user info from database
         getUserInfo()
     }
     val user: LiveData<UserInfo> = pvtUser
@@ -90,6 +91,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         getSuggestedSkills()
     }
     val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
+
+
 
     fun setFullname(fullname: String) {
         pvtFullName.value = fullname
@@ -167,10 +170,37 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun addOrUpdateSkills(newUserSkillsName :MutableList<String>){
-        //TODO: evitare di usare la get
-
-        //TODO: scrivere una query unica
         val oldUser = _user
+
+        //TODO: evitare di usare la get
+        val skillUnion = oldUser.skills union newUserSkillsName.toSet()
+        val skillIntersection = oldUser.skills intersect newUserSkillsName.toSet()
+        var newUserUsage : Long = 0
+        val changedSkills = skillUnion - skillIntersection
+        /* take all users */
+        changedSkills.forEach { changedSkill -> db.collection("users")
+            .addSnapshotListener { value, error ->
+                /* select only users who changed their skills */
+                if(value != null && error == null){
+
+                    newUserUsage = value.count { _user -> _user.toUserInfo().skills.contains(changedSkill) }.toLong()
+
+                    db.collection("suggestedSkills").document(changedSkill).get().addOnSuccessListener { oldSkillFromDb ->
+                        val tmpSkill = oldSkillFromDb.toSkill()
+                        tmpSkill.usageInUser = newUserUsage
+                        db.collection("suggestedSkills").document(changedSkill).set(tmpSkill).addOnSuccessListener {
+                            Log.d("UpdateSkillUsageUser", "Success: $it")
+                        }
+                            .addOnFailureListener {
+                                Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+                            }
+                    }
+
+                }
+            }
+        }
+
+        /*//TODO: scrivere una query unica
         for (oldUserSkillName in oldUser.skills) {
             if(! newUserSkillsName.contains(oldUserSkillName))
                 decrementUsageInUserSkill(oldUserSkillName)
@@ -178,13 +208,13 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         }
         for (newUserSkillName in newUserSkillsName) {
             if(! oldUser.skills.contains(newUserSkillName))
-                insertOrincrementUsageInUserSkill(newUserSkillName)
-        }
+                insertOrIncrementUsageInUserSkill(newUserSkillName)
+        }*/
 
 
     }
 
-    private fun insertOrincrementUsageInUserSkill(newUserSkillName: String) {
+    private fun insertOrIncrementUsageInUserSkill(newUserSkillName: String) {
         TODO("Not yet implemented, like the decrement it should search for the old skill if present update the usage," +
                 " if not present a new skill should be create")
     }
