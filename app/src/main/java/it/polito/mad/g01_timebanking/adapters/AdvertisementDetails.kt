@@ -27,7 +27,8 @@ data class AdvertisementDetails (
     var calendar: Date = Calendar.getInstance().time,
     var duration: String = "",
     var description: String = "",
-    var uid: String = ""
+    var uid: String = "",
+    var skills: MutableList<String> = mutableListOf()
     ){
     override fun equals(other: Any?): Boolean {
         other as AdvertisementDetails
@@ -42,6 +43,7 @@ data class AdvertisementDetails (
         result = 31 * result + duration.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + uid.hashCode()
+        result = 32 * result + skills.hashCode()
         return result
     }
 }

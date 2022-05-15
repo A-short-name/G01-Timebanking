@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.timeslotdetails.TimeSlotEditFragment" >
+    tools:context=".ui.timeslotdetails.TimeSlotEditFragment">
 
     <ScrollView
         android:id="@+id/sv"
@@ -16,16 +16,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp" >
+            android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Design.TextInputLayout"
                 android:id="@+id/titleShowTextInputLayout"
+                style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_title"
-                app:startIconDrawable="@drawable/ic_advertisement_title" >
+                app:startIconDrawable="@drawable/ic_advertisement_title">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/titleShowText"
@@ -36,13 +36,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Design.TextInputLayout"
                 android:id="@+id/locationShowTextInputLayout"
+                style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_location"
-                app:startIconDrawable="@drawable/ic_location" >
+                app:startIconDrawable="@drawable/ic_location">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/locationShowText"
@@ -53,14 +53,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Design.TextInputLayout"
                 android:id="@+id/dateShowTextInputLayout"
+                style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:clickable="false"
                 android:hint="@string/shr_hint_date"
-                app:startIconDrawable="@drawable/ic_calendar" >
+                app:startIconDrawable="@drawable/ic_calendar">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/dateShowText"
@@ -71,8 +71,8 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Design.TextInputLayout"
                 android:id="@+id/timeShowTextInputLayout"
+                style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -89,13 +89,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Design.TextInputLayout"
                 android:id="@+id/durationShowTextInputLayout"
+                style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_duration"
-                app:startIconDrawable="@drawable/ic_hourglass" >
+                app:startIconDrawable="@drawable/ic_hourglass">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/durationShowText"
@@ -104,6 +104,47 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/skillsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/skills"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/noSkillsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/skillsPlaceholder"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="16sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/skillgroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/skill1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/skill1" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/skill2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/skill2" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/skill3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/skill3" />
+            </com.google.android.material.chip.ChipGroup>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Design.TextInputLayout"

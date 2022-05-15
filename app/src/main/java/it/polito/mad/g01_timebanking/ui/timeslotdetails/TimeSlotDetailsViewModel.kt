@@ -1,14 +1,21 @@
 package it.polito.mad.g01_timebanking.ui.timeslotdetails
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import java.util.*
 
 class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private lateinit var suggestedSkillsListener: ListenerRegistration
 
-    private val placeholderAdvertisementDetails = AdvertisementDetails(
+    private val _adv = AdvertisementDetails(
         UserKey.ID_PLACEHOLDER,
         "Placeholder title",
         "Placeholder location",
@@ -20,42 +27,58 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
 
     /* This will be the valid advertisement used by Show */
     private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
-        it.value = placeholderAdvertisementDetails
+        it.value = _adv
     }
 
     val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
 
+
+
     /* Ephemeral variables used from the Edit fragment to handle temporary save */
+    private var tmpSkills: MutableSet<String> = _adv.skills.toMutableSet()
+
+    private val pvtSkills = MutableLiveData<MutableSet<String>>().also {
+        it.value = tmpSkills
+    }
+    val skills: LiveData<MutableSet<String>> = pvtSkills
+
+    private var tmpSuggestedSkills: MutableSet<Skill> = _adv.skills.map{Skill(name = it)}.toMutableSet()
+
+    private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
+        it.value = tmpSuggestedSkills
+        getSuggestedSkills()
+    }
+    val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
 
     private val pvtId = MutableLiveData<String>().also {
-        it.value = placeholderAdvertisementDetails.id
+        it.value = _adv.id
     }
     val id : LiveData<String> = pvtId
 
     private val pvtTitle = MutableLiveData<String>().also {
-        it.value = placeholderAdvertisementDetails.title
+        it.value = _adv.title
     }
     val title : LiveData<String> = pvtTitle
 
     private val pvtDescription = MutableLiveData<String>().also {
-        it.value = placeholderAdvertisementDetails.description
+        it.value = _adv.description
     }
     val description : LiveData<String> = pvtDescription
 
     private val pvtLocation = MutableLiveData<String>().also {
-        it.value = placeholderAdvertisementDetails.location
+        it.value = _adv.location
     }
     val location : LiveData<String> = pvtLocation
 
     private val pvtCalendar = MutableLiveData<Calendar>().also {
         val calendar = Calendar.getInstance()
-        calendar.time = placeholderAdvertisementDetails.calendar
+        calendar.time = _adv.calendar
         it.value = calendar
     }
     val calendar : LiveData<Calendar> = pvtCalendar
 
     private val pvtDuration = MutableLiveData<String>().also {
-        it.value = placeholderAdvertisementDetails.duration
+        it.value = _adv.duration
     }
     val duration : LiveData<String> = pvtDuration
 
@@ -85,6 +108,28 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         }
     }
 
+
+    private fun getSuggestedSkills(){
+
+        suggestedSkillsListener = db.collection("suggestedSkills")
+            .addSnapshotListener { value, error ->
+                if (error == null && value != null){
+                    pvtSuggestedSkills.value = value.documents.map { it.toSkill() }.toMutableSet()
+                }
+            }
+    }
+
+    fun removeSkill(skillText: String) {
+        tmpSkills.remove(skillText)
+        pvtSkills.value = tmpSkills
+    }
+
+    fun tryToAddSkill(skillText: String): Boolean {
+        return if (tmpSkills.add(skillText)) {
+            pvtSkills.value = tmpSkills; true
+        } else false
+    }
+
     fun setAdvertisement(adv: AdvertisementDetails) {
         pvtAdvertisement.value = adv
         pvtId.value = adv.id
@@ -95,6 +140,51 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         val calendar = Calendar.getInstance()
         calendar.time = adv.calendar
         pvtCalendar.value = calendar
+        pvtSkills.value = adv.skills.toMutableSet()
+    }
+
+    fun addOrUpdateSkills(newAdvSkillsName :MutableList<String>){
+        val oldAdv = _adv
+
+        val skillUnion = oldAdv.skills union newAdvSkillsName.toSet()
+        val skillIntersection = oldAdv.skills intersect newAdvSkillsName.toSet()
+        var newAdvUsage: Long
+        val changedSkills = skillUnion - skillIntersection
+        /* take all users */
+        changedSkills.forEach { changedSkill -> db.collection("advertisements")
+            .addSnapshotListener { value, error ->
+                /* select only advertisement who changed their skills */
+                if(value != null && error == null){
+
+                    newAdvUsage = value.count { _adv -> _adv.toAdvDetails().skills.contains(changedSkill) }.toLong()
+
+                    db.collection("suggestedSkills").document(changedSkill).get().addOnSuccessListener { oldSkillFromDb ->
+                        val tmpSkill = oldSkillFromDb.toSkill()
+                        tmpSkill.usageInAdv = newAdvUsage
+                        db.collection("suggestedSkills").document(changedSkill).set(tmpSkill).addOnSuccessListener {
+                            Log.d("UpdateSkillUsageUser", "Success: $it")
+                        }
+                            .addOnFailureListener {
+                                Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+                            }
+                    }
+
+                }
+            }
+        }
+
+        /*//TODO: scrivere una query unica
+        for (oldUserSkillName in oldUser.skills) {
+            if(! newUserSkillsName.contains(oldUserSkillName))
+                decrementUsageInUserSkill(oldUserSkillName)
+
+        }
+        for (newUserSkillName in newUserSkillsName) {
+            if(! oldUser.skills.contains(newUserSkillName))
+                insertOrIncrementUsageInUserSkill(newUserSkillName)
+        }*/
+
+
     }
 
     fun prepareNewAdvertisement() {
@@ -109,4 +199,12 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         pvtDuration.value = ""
         pvtCalendar.value = expTime
     }
+}
+
+private fun DocumentSnapshot.toSkill(): Skill {
+    return this.toObject(Skill::class.java) ?: Skill()
+}
+
+private fun DocumentSnapshot.toAdvDetails(): AdvertisementDetails {
+    return this.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
 }
