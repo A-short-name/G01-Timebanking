@@ -131,6 +131,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     fun setUserInfo(userInfo: UserInfo) {
         _user = userInfo
+        tmpSkills = userInfo.skills.toMutableSet()
         pvtUser.value = userInfo
         pvtFullName.value = userInfo.fullName
         pvtNickname.value = userInfo.nickname
