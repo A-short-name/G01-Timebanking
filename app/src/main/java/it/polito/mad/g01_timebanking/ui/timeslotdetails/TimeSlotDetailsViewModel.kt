@@ -125,6 +125,7 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     }
 
     fun tryToAddSkill(skillText: String): Boolean {
+
         return if (tmpSkills.add(skillText)) {
             pvtSkills.value = tmpSkills; true
         } else false
@@ -141,6 +142,7 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         calendar.time = adv.calendar
         pvtCalendar.value = calendar
         pvtSkills.value = adv.skills.toMutableSet()
+        tmpSkills = adv.skills.toMutableSet()
     }
 
     fun addOrUpdateSkills(newAdvSkillsName :MutableList<String>){

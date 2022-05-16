@@ -352,7 +352,7 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
         timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
         timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
-        //profileViewModel.setSkills() is changed everytime
+        //timeSlotDetailsViewModel.setSkills() is changed everytime
         timeSlotDetailsViewModel.setDateTime(actualTimeDate)
 
         super.onDetach()
