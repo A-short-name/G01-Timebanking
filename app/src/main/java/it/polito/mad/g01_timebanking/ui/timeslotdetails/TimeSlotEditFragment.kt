@@ -28,6 +28,8 @@ import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.UserKey.REQUIRED
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.adapters.AutoCompleteSkillAdapter
+import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
@@ -69,7 +71,7 @@ class TimeSlotEditFragment : Fragment() {
 
     private lateinit var currentProfilePicturePath: String
     private lateinit var currentSkills: MutableSet<String>
-    private  var suggestedSkills: MutableList<String> = mutableListOf()
+    private  var suggestedSkills: MutableList<SkillDetails> = mutableListOf()
 
     // Variable to handle button state
     private var clickedButton = ""
@@ -156,7 +158,7 @@ class TimeSlotEditFragment : Fragment() {
         }
         /* Dynamic Suggested Skills list  */
         timeSlotDetailsViewModel.suggestedSkills.observe(this.viewLifecycleOwner){ it1 ->
-            suggestedSkills = it1.map { it.name }.toMutableList()
+            suggestedSkills = it1.map { SkillDetails(it.name, it.usageInAdv, it.usageInUser) }.toMutableList()
             initializeSkillSuggestion(view)
         }
         // Set listener on "add skills" field
@@ -325,15 +327,13 @@ class TimeSlotEditFragment : Fragment() {
 
 
     private fun initializeSkillSuggestion(view: View) {
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line, suggestedSkills.toList()
-        )
+        val customAdapter = AutoCompleteSkillAdapter(requireContext(), suggestedSkills.sortedByDescending { it.usageInAdv })
+
         val actv = view.findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
-        actv.setAdapter(adapter)
+        actv.setAdapter(customAdapter)
         actv.setOnItemClickListener { adapterView, _, i, _ ->
-            val selected: String = adapterView.getItemAtPosition(i) as String
-            if (timeSlotDetailsViewModel.tryToAddSkill(selected.lowercase())) {
+            val selected = adapterView.getItemAtPosition(i) as SkillDetails
+            if (timeSlotDetailsViewModel.tryToAddSkill(selected.name.lowercase())) {
                 // PillView is added to the PillGroup thanks to the observer
                 // Reset editText field for new skills
                 ivSkills.setText("")
