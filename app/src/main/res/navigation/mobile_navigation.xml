@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_your_offers">
+    app:startDestination="@id/nav_skills_list">
 
     <fragment
         android:id="@+id/nav_show_time_slot"
@@ -91,5 +91,38 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
+    <fragment
+        android:id="@+id/nav_skills_list"
+        android:name="it.polito.mad.g01_timebanking.ui.skillslist.SkillsListFragment"
+        android:label="@string/menu_skills_list" >
+        <action
+            android:id="@+id/action_nav_skills_list_to_timeSlotListBySkillFragment"
+            app:destination="@id/nav_adv_list_by_skill"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_skills_list_to_signOutActivity"
+            app:destination="@id/nav_logout" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_adv_list_by_skill"
+        android:name="it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillFragment"
+        android:label="@string/adv_list_by_skill">
+        <action
+            android:id="@+id/action_nav_adv_list_by_skill_to_nav_show_time_slot"
+            app:destination="@id/nav_show_time_slot"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <activity
+        android:id="@+id/nav_logout"
+        android:name="it.polito.mad.g01_timebanking.logout.SignOutActivity"
+        android:label="activity_sign_out"
+        tools:layout="@layout/activity_sign_out" >
+    </activity>
 
 </navigation>

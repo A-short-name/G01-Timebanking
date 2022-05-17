@@ -32,11 +32,13 @@ import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.UserKey.CAPTURE_IMAGE_REQUEST
 import it.polito.mad.g01_timebanking.UserKey.PERMISSION_CODE
 import it.polito.mad.g01_timebanking.UserKey.PICK_IMAGE_REQUEST
+import it.polito.mad.g01_timebanking.adapters.AutoCompleteSkillAdapter
+import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.io.File
 import java.io.IOException
 
 
-class EditProfileFragment: Fragment() {
+class   EditProfileFragment: Fragment() {
     private val profileViewModel : ProfileViewModel by activityViewModels()
 
     companion object {
@@ -56,6 +58,8 @@ class EditProfileFragment: Fragment() {
 
     private lateinit var currentProfilePicturePath: String
     private lateinit var currentSkills: MutableSet<String>
+    //private  var suggestedSkills: MutableList<String> = mutableListOf()
+    private  var suggestedSkills: MutableList<SkillDetails> = mutableListOf()
 
     //this variable is used in CAPTURE_IMAGE section of the onActivityResult
     //to change the vm only when the picture is saved
@@ -118,9 +122,12 @@ class EditProfileFragment: Fragment() {
             ivBiography.setText(it)
         }
         profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
-            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER && it.isNotEmpty()) {
+                Log.d("UPDATE_PICTURE", "Path is $it")
                 FileHelper.readImage(it, profilePicture)
-                profileViewModel.updatePhoto(it)
+                if(profileViewModel.tmpPicturePath != it)
+                    profileViewModel.updatePhoto(it,profilePicture)
+
             }
             currentProfilePicturePath = it
         }
@@ -143,6 +150,13 @@ class EditProfileFragment: Fragment() {
                 noSkills.isVisible = false
             }
             currentSkills = it
+        }
+
+        /* Dynamic Suggested Skills list  */
+        profileViewModel.suggestedSkills.observe(this.viewLifecycleOwner){ it1 ->
+            //suggestedSkills = it1.map { it.name }.toMutableList()
+            suggestedSkills = it1.map { SkillDetails(it.name, it.usageInAdv, it.usageInUser) }.toMutableList()
+            initializeSkillSuggestion(view)
         }
 
         // Set listener on "add skills" field
@@ -176,15 +190,13 @@ class EditProfileFragment: Fragment() {
 
 
     private fun initializeSkillSuggestion(view: View) {
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line, UserKey.SKILL_SUGGESTION
-        )
+        val customAdapter = AutoCompleteSkillAdapter(requireContext(), suggestedSkills.sortedByDescending { it.usageInAdv })
+
         val actv = view.findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
-        actv.setAdapter(adapter)
+        actv.setAdapter(customAdapter)
         actv.setOnItemClickListener { adapterView, _, i, _ ->
-            val selected: String = adapterView.getItemAtPosition(i) as String
-            if (profileViewModel.tryToAddSkill(selected.lowercase())) {
+            val selected = adapterView.getItemAtPosition(i) as SkillDetails
+            if (profileViewModel.tryToAddSkill(selected.name.lowercase())) {
                 // PillView is added to the PillGroup thanks to the observer
                 // Reset editText field for new skills
                 ivSkills.setText("")
@@ -376,9 +388,9 @@ class EditProfileFragment: Fragment() {
             nickname = ivNickname.text.toString(),
             email = ivEmail.text.toString(),
             location = ivLocation.text.toString(),
-            biography = ivBiography.text.toString(),
             profilePicturePath = currentProfilePicturePath,
-            skills = currentSkills
+            biography = ivBiography.text.toString(),
+            skills = currentSkills.toMutableList()
         )
 
         profileViewModel.addOrUpdateData(u)

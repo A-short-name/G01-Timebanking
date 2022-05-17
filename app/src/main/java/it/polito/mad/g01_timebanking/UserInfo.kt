@@ -1,22 +1,33 @@
 package it.polito.mad.g01_timebanking
 
+import com.google.firebase.firestore.PropertyName
 
 data class UserInfo(
-    var fullName:String,
-    var nickname: String,
-    var email: String,
-    var location: String,
-    var biography: String,
-    var profilePicturePath: String,
-    var skills: MutableSet<String>
-) {
-    constructor() : this(
-        fullName = UserKey.FULL_NAME_PLACEHOLDER,
-        nickname = UserKey.NICKNAME_PLACEHOLDER,
-        email = UserKey.EMAIL_PLACEHOLDER,
-        location = UserKey.LOCATION_PLACEHOLDER,
-        biography = UserKey.BIOGRAPHY_PLACEHOLDER,
-        profilePicturePath = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER,
-        skills = mutableSetOf<String>()      //pay attention
-    )
-}
+    @set:PropertyName("fullName")
+    @get:PropertyName("fullName")
+    var fullName:String = UserKey.FULL_NAME_PLACEHOLDER,
+
+    @set:PropertyName("nickname")
+    @get:PropertyName("nickname")
+    var nickname: String = UserKey.NICKNAME_PLACEHOLDER,
+
+    @set:PropertyName("email")
+    @get:PropertyName("email")
+    var email: String = UserKey.EMAIL_PLACEHOLDER,
+
+    @set:PropertyName("location")
+    @get:PropertyName("location")
+    var location: String = UserKey.LOCATION_PLACEHOLDER,
+
+    @set:PropertyName("biography")
+    @get:PropertyName("biography")
+    var biography: String = UserKey.BIOGRAPHY_PLACEHOLDER,
+
+    @set:PropertyName("profilePicturePath")
+    @get:PropertyName("profilePicturePath")
+    var profilePicturePath : String = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER,
+
+    @set:PropertyName("skills")
+    @get:PropertyName("skills")
+    var skills: MutableList<String> = mutableListOf()
+)

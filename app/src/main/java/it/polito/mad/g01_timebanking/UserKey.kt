@@ -19,6 +19,7 @@ object UserKey {
 //    const val BIOGRAPHY_EXTRA_ID = BASE_EXTRA+ BIOGRAPHY
 //    const val PROFILE_PICTURE_PATH_EXTRA_ID = BASE_EXTRA+ PROFILE_PICTURE_PATH
 //    const val SKILLS_EXTRA_ID = BASE_EXTRA + SKILLS
+    const val ID_PLACEHOLDER = "Fake id"
     const val FULL_NAME_PLACEHOLDER = ""
     const val NICKNAME_PLACEHOLDER = ""
     const val EMAIL_PLACEHOLDER = ""
@@ -46,6 +47,6 @@ object UserKey {
         "Tidying up the house",
         "Basic plumbing",
         "Vacuuming",
-        "Washing car"
+        "Car washing"
     )
 }

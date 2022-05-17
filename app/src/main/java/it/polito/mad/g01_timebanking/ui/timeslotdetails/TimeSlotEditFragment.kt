@@ -9,20 +9,27 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.UserKey.REQUIRED
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.adapters.AutoCompleteSkillAdapter
+import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotEditBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
@@ -52,12 +59,19 @@ class TimeSlotEditFragment : Fragment() {
     // Edit text of the fields of the advertisement
     private lateinit var editTextTitle: EditText
     private lateinit var editTextLocation: EditText
+    private lateinit var ivSkills: AutoCompleteTextView
+    private lateinit var skillGroup: ChipGroup
+    private lateinit var noSkills: TextView
     private lateinit var editTextDuration: EditText
     private lateinit var editTextDate: EditText
     private lateinit var editTextTime: EditText
     private lateinit var editTextDescription: EditText
     private lateinit var confirmAdvButton: Button
     private lateinit var cancelAdvButton: Button
+
+    private lateinit var currentProfilePicturePath: String
+    private lateinit var currentSkills: MutableSet<String>
+    private  var suggestedSkills: MutableList<SkillDetails> = mutableListOf()
 
     // Variable to handle button state
     private var clickedButton = ""
@@ -68,7 +82,7 @@ class TimeSlotEditFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private var actualAdvId = -1
+    private var actualAdvId = UserKey.ID_PLACEHOLDER
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,9 +91,7 @@ class TimeSlotEditFragment : Fragment() {
     ): View {
         _binding = FragmentTimeSlotEditBinding.inflate(inflater, container, false)
 
-
-        val viewLifeCycleOwner = this.viewLifecycleOwner
-        activity?.onBackPressedDispatcher?.addCallback(viewLifeCycleOwner) {
+        activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner) {
             // If not rotating
             // timeSlotDetailsViewModel.id.removeObservers(viewLifeCycleOwner)
             myOnBackPressedCallback()
@@ -107,6 +119,11 @@ class TimeSlotEditFragment : Fragment() {
         confirmAdvButton = view.findViewById(R.id.confirmAdvButton)
         cancelAdvButton = view.findViewById(R.id.cancelAdvButton)
 
+        /* skills chip views */
+        skillGroup = view.findViewById(R.id.skillgroup)
+        noSkills = view.findViewById(R.id.noSkillsTextView)
+        ivSkills = view.findViewById(R.id.editTextAddSkills)
+
         /* Set fields */
         timeSlotDetailsViewModel.id.observe(this.viewLifecycleOwner) {
             actualAdvId = it
@@ -119,6 +136,55 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.location.observe(this.viewLifecycleOwner) {
             editTextLocation.setText(it)
         }
+
+        timeSlotDetailsViewModel.skills.observe(this.viewLifecycleOwner){
+            skillGroup.removeAllViews()
+
+            if(it.isEmpty())
+                noSkills.isVisible = true
+            it.forEach { content ->
+                val chip = Chip(context)
+                chip.isCloseIconVisible = true
+                chip.text = content
+                chip.isCheckable = false
+                chip.isClickable = false
+                chip.setOnCloseIconClickListener {
+                    timeSlotDetailsViewModel.removeSkill(chip.text.toString())
+                }
+                skillGroup.addView(chip)
+                noSkills.isVisible = false
+            }
+            currentSkills = it
+        }
+        /* Dynamic Suggested Skills list  */
+        timeSlotDetailsViewModel.suggestedSkills.observe(this.viewLifecycleOwner){ it1 ->
+            suggestedSkills = it1.map { SkillDetails(it.name, it.usageInAdv, it.usageInUser) }.toMutableList()
+            initializeSkillSuggestion(view)
+        }
+        // Set listener on "add skills" field
+        ivSkills.setOnEditorActionListener { v, actionId, _ ->
+            // If user presses enter
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                if(v.text.toString().length>UserKey.MINIMUM_SKILLS_LENGTH) {
+                    // Add skillText on set
+                    if(timeSlotDetailsViewModel.tryToAddSkill(v.text.toString().lowercase())){
+                        // PillView is added to the PillGroup thanks to the observer
+                        // Reset editText field for new skills
+                        v.text = ""
+                    } else {
+                        Toast.makeText(context,"Skill already present", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(context,"Skill description is too short.\nUse at least ${UserKey.MINIMUM_SKILLS_LENGTH+1} characters", Toast.LENGTH_SHORT).show()
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+        initializeSkillSuggestion(view)
 
         timeSlotDetailsViewModel.duration.observe(this.viewLifecycleOwner) {
             editTextDuration.setText(it)
@@ -259,6 +325,25 @@ class TimeSlotEditFragment : Fragment() {
         }
     }
 
+
+    private fun initializeSkillSuggestion(view: View) {
+        val customAdapter = AutoCompleteSkillAdapter(requireContext(), suggestedSkills.sortedByDescending { it.usageInAdv })
+
+        val actv = view.findViewById<AutoCompleteTextView>(R.id.editTextAddSkills)
+        actv.setAdapter(customAdapter)
+        actv.setOnItemClickListener { adapterView, _, i, _ ->
+            val selected = adapterView.getItemAtPosition(i) as SkillDetails
+            if (timeSlotDetailsViewModel.tryToAddSkill(selected.name.lowercase())) {
+                // PillView is added to the PillGroup thanks to the observer
+                // Reset editText field for new skills
+                ivSkills.setText("")
+            } else {
+                Toast.makeText(context, "Skill already present", Toast.LENGTH_SHORT).show()
+                ivSkills.setText("")
+            }
+        }
+    }
+
     override fun onDetach() {
         // If fragment is being detached because it is rotating, then we need to save temp data
         // inside the viewmodel.
@@ -267,6 +352,7 @@ class TimeSlotEditFragment : Fragment() {
         timeSlotDetailsViewModel.setDuration(editTextDuration.text.toString())
         timeSlotDetailsViewModel.setDescription(editTextDescription.text.toString())
         timeSlotDetailsViewModel.setLocation(editTextLocation.text.toString())
+        //timeSlotDetailsViewModel.setSkills() is changed everytime
         timeSlotDetailsViewModel.setDateTime(actualTimeDate)
 
         super.onDetach()
@@ -302,11 +388,14 @@ class TimeSlotEditFragment : Fragment() {
             id = actualAdvId,
             title = editTextTitle.text.toString(),
             location = editTextLocation.text.toString(),
-            calendar = actualTimeDate,
+            calendar = actualTimeDate.time,
             duration = editTextDuration.text.toString(),
-            description = editTextDescription.text.toString()
+            description = editTextDescription.text.toString(),
+            uid = Firebase.auth.currentUser!!.uid,
+            skills = currentSkills.toMutableList()
         )
         advListViewModel.addOrUpdateElement(a)
+        timeSlotDetailsViewModel.addOrUpdateSkills(a.skills)
         timeSlotDetailsViewModel.setAdvertisement(a)
     }
 

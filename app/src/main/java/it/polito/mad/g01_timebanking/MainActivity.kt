@@ -1,10 +1,10 @@
 package it.polito.mad.g01_timebanking
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -14,26 +14,45 @@ import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.ui.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
 import it.polito.mad.g01_timebanking.helpers.FileHelper
+import it.polito.mad.g01_timebanking.login.SignInActivity
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
+import it.polito.mad.g01_timebanking.ui.skillslist.SkillsListViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
+import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillFragment
+import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
+
+        if(auth.currentUser == null) {
+            // Launch login activity
+            val i = Intent(applicationContext, SignInActivity::class.java)
+            startActivity(i)
+        }
+
 
         // Activity creates the VMs that will be used by fragments
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
+        val skillsVM = ViewModelProvider(this)[SkillsListViewModel::class.java]
+        val listSkillVM = ViewModelProvider(this)[TimeSlotListBySkillViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -50,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
         fab.setOnClickListener {
-            detailsVM.prepareNewAdvertisement(listVM.count())
+            detailsVM.prepareNewAdvertisement()
             navController.navigate(
                 R.id.action_nav_your_offers_to_nav_edit_time_slot,
                 bundleOf(HASTOBEEMPTY to true)
@@ -76,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_show_profile, R.id.nav_your_offers
+                R.id.nav_show_profile, R.id.nav_your_offers, R.id.nav_skills_list, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -88,18 +107,20 @@ class MainActivity : AppCompatActivity() {
         val profilePicture = navHeader.findViewById<ImageView>(R.id.navHeaderProfilePicture)
 
         profileVM.user.observe(this) {
-            if (it.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-                FileHelper.readImage(it.profilePicturePath, profilePicture)
-            }
             nameProfileTextView.text = it.fullName
             emailProfileTextView.text = it.email
         }
 
-        navController.addOnDestinationChangedListener{ _, destination, _ ->
-            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot)
-                findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).navigationIcon= null
+        profileVM.profilePicturePath.observe(this) {
+            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
+                FileHelper.readImage(it, profilePicture)
+            }
         }
 
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot )
+                findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).navigationIcon= null
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -123,4 +144,5 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
 }

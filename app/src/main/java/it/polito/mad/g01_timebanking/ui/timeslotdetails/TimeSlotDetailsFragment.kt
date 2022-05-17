@@ -4,15 +4,21 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
 import android.widget.EditText
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
+import java.util.*
 
 
 class TimeSlotDetailsFragment : Fragment() {
@@ -25,6 +31,9 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var textViewDate: EditText
     private lateinit var textViewTime: EditText
     private lateinit var textViewDescription: EditText
+
+    private lateinit var skillGroup: ChipGroup
+    private lateinit var noSkills: TextView
 
     private lateinit var actualAdvertisement : AdvertisementDetails
 
@@ -54,15 +63,34 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewDate = view.findViewById(R.id.dateShowText)
         textViewTime = view.findViewById(R.id.timeShowText)
         textViewDescription = view.findViewById(R.id.descriptionShowText)
+        skillGroup = view.findViewById(R.id.skillgroup)
+        noSkills = view.findViewById(R.id.noSkillsTextView)
 
         timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
             textViewTitle.setText(it.title)
             textViewLocation.setText(it.location)
             textViewDuration.setText(it.duration)
             textViewDescription.setText(it.description)
-            textViewDate.setText(it.calendar.fromDateToString())
-            textViewTime.setText(it.calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
+
+            val calendar = Calendar.getInstance()
+            calendar.time = it.calendar
+            textViewDate.setText(calendar.fromDateToString())
+            textViewTime.setText(calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
             actualAdvertisement = it
+
+            skillGroup.removeAllViews()
+
+            if(it.skills.isEmpty())
+                noSkills.isVisible = true
+            else
+                it.skills
+                    .forEach{ content ->
+                        val chip = Chip(context)
+                        chip.text = content
+                        chip.isCheckable = false
+                        chip.isClickable = true
+                        skillGroup.addView(chip)
+                    }.also{ noSkills.isVisible = false }
         }
     }
 
@@ -73,7 +101,10 @@ class TimeSlotDetailsFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.options_menu, menu)
+        if(arguments?.getBoolean("HideOptionMenu") == true)
+            return
+        else
+            inflater.inflate(R.menu.options_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

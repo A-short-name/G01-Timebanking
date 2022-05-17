@@ -7,6 +7,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,9 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.G01Timebanking">
         <activity
-            android:name=".MainActivity"
+            android:name=".logout.SignOutActivity"
+            android:noHistory="true"
+            android:exported="false" />
+        <activity
+            android:name=".login.SignInActivity"
             android:exported="true"
-            android:label="@string/title_activity_main"
+            android:noHistory="true"
             android:theme="@style/Theme.G01Timebanking.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- https://developer.android.com/about/versions/11/privacy/storage#maintain-compatibility-android-10 -->
-
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.G01Timebanking.NoActionBar"></activity> <!-- https://developer.android.com/about/versions/11/privacy/storage#maintain-compatibility-android-10 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="it.polito.mad.g01_timebanking.fileprovider"

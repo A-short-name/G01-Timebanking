@@ -1,4 +1,4 @@
-package it.polito.mad.g01_timebanking.ui.timeslotlist
+package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,20 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
 import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 
 
-class TimeSlotListFragment : Fragment() {
+class TimeSlotListBySkillFragment : Fragment() {
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
-    private val timeSlotListViewModel : TimeSlotListViewModel by activityViewModels()
+    private val timeSlotListBySkillViewModel : TimeSlotListBySkillViewModel by activityViewModels()
 
     private var _binding: FragmentTimeSlotListBinding? = null
 
@@ -47,10 +43,11 @@ class TimeSlotListFragment : Fragment() {
 
         val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
 
-        val adapter = AdvertisementAdapter(listOf(), timeSlotDetailsViewModel, false)
+
+        val adapter = AdvertisementAdapter(listOf(), timeSlotDetailsViewModel, true)
         recyclerViewAdv.adapter = adapter
 
-        timeSlotListViewModel.advList.observe(this.viewLifecycleOwner){
+        timeSlotListBySkillViewModel.advList.observe(this.viewLifecycleOwner){
             if (it.isEmpty()) {
                 recyclerViewAdv.visibility = View.GONE
                 emptyAdvText.visibility = View.VISIBLE

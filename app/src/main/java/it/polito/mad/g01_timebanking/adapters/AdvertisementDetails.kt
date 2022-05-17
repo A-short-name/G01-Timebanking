@@ -8,21 +8,27 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
+import it.polito.mad.g01_timebanking.ui.AdvDiffCallback
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.util.*
 
 data class AdvertisementDetails (
-    var id: Int,
-    var title: String,
-    var location: String,
-    var calendar: Calendar,
-    var duration: String,
-    var description: String
+    var id: String = "",
+    var title: String = "",
+    var location: String = "",
+    var calendar: Date = Calendar.getInstance().time,
+    var duration: String = "",
+    var description: String = "",
+    var uid: String = "",
+    var skills: MutableList<String> = mutableListOf()
     ){
     override fun equals(other: Any?): Boolean {
         other as AdvertisementDetails
@@ -30,22 +36,25 @@ data class AdvertisementDetails (
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = id.hashCode()
         result = 31 * result + title.hashCode()
         result = 31 * result + location.hashCode()
         result = 31 * result + calendar.hashCode()
         result = 31 * result + duration.hashCode()
         result = 31 * result + description.hashCode()
+        result = 31 * result + uid.hashCode()
+        result = 32 * result + skills.hashCode()
         return result
     }
 }
 
 class AdvertisementAdapter(
-    private val data:List<AdvertisementDetails>,
-    private val tsDetailsViewModel: TimeSlotDetailsViewModel)
+    private var data:List<AdvertisementDetails>,
+    private val tsDetailsViewModel: TimeSlotDetailsViewModel,
+    private val isAdvBySkill: Boolean)
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 
-    class AdvertisementViewHolder(private val parent: ViewGroup, v:View): RecyclerView.ViewHolder(v) {
+    class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvBySkill: Boolean): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advDate)
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
@@ -54,9 +63,18 @@ class AdvertisementAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(adv: AdvertisementDetails, buttonAction: (v: View) -> Unit, cardAction: (v: View) -> Unit) {
             title.text = adv.title
-            date.text = "${adv.calendar.fromDateToString()} ${adv.calendar.fromTimeToString(
+            val calendar = Calendar.getInstance()
+            calendar.time = adv.calendar
+
+            date.text = "${calendar.fromDateToString()} ${calendar.fromTimeToString(
                 DateFormat.is24HourFormat(parent.context))}"
-            button.setOnClickListener(buttonAction)
+
+            if(!isAdvBySkill) {
+                button.setOnClickListener(buttonAction)
+                button.visibility = View.VISIBLE
+            } else
+                button.visibility = View.GONE
+
             cardView.setOnClickListener(cardAction)
         }
     }
@@ -66,7 +84,7 @@ class AdvertisementAdapter(
         val v : View = LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.single_advertisement_layout, parent,false)
-        return AdvertisementViewHolder(parent,v)
+        return AdvertisementViewHolder(parent,v,isAdvBySkill)
     }
 
     override fun onBindViewHolder(holder: AdvertisementViewHolder, position: Int) {
@@ -84,7 +102,7 @@ class AdvertisementAdapter(
     private fun defineCallbacks(adv: AdvertisementDetails, destination: String): (v: View) -> Unit {
         val action = when (destination) {
             "button" -> R.id.action_nav_your_offers_to_nav_edit_time_slot
-            "cardView" -> R.id.action_nav_your_offers_to_nav_show_time_slot
+            "cardView" -> if(!isAdvBySkill) R.id.action_nav_your_offers_to_nav_show_time_slot else R.id.action_nav_adv_list_by_skill_to_nav_show_time_slot
             else -> -1
         }
 
@@ -92,10 +110,21 @@ class AdvertisementAdapter(
             val pos = data.indexOf(adv)
             if (pos != -1) {
                 tsDetailsViewModel.setAdvertisement(adv)
-                Navigation.findNavController(it).navigate(action)
+
+                if(isAdvBySkill) {
+                    val b = bundleOf("HideOptionMenu" to true)
+                    Navigation.findNavController(it).navigate(action, b)
+                } else
+                    Navigation.findNavController(it).navigate(action)
             }
         }
         return callback
+    }
+
+    fun setAdvertisements(newAdvs: List<AdvertisementDetails>) {
+        val diffs = DiffUtil.calculateDiff( AdvDiffCallback(data, newAdvs) )
+        data = newAdvs //update data
+        diffs.dispatchUpdatesTo(this) //animate UI
     }
 
     override fun getItemCount(): Int = data.size
