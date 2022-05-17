@@ -184,23 +184,25 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         Log.d("UserSkills", "removed skills: $removedSkills and added skills: $addedSkills")
         /* take all users */
         addedSkills.forEach { addedSkill ->
-            db.collection("suggestedSkills").document(addedSkill).get().addOnSuccessListener {
-                var addedSkillDoc = db.collection("suggestedSkills").document(addedSkill)
-
-                addedSkillDoc.get()
-                    .addOnSuccessListener {
-
-                        if (it.exists())
-                        //se lo trovo faccio l'update incrementando il contatore
-                            addedSkillDoc.update("usage_in_user", FieldValue.increment(1))
-                        else
-                        //nuovo doc con contatori 1 0
-                            addedSkillDoc.set(SkillDetails(addedSkill, usageInUser = 1L))
-                    }
-                    .addOnFailureListener {
-                        Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
-                    }
-            }
+            db.collection("suggestedSkills").document(addedSkill)
+                .set(hashMapOf("name" to addedSkill, "usage_in_user" to FieldValue.increment(1L)), SetOptions.merge())
+//                .get().addOnSuccessListener {
+//                var addedSkillDoc = db.collection("suggestedSkills").document(addedSkill)
+//
+//                addedSkillDoc.get()
+//                    .addOnSuccessListener {
+//
+//                        if (it.exists())
+//                        //se lo trovo faccio l'update incrementando il contatore
+//                            addedSkillDoc.update("usage_in_user", FieldValue.increment(1))
+//                        else
+//                        //nuovo doc con contatori 1 0
+//                            addedSkillDoc.set(SkillDetails(addedSkill, usageInUser = 1L))
+//                    }
+//                    .addOnFailureListener {
+//                        Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+//                    }
+//            }
         }
         removedSkills.forEach { removedSkill ->
             db.collection("suggestedSkills").document(removedSkill).get().addOnSuccessListener {
