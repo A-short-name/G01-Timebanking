@@ -16,6 +16,7 @@ import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.io.ByteArrayOutputStream
 
@@ -32,6 +33,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     // Initialization placeholder variable
     private var _user = UserInfo()
+
 
     // This variable contains user info synchronized with the database
     private val pvtUser = MutableLiveData<UserInfo>().also {
@@ -185,45 +187,19 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         /* take all users */
         addedSkills.forEach { addedSkill ->
             db.collection("suggestedSkills").document(addedSkill)
-                .set(hashMapOf("name" to addedSkill, "usage_in_user" to FieldValue.increment(1L)), SetOptions.merge())
-//                .get().addOnSuccessListener {
-//                var addedSkillDoc = db.collection("suggestedSkills").document(addedSkill)
-//
-//                addedSkillDoc.get()
-//                    .addOnSuccessListener {
-//
-//                        if (it.exists())
-//                        //se lo trovo faccio l'update incrementando il contatore
-//                            addedSkillDoc.update("usage_in_user", FieldValue.increment(1))
-//                        else
-//                        //nuovo doc con contatori 1 0
-//                            addedSkillDoc.set(SkillDetails(addedSkill, usageInUser = 1L))
-//                    }
-//                    .addOnFailureListener {
-//                        Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
-//                    }
-//            }
+                .set(hashMapOf("name" to addedSkill,
+                    "usage_in_user" to FieldValue.increment(1L),
+                    "usage_in_adv" to FieldValue.increment(0L)
+                ),
+                    SetOptions.merge())
         }
         removedSkills.forEach { removedSkill ->
-            db.collection("suggestedSkills").document(removedSkill).get().addOnSuccessListener {
-                var removedSkillDoc = db.collection("suggestedSkills").document(removedSkill)
-                removedSkillDoc.get()
-                    .addOnSuccessListener {
-                        if (it.exists()) {
-                            if (it["usage_in_user"] as Long <= 1L && it["usage_in_adv"] as Long <= 0L)
-                                db.collection("suggestedSkills").document(removedSkill).delete()
-                            else
-                                removedSkillDoc.set(SkillDetails(removedSkill, usageInUser = -1L))
-                        } else
-                            Log.d(
-                                "UpdateSkillUsageUser",
-                                "Removing an unexisting skill $removedSkill"
-                            )
-                    }
-
-            }
+            db.collection("suggestedSkills").document(removedSkill)
+                .update("usage_in_user" ,
+                    FieldValue.increment(-1L)).addOnSuccessListener {
+                        Log.d("UserSkill","skill $removedSkill decremented")
+                }
         }
-        //TODO: usare update merge
     }
 
 

@@ -3,10 +3,7 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
 import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -153,44 +150,20 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         val addedSkills = newAdvSkillsName.toSet() subtract oldSkills
         val removedSkills = oldSkills subtract newAdvSkillsName.toSet()
         addedSkills.forEach { addedSkill ->
-            db.collection("suggestedSkills").document(addedSkill).get().addOnSuccessListener {
-                var addedSkillDoc = db.collection("suggestedSkills").document(addedSkill)
-
-                addedSkillDoc.get()
-                    .addOnSuccessListener {
-
-                        if (it.exists())
-                        //se lo trovo faccio l'update incrementando il contatore
-                            addedSkillDoc.update("usage_in_adv", FieldValue.increment(1))
-                        else
-                        //nuovo doc con contatori 1 0
-                            addedSkillDoc.set(SkillDetails(addedSkill, usageInAdv = 1L))
-                    }
-                    .addOnFailureListener {
-                        Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
-                    }
-            }
+            db.collection("suggestedSkills").document(addedSkill)
+                .set(hashMapOf("name" to addedSkill,
+                    "usage_in_adv" to FieldValue.increment(1L),
+                    "usage_in_user" to FieldValue.increment(0L)
+                ),
+                    SetOptions.merge())
         }
         removedSkills.forEach { removedSkill ->
-            db.collection("suggestedSkills").document(removedSkill).get().addOnSuccessListener {
-                var removedSkillDoc = db.collection("suggestedSkills").document(removedSkill)
-                removedSkillDoc.get()
-                    .addOnSuccessListener {
-                        if (it.exists()) {
-                            if (it["usage_in_adv"] as Long <= 1L && it["usage_in_user"] as Long <= 0L)
-                                db.collection("suggestedSkills").document(removedSkill).delete()
-                            else
-                                removedSkillDoc.set(SkillDetails(removedSkill, usageInAdv = -1L))
-                        } else
-                            Log.d(
-                                "UpdateSkillUsageUser",
-                                "Removing an unexisting skill $removedSkill"
-                            )
-                    }
-
-            }
+            db.collection("suggestedSkills").document(removedSkill)
+                .update("usage_in_adv" ,
+                    FieldValue.increment(-1L)).addOnSuccessListener {
+                    Log.d("AdvSkill","skill $removedSkill decremented")
+                }
         }
-        //TODO: usare update merge
     }
 
     fun prepareNewAdvertisement() {
