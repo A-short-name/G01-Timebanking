@@ -17,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.G01Timebanking">
-
+        <activity
+            android:name=".logout.SignOutActivity"
+            android:noHistory="true"
+            android:exported="false" />
         <activity
             android:name=".login.SignInActivity"
             android:exported="true"
@@ -26,16 +29,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.G01Timebanking.NoActionBar">
-        </activity>
-        <!-- https://developer.android.com/about/versions/11/privacy/storage#maintain-compatibility-android-10 -->
-
+            android:theme="@style/Theme.G01Timebanking.NoActionBar"></activity> <!-- https://developer.android.com/about/versions/11/privacy/storage#maintain-compatibility-android-10 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="it.polito.mad.g01_timebanking.fileprovider"

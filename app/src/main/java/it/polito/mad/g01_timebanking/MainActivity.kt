@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
 
+
         // Activity creates the VMs that will be used by fragments
         val detailsVM = ViewModelProvider(this)[TimeSlotDetailsViewModel::class.java]
         val listVM = ViewModelProvider(this)[TimeSlotListViewModel::class.java]
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_show_profile, R.id.nav_your_offers, R.id.nav_skills_list
+                R.id.nav_show_profile, R.id.nav_your_offers, R.id.nav_skills_list, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener{ _, destination, _ ->
-            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot)
+            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot )
                 findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).navigationIcon= null
         }
     }
