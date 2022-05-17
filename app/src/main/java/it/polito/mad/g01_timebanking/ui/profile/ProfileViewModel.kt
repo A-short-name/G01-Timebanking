@@ -13,8 +13,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.Skill
@@ -76,7 +74,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         it.value = ""
     }
 
-    var newPicturePath : String = ""
+    var tmpPicturePath : String = ""
 
     val profilePicturePath: LiveData<String> = pvtProfilePicturePath
 
@@ -142,10 +140,11 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         pvtLocation.value = userInfo.location
         pvtBiography.value = userInfo.biography
         pvtSkills.value = userInfo.skills.toMutableSet()
+
     }
 
     fun updatePhoto(newProfilePicturePath: String, imageView: ImageView) {
-        newPicturePath = newProfilePicturePath
+        tmpPicturePath = newProfilePicturePath
         uploadPhoto(imageView)
         val u = UserInfo (
             fullName = _user.fullName,
@@ -254,7 +253,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
                     _user = v.toUserInfo()
-                    if(_user.profilePicturePath != newPicturePath)
+                    Log.d("User_Picture","_user pp = ${_user.profilePicturePath} , newProfPic = ${tmpPicturePath}")
+                    if(_user.profilePicturePath != tmpPicturePath)
                         downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
@@ -310,6 +310,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     localFile.writeBytes(it)
 
                     Log.d("PICTURE_DOWNLOAD", "Path file: ${localFile.absolutePath}")
+                    tmpPicturePath = localFile.absolutePath
                     pvtProfilePicturePath.value = localFile.absolutePath
                 }.addOnFailureListener {
                     // Handle any errors
@@ -318,6 +319,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                 }
             }else{
                 Log.d("PICTURE_DOWNLOAD", "No picture on database")
+                tmpPicturePath = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
                 pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
             }
         }
