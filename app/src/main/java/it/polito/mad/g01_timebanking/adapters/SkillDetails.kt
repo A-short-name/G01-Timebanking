@@ -48,10 +48,12 @@ class SkillAdapter(
 
     class SkillViewHolder(v:View): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.singleSkillTitle)
+        private val usage: TextView = v.findViewById(R.id.singleSkillUsage)
         private val cardView: CardView = v.findViewById(R.id.skillCardView)
 
         fun bind(skill: SkillDetails, cardAction: (v: View) -> Unit) {
             title.text = skill.name
+            usage.text = skill.usageInAdv.toString()
             cardView.setOnClickListener(cardAction)
         }
     }
@@ -114,12 +116,14 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
                 R.layout.single_skill_autocomplete_row, parent, false
             )
         }
-        val textViewName = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_textView_name)
-        val imageViewSkill = internalConvertView!!.findViewById<ImageView>(R.id.image_view_skill)
+        val textViewName = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_name)
+        val textViewUsage = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_usage)
+        //val imageViewSkill = internalConvertView!!.findViewById<ImageView>(R.id.image_view_skill)
         val skillItem: SkillDetails? = getItem(position)
         if (skillItem != null) {
             Log.d("AutoComplete_Adapter", "Suggested skill to print: ${skillItem.name}")
             textViewName.text = skillItem.name
+            textViewUsage.text = skillItem.usageInAdv.toString()
             //imageViewSkill.setImageResource(skillItem.)
         }
         return internalConvertView
