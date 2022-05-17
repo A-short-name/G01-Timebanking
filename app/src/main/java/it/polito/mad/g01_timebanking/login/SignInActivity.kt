@@ -32,7 +32,6 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         setContentView(R.layout.activity_login)
 
         val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
@@ -42,9 +41,9 @@ class SignInActivity : AppCompatActivity() {
             signIn()
         }
 
-        if(Firebase.auth.currentUser == null)
+        if(Firebase.auth.currentUser == null && !intent.getBooleanExtra("fromLogout",false))
            signIn()
-        else {
+        else if (Firebase.auth.currentUser != null) {
             // User already logged-in, close this activity
             val i = Intent(applicationContext, MainActivity::class.java)
             startActivity(i)
@@ -130,6 +129,11 @@ class SignInActivity : AppCompatActivity() {
                         Log.d(ContentValues.TAG, e.localizedMessage ?: "No google accounts found")
                     }
             }
+    }
+
+    override fun onBackPressed() {
+        finishAffinity()
+        super.onBackPressed()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

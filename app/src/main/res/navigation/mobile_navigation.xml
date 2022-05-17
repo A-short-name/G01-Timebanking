@@ -102,6 +102,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_skills_list_to_signOutActivity"
+            app:destination="@id/nav_logout" />
     </fragment>
     <fragment
         android:id="@+id/nav_adv_list_by_skill"
@@ -115,5 +118,11 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
+    <activity
+        android:id="@+id/nav_logout"
+        android:name="it.polito.mad.g01_timebanking.logout.SignOutActivity"
+        android:label="activity_sign_out"
+        tools:layout="@layout/activity_sign_out" >
+    </activity>
 
 </navigation>

@@ -16,5 +16,9 @@
             android:id="@+id/nav_show_profile"
             android:icon="@drawable/ic_user"
             android:title="@string/menu_show_profile" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_logout" />
     </group>
 </menu>
