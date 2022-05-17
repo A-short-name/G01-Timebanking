@@ -105,6 +105,25 @@
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Design.TextInputLayout"
+                android:id="@+id/descriptionShowTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="@string/shr_hint_description"
+                app:startIconDrawable="@drawable/ic_description"
+                app:counterEnabled="true"
+                app:counterMaxLength="160" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionShowText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <TextView
                 android:id="@+id/skillsTitle"
                 android:layout_width="wrap_content"
@@ -145,25 +164,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/skill3" />
             </com.google.android.material.chip.ChipGroup>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Design.TextInputLayout"
-                android:id="@+id/descriptionShowTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:hint="@string/shr_hint_description"
-                app:startIconDrawable="@drawable/ic_description"
-                app:counterEnabled="true"
-                app:counterMaxLength="160" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/descriptionShowText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false" />
-            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>
