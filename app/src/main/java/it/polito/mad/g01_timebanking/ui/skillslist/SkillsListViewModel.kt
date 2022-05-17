@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 
 class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
@@ -60,6 +61,7 @@ class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
     private fun getSkillsList() {
         skillsListener = db.collection("suggestedSkills")
             .whereGreaterThan("usage_in_adv",0)
+            .orderBy("usage_in_adv", Query.Direction.DESCENDING)
             .addSnapshotListener { value, e ->
                 if (e != null) {
                     Log.d("Skills_Listener", "Error retrieving data.")
