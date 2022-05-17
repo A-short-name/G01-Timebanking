@@ -10,14 +10,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
+import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.io.ByteArrayOutputStream
 
 
@@ -74,7 +73,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         it.value = ""
     }
 
-    var tmpPicturePath : String = ""
+    var tmpPicturePath: String = ""
 
     val profilePicturePath: LiveData<String> = pvtProfilePicturePath
 
@@ -85,14 +84,14 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
 
-    private var tmpSuggestedSkills: MutableSet<Skill> = _user.skills.map{Skill(name = it)}.toMutableSet()
+    private var tmpSuggestedSkills: MutableSet<Skill> =
+        _user.skills.map { Skill(name = it) }.toMutableSet()
 
     private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
         it.value = tmpSuggestedSkills
         getSuggestedSkills()
     }
     val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
-
 
 
     fun setFullname(fullname: String) {
@@ -146,7 +145,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     fun updatePhoto(newProfilePicturePath: String, imageView: ImageView) {
         tmpPicturePath = newProfilePicturePath
         uploadPhoto(imageView)
-        val u = UserInfo (
+        val u = UserInfo(
             fullName = _user.fullName,
             nickname = _user.nickname,
             email = _user.email,
@@ -168,79 +167,69 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
             }
             .addOnFailureListener {
                 Log.d("InsertOrUpdateUserInfo", "Exception: ${it.message}")
-                Toast.makeText(a.applicationContext,"Failed updating data. Try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    a.applicationContext,
+                    "Failed updating data. Try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
     }
 
-    fun addOrUpdateSkills(newUserSkillsName :MutableList<String>){
+    fun addOrUpdateSkills(newUserSkillsName: MutableList<String>) {
         val oldUser = _user
 
-        //TODO: evitare di usare la get
-        val skillUnion = oldUser.skills union newUserSkillsName.toSet()
-        val skillIntersection = oldUser.skills intersect newUserSkillsName.toSet()
-        var newUserUsage : Long = 0
-        val changedSkills = skillUnion - skillIntersection
+        val addedSkills = newUserSkillsName.toSet() subtract oldUser.skills
+        val removedSkills = oldUser.skills subtract newUserSkillsName.toSet()
+        Log.d("UserSkills", "removed skills: $removedSkills and added skills: $addedSkills")
         /* take all users */
-        changedSkills.forEach { changedSkill -> db.collection("users")
-            .addSnapshotListener { value, error ->
-                /* select only users who changed their skills */
-                if(value != null && error == null){
+        addedSkills.forEach { addedSkill ->
+            db.collection("suggestedSkills").document(addedSkill).get().addOnSuccessListener {
+                var addedSkillDoc = db.collection("suggestedSkills").document(addedSkill)
 
-                    newUserUsage = value.count { _user -> _user.toUserInfo().skills.contains(changedSkill) }.toLong()
+                addedSkillDoc.get()
+                    .addOnSuccessListener {
 
-                    db.collection("suggestedSkills").document(changedSkill).get().addOnSuccessListener { oldSkillFromDb ->
-                        val tmpSkill = oldSkillFromDb.toSkill()
-                        tmpSkill.usageInUser = newUserUsage
-                        db.collection("suggestedSkills").document(changedSkill).set(tmpSkill).addOnSuccessListener {
-                            Log.d("UpdateSkillUsageUser", "Success: $it")
-                        }
-                            .addOnFailureListener {
-                                Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
-                            }
+                        if (it.exists())
+                        //se lo trovo faccio l'update incrementando il contatore
+                            addedSkillDoc.update("usage_in_user", FieldValue.increment(1))
+                        else
+                        //nuovo doc con contatori 1 0
+                            addedSkillDoc.set(SkillDetails(addedSkill, usageInUser = 1L))
+                    }
+                    .addOnFailureListener {
+                        Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+                    }
+            }
+        }
+        removedSkills.forEach { removedSkill ->
+            db.collection("suggestedSkills").document(removedSkill).get().addOnSuccessListener {
+                var removedSkillDoc = db.collection("suggestedSkills").document(removedSkill)
+                removedSkillDoc.get()
+                    .addOnSuccessListener {
+                        if (it.exists()) {
+                            if (it["usage_in_user"] as Long <= 1L && it["usage_in_adv"] as Long <= 0L)
+                                db.collection("suggestedSkills").document(removedSkill).delete()
+                            else
+                                removedSkillDoc.set(SkillDetails(removedSkill, usageInUser = -1L))
+                        } else
+                            Log.d(
+                                "UpdateSkillUsageUser",
+                                "Removing an unexisting skill $removedSkill"
+                            )
                     }
 
-                }
             }
         }
-
-        /*//TODO: scrivere una query unica
-        for (oldUserSkillName in oldUser.skills) {
-            if(! newUserSkillsName.contains(oldUserSkillName))
-                decrementUsageInUserSkill(oldUserSkillName)
-
-        }
-        for (newUserSkillName in newUserSkillsName) {
-            if(! oldUser.skills.contains(newUserSkillName))
-                insertOrIncrementUsageInUserSkill(newUserSkillName)
-        }*/
-
-
+        //TODO: usare update merge
     }
 
-    private fun insertOrIncrementUsageInUserSkill(newUserSkillName: String) {
-        TODO("Not yet implemented, like the decrement it should search for the old skill if present update the usage," +
-                " if not present a new skill should be create")
-    }
 
-    fun decrementUsageInUserSkill(skillName : String){
-        db.collection("suggestedSkills").document(skillName).get().addOnSuccessListener { oldSkillFromDb ->
-            var tempSkill = oldSkillFromDb.toSkill()
-            tempSkill.usageInUser--
-            db.collection("suggestedSkills").document(skillName).set(tempSkill).addOnSuccessListener {
-                Log.d("UpdateSkillUsageUser", "Success: $it")
-            }
-                .addOnFailureListener {
-                    Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
-                }
-        }
-    }
-
-    private fun getSuggestedSkills(){
+    private fun getSuggestedSkills() {
 
         suggestedSkillsListener = db.collection("suggestedSkills")
             .addSnapshotListener { value, error ->
-                if (error == null && value != null){
+                if (error == null && value != null) {
                     pvtSuggestedSkills.value = value.documents.map { it.toSkill() }.toMutableSet()
                 }
             }
@@ -253,8 +242,11 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
                     _user = v.toUserInfo()
-                    Log.d("User_Picture","_user pp = ${_user.profilePicturePath} , newProfPic = ${tmpPicturePath}")
-                    if(_user.profilePicturePath != tmpPicturePath)
+                    Log.d(
+                        "User_Picture",
+                        "_user pp = ${_user.profilePicturePath} , newProfPic = ${tmpPicturePath}"
+                    )
+                    if (_user.profilePicturePath != tmpPicturePath)
                         downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
@@ -269,7 +261,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     fun uploadPhoto(imageView: ImageView) {
         // Get the data from an ImageView as bytes
-        if(imageView.width == 0 || imageView.height == 0)
+        if (imageView.width == 0 || imageView.height == 0)
             return
 
         val bitmap = Bitmap.createBitmap(imageView.width, imageView.height, Bitmap.Config.ARGB_8888)
@@ -300,7 +292,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         // Check if file exists
         imagesRef.listAll().addOnSuccessListener {
             // If file exists download it
-            if(it.items.contains(userPicRef)) {
+            if (it.items.contains(userPicRef)) {
                 val maximumSizeOneMegabyte: Long = 1024 * 1024
 
                 userPicRef.getBytes(maximumSizeOneMegabyte).addOnSuccessListener {
@@ -317,7 +309,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     Log.d("PICTURE_DOWNLOAD", "Failed downloading picture: ${it.message}")
                     pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
                 }
-            }else{
+            } else {
                 Log.d("PICTURE_DOWNLOAD", "No picture on database")
                 tmpPicturePath = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
                 pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER

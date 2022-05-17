@@ -4,14 +4,16 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.util.*
 
-class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
+class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var suggestedSkillsListener: ListenerRegistration
 
@@ -30,8 +32,7 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         it.value = _adv
     }
 
-    val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
-
+    val advertisement: LiveData<AdvertisementDetails> = pvtAdvertisement
 
 
     /* Ephemeral variables used from the Edit fragment to handle temporary save */
@@ -42,7 +43,8 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
 
-    private var tmpSuggestedSkills: MutableSet<Skill> = _adv.skills.map{Skill(name = it)}.toMutableSet()
+    private var tmpSuggestedSkills: MutableSet<Skill> =
+        _adv.skills.map { Skill(name = it) }.toMutableSet()
 
     private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
         it.value = tmpSuggestedSkills
@@ -53,34 +55,34 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     private val pvtId = MutableLiveData<String>().also {
         it.value = _adv.id
     }
-    val id : LiveData<String> = pvtId
+    val id: LiveData<String> = pvtId
 
     private val pvtTitle = MutableLiveData<String>().also {
         it.value = _adv.title
     }
-    val title : LiveData<String> = pvtTitle
+    val title: LiveData<String> = pvtTitle
 
     private val pvtDescription = MutableLiveData<String>().also {
         it.value = _adv.description
     }
-    val description : LiveData<String> = pvtDescription
+    val description: LiveData<String> = pvtDescription
 
     private val pvtLocation = MutableLiveData<String>().also {
         it.value = _adv.location
     }
-    val location : LiveData<String> = pvtLocation
+    val location: LiveData<String> = pvtLocation
 
     private val pvtCalendar = MutableLiveData<Calendar>().also {
         val calendar = Calendar.getInstance()
         calendar.time = _adv.calendar
         it.value = calendar
     }
-    val calendar : LiveData<Calendar> = pvtCalendar
+    val calendar: LiveData<Calendar> = pvtCalendar
 
     private val pvtDuration = MutableLiveData<String>().also {
         it.value = _adv.duration
     }
-    val duration : LiveData<String> = pvtDuration
+    val duration: LiveData<String> = pvtDuration
 
     fun setTitle(title: String) {
         pvtTitle.value = title
@@ -109,11 +111,11 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     }
 
 
-    private fun getSuggestedSkills(){
+    private fun getSuggestedSkills() {
 
         suggestedSkillsListener = db.collection("suggestedSkills")
             .addSnapshotListener { value, error ->
-                if (error == null && value != null){
+                if (error == null && value != null) {
                     pvtSuggestedSkills.value = value.documents.map { it.toSkill() }.toMutableSet()
                 }
             }
@@ -145,54 +147,55 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
         tmpSkills = adv.skills.toMutableSet()
     }
 
-    fun addOrUpdateSkills(newAdvSkillsName :MutableList<String>){
+    fun addOrUpdateSkills(newAdvSkillsName: MutableList<String>) {
         val oldSkills = pvtAdvertisement.value!!.skills
 
-        val skillUnion = oldSkills union newAdvSkillsName.toSet()
-        val skillIntersection = oldSkills intersect newAdvSkillsName.toSet()
-        var newAdvUsage: Long
-        val changedSkills = skillUnion - skillIntersection
-        /* take all users */
-        changedSkills.forEach { changedSkill -> db.collection("advertisements")
-            .addSnapshotListener { value, error ->
-                /* select only advertisement who changed their skills */
-                if(value != null && error == null){
+        val addedSkills = newAdvSkillsName.toSet() subtract oldSkills
+        val removedSkills = oldSkills subtract newAdvSkillsName.toSet()
+        addedSkills.forEach { addedSkill ->
+            db.collection("suggestedSkills").document(addedSkill).get().addOnSuccessListener {
+                var addedSkillDoc = db.collection("suggestedSkills").document(addedSkill)
 
-                    newAdvUsage = value.count { _adv -> _adv.toAdvDetails().skills.contains(changedSkill) }.toLong()
+                addedSkillDoc.get()
+                    .addOnSuccessListener {
 
-                    db.collection("suggestedSkills").document(changedSkill).get().addOnSuccessListener { oldSkillFromDb ->
-                        val tmpSkill = oldSkillFromDb.toSkill()
-                        tmpSkill.usageInAdv = newAdvUsage
-                        db.collection("suggestedSkills").document(changedSkill).set(tmpSkill).addOnSuccessListener {
-                            Log.d("UpdateSkillUsageUser", "Success: $it")
-                        }
-                            .addOnFailureListener {
-                                Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
-                            }
+                        if (it.exists())
+                        //se lo trovo faccio l'update incrementando il contatore
+                            addedSkillDoc.update("usage_in_adv", FieldValue.increment(1))
+                        else
+                        //nuovo doc con contatori 1 0
+                            addedSkillDoc.set(SkillDetails(addedSkill, usageInAdv = 1L))
                     }
-
-                }
+                    .addOnFailureListener {
+                        Log.d("UpdateSkillUsageUser", "Exception: ${it.message}")
+                    }
             }
         }
+        removedSkills.forEach { removedSkill ->
+            db.collection("suggestedSkills").document(removedSkill).get().addOnSuccessListener {
+                var removedSkillDoc = db.collection("suggestedSkills").document(removedSkill)
+                removedSkillDoc.get()
+                    .addOnSuccessListener {
+                        if (it.exists()) {
+                            if (it["usage_in_adv"] as Long <= 1L && it["usage_in_user"] as Long <= 0L)
+                                db.collection("suggestedSkills").document(removedSkill).delete()
+                            else
+                                removedSkillDoc.set(SkillDetails(removedSkill, usageInAdv = -1L))
+                        } else
+                            Log.d(
+                                "UpdateSkillUsageUser",
+                                "Removing an unexisting skill $removedSkill"
+                            )
+                    }
 
-        /*//TODO: scrivere una query unica
-        for (oldUserSkillName in oldUser.skills) {
-            if(! newUserSkillsName.contains(oldUserSkillName))
-                decrementUsageInUserSkill(oldUserSkillName)
-
+            }
         }
-        for (newUserSkillName in newUserSkillsName) {
-            if(! oldUser.skills.contains(newUserSkillName))
-                insertOrIncrementUsageInUserSkill(newUserSkillName)
-        }*/
-
-
     }
 
     fun prepareNewAdvertisement() {
         val expTime = Calendar.getInstance()
-        expTime.add(Calendar.HOUR_OF_DAY,+2)
-        expTime.set(Calendar.MINUTE,0)
+        expTime.add(Calendar.HOUR_OF_DAY, +2)
+        expTime.set(Calendar.MINUTE, 0)
 
         pvtId.value = UserKey.ID_PLACEHOLDER
         pvtTitle.value = ""
