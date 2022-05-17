@@ -146,10 +146,10 @@ class TimeSlotDetailsViewModel(a:Application) : AndroidViewModel(a) {
     }
 
     fun addOrUpdateSkills(newAdvSkillsName :MutableList<String>){
-        val oldAdv = _adv
+        val oldSkills = pvtAdvertisement.value!!.skills
 
-        val skillUnion = oldAdv.skills union newAdvSkillsName.toSet()
-        val skillIntersection = oldAdv.skills intersect newAdvSkillsName.toSet()
+        val skillUnion = oldSkills union newAdvSkillsName.toSet()
+        val skillIntersection = oldSkills intersect newAdvSkillsName.toSet()
         var newAdvUsage: Long
         val changedSkills = skillUnion - skillIntersection
         /* take all users */

@@ -75,6 +75,9 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     private val pvtProfilePicturePath = MutableLiveData<String>().also {
         it.value = ""
     }
+
+    var newPicturePath : String = ""
+
     val profilePicturePath: LiveData<String> = pvtProfilePicturePath
 
     private var tmpSkills: MutableSet<String> = _user.skills.toMutableSet()
@@ -142,6 +145,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun updatePhoto(newProfilePicturePath: String, imageView: ImageView) {
+        newPicturePath = newProfilePicturePath
         uploadPhoto(imageView)
         val u = UserInfo (
             fullName = _user.fullName,
@@ -250,7 +254,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     Log.d("UserInfo_Listener", "Data found on database. Updating!")
                     pvtUser.value = v.toUserInfo()
                     _user = v.toUserInfo()
-                    downloadPhoto()
+                    if(_user.profilePicturePath != newPicturePath)
+                        downloadPhoto()
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
                     val newUser = UserInfo().apply {
