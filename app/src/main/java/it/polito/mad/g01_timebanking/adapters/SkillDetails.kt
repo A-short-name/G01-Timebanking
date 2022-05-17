@@ -1,8 +1,13 @@
 package it.polito.mad.g01_timebanking.adapters
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Filter
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
@@ -10,7 +15,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.PropertyName
 import it.polito.mad.g01_timebanking.R
-import it.polito.mad.g01_timebanking.ui.AdvDiffCallback
 import it.polito.mad.g01_timebanking.ui.SkillDiffCallback
 import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
 
@@ -83,4 +87,97 @@ class SkillAdapter(
 
 
     override fun getItemCount(): Int = data.size
+}
+
+
+
+/*
+*   Adapter used in AutoCompleteTextView to suggest skills
+*
+* */
+
+class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) :
+    ArrayAdapter<SkillDetails?>(context, 0, skillList) {
+
+
+
+
+    private val skillListFull: List<SkillDetails> = ArrayList(skillList)
+    private var skillList: MutableList<SkillDetails> = ArrayList(skillList)
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        Log.d("AutoComplete_Adapter", "Actual skillList: $skillList")
+
+        var internalConvertView = convertView
+        if (internalConvertView == null) {
+            internalConvertView = LayoutInflater.from(context).inflate(
+                R.layout.single_skill_autocomplete_row, parent, false
+            )
+        }
+        val textViewName = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_textView_name)
+        val imageViewSkill = internalConvertView!!.findViewById<ImageView>(R.id.image_view_skill)
+        val skillItem: SkillDetails? = getItem(position)
+        if (skillItem != null) {
+            Log.d("AutoComplete_Adapter", "Suggested skill to print: ${skillItem.name}")
+            textViewName.text = skillItem.name
+            //imageViewSkill.setImageResource(skillItem.)
+        }
+        return internalConvertView
+    }
+
+    //I've to override it, otherwise it will use the original full list
+    override fun getItem(position: Int): SkillDetails? {
+        return skillList[position]
+    }
+
+    override fun getCount(): Int {
+        return skillList.size
+    }
+
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+/*            override fun convertResultToString(resultValue: Any) :String {
+                Log.d("AutoComplete_Adapter", "Result value: $resultValue")
+                return (resultValue as SkillDetails).name
+            }*/
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                Log.d("AutoComplete_Adapter", "Constraint is $constraint")
+                val filterResults = FilterResults()
+                if (constraint != null) {
+                    val skillSuggestion: MutableList<SkillDetails> = ArrayList()
+                    for (skill in skillListFull) {
+                        if (skill.name.toLowerCase()
+                                .startsWith(constraint.toString().toLowerCase())
+                        ) {
+                            skillSuggestion.add(skill)
+                        }
+                    }
+                    filterResults.values = skillSuggestion
+                    filterResults.count = skillSuggestion.size
+                }
+                Log.d("AutoComplete_Adapter", "Filter Result count: ${filterResults.count}")
+                Log.d("AutoComplete_Adapter", "Filter Result value: ${filterResults.values}")
+                return filterResults
+            }
+            override fun publishResults(
+                constraint: CharSequence?,
+                results: FilterResults
+            ) {
+                skillList.clear()
+                if (results.count > 0) {
+                    for (result in results.values as List<*>) {
+                        if (result is SkillDetails) {
+                            skillList.add(result)
+                        }
+                    }
+                    Log.d("AutoComplete_Adapter", "I'm publishing result: ${skillList}")
+                    notifyDataSetChanged()
+                } else if (constraint == null) {
+                    skillList.addAll(skillListFull)
+                    notifyDataSetInvalidated()
+                }
+            }
+        }
+    }
 }
