@@ -30,6 +30,8 @@ class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
                     Log.d("Skills_Listener", "Error retrieving data.")
                 } else if (value!!.isEmpty) {
                     Log.d("Skills_Listener", "No skills on database.")
+                    mSkillsList = mutableListOf()
+                    pvtList.value = mutableListOf()
                 } else {
                     val skills = mutableListOf<SkillDetails>()
 

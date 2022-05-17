@@ -190,6 +190,7 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
 
             }
         }
+        //TODO: usare update merge
     }
 
     fun prepareNewAdvertisement() {
