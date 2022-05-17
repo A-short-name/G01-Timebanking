@@ -25,6 +25,7 @@ class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
 
     private fun getSkillsList() {
         skillsListener = db.collection("suggestedSkills")
+            .whereGreaterThan("usage_in_adv",0)
             .addSnapshotListener { value, e ->
                 if (e != null) {
                     Log.d("Skills_Listener", "Error retrieving data.")
