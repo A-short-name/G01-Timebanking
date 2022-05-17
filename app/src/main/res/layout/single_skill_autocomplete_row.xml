@@ -2,39 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
 
+    <TextView
+        android:id="@+id/skill_suggestion_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="8dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        tools:text="Suggestion" />
 
-            <TextView
-                android:id="@+id/skill_suggestion_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/skill_suggestion_usage"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Suggestion" />
-
-            <TextView
-                android:id="@+id/skill_suggestion_usage"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Usage"
-                android:visibility="gone"
-                />
+    <TextView
+        android:id="@+id/skill_suggestion_usage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="8dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:visibility="gone"
+        tools:text="Usage" />
 
 
 </LinearLayout>
