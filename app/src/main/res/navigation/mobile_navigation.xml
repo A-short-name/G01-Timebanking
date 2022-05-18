@@ -109,7 +109,7 @@
     <fragment
         android:id="@+id/nav_adv_list_by_skill"
         android:name="it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillFragment"
-        android:label="@string/adv_list_by_skill">
+        android:label="@string/adv_list_filters">
         <action
             android:id="@+id/action_nav_adv_list_by_skill_to_nav_show_time_slot"
             app:destination="@id/nav_show_time_slot"
@@ -117,6 +117,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_adv_list_by_skill_to_timeSlotFiltersFragment"
+            app:destination="@id/nav_adv_list_filters" />
     </fragment>
     <activity
         android:id="@+id/nav_logout"
@@ -124,5 +127,13 @@
         android:label="activity_sign_out"
         tools:layout="@layout/activity_sign_out" >
     </activity>
+    <fragment
+        android:id="@+id/nav_adv_list_filters"
+        android:name="it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotFiltersFragment"
+        android:label="Apply filters"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
 </navigation>

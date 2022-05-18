@@ -1,23 +1,18 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
 import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
-import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 
 
@@ -26,9 +21,6 @@ class TimeSlotListBySkillFragment : Fragment() {
     private val timeSlotListBySkillViewModel : TimeSlotListBySkillViewModel by activityViewModels()
 
     private var _binding: FragmentTimeSlotListBinding? = null
-
-    private lateinit var sortingButton : Button
-    private lateinit var filteringButton : Button
 
     private lateinit var adapter : AdvertisementAdapter
 
@@ -48,11 +40,15 @@ class TimeSlotListBySkillFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sortingButton = view.findViewById(R.id.sortingButton)
-        filteringButton = view.findViewById(R.id.filterButton)
+        val sortingButton = view.findViewById<Button>(R.id.sortingButton)
+        val filteringButton = view.findViewById<Button>(R.id.filterButton)
 
         sortingButton.setOnClickListener{
             showPopup(sortingButton)
+        }
+
+        filteringButton.setOnClickListener {
+            view.findNavController().navigate(R.id.action_nav_adv_list_by_skill_to_timeSlotFiltersFragment)
         }
 
         sortingButton.visibility = View.VISIBLE
@@ -96,12 +92,6 @@ class TimeSlotListBySkillFragment : Fragment() {
 
         inflater.inflate(R.menu.sorting_menu, popup.menu);
         popup.show();
-    }
-
-    override fun onDetach() {
-        sortingButton.visibility = View.GONE
-        filteringButton.visibility = View.GONE
-        super.onDetach()
     }
 
     override fun onDestroyView() {

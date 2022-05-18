@@ -30,25 +30,31 @@
 
     <Button
         android:id="@+id/sortingButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:text="@string/sorting"
         android:visibility="gone"
-        android:layout_marginStart="4dp"
+        app:icon="@drawable/ic_sort"
         app:layout_constraintEnd_toStartOf="@+id/filterButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/filterButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
         android:text="@string/filtering"
         android:visibility="gone"
-        android:layout_marginEnd="4dp"
+        app:icon="@drawable/ic_filter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/sortingButton" />
+        app:layout_constraintStart_toEndOf="@+id/sortingButton"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

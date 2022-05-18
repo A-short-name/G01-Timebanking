@@ -74,4 +74,8 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
         localList.sortBy { it.calendar.time }
         pvtList.value = localList
     }
+
+    fun applyFilters(filteredList: List<AdvertisementDetails>) {
+        pvtList.value = filteredList
+    }
 }
