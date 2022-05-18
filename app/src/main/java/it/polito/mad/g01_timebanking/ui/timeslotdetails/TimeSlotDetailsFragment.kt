@@ -2,28 +2,37 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.firestore.DocumentSnapshot
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
+import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 import java.util.*
 
 
 class TimeSlotDetailsFragment : Fragment() {
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
 
+    private val profileShowDetailsViewModel : ProfileViewModel by activityViewModels()
     // Views to be handled
     private lateinit var textViewTitle: EditText
     private lateinit var textViewLocation: EditText
@@ -31,6 +40,7 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var textViewDate: EditText
     private lateinit var textViewTime: EditText
     private lateinit var textViewDescription: EditText
+    private lateinit var imageViewProfilePicture: ImageView
 
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
@@ -65,12 +75,32 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewDescription = view.findViewById(R.id.descriptionShowText)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
+        imageViewProfilePicture = view.findViewById(R.id.profilePicture)
+
+        val profilePictureButton = view.findViewById<ImageButton>(R.id.advProfilePictureTransparentButton)
+        profilePictureButton.setOnClickListener {
+            Log.d("TimeSlotDetail","going into profile of ${actualAdvertisement.uid}")
+
+            Navigation.findNavController(it).navigate(R.id.action_nav_show_time_slot_to_showPublicProfileFragment)
+
+            //when the query is returned the viewModel will be updated and
+            timeSlotDetailsViewModel.getUserInfoFromDb(actualAdvertisement.uid).get()
+                .addOnSuccessListener { userDocFromDb ->
+                    profileShowDetailsViewModel.setUserInfo(userDocFromDb.toUserInfo())
+                    //TODO set the publicUser not userInfo (the show public prof fragment has to load the public user info)
+                        //profileShowDetailsViewModel.setPublicUserInfo(userDocFromDb.toUserInfo())
+            }
+
+
+            //TODO("Navigate to user profile ${actualAdvertisement.uid}")
+        }
 
         timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
             textViewTitle.setText(it.title)
             textViewLocation.setText(it.location)
             textViewDuration.setText(it.duration)
             textViewDescription.setText(it.description)
+
 
             val calendar = Calendar.getInstance()
             calendar.time = it.calendar
@@ -91,6 +121,11 @@ class TimeSlotDetailsFragment : Fragment() {
                         chip.isClickable = true
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
+
+            //TODO Download the image and set it in imageViewProfilePicture
+            //TODO get full name of the user
+            //TODO set the button in order to navigate to the show profile fragment of the user of the adv
+
         }
     }
 
@@ -123,6 +158,9 @@ class TimeSlotDetailsFragment : Fragment() {
         // This updates ViewModel if the show is disappearing because the edit is being opened
         timeSlotDetailsViewModel.setAdvertisement(actualAdvertisement)
         super.onPause()
+    }
+    private fun DocumentSnapshot.toUserInfo(): UserInfo {
+        return this.toObject(UserInfo::class.java) ?: UserInfo()
     }
 
 }

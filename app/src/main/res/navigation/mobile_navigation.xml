@@ -24,6 +24,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_show_time_slot_to_showPublicProfileFragment"
+            app:destination="@id/showPublicProfileFragment" />
     </fragment>
 
     <fragment
@@ -124,5 +127,10 @@
         android:label="activity_sign_out"
         tools:layout="@layout/activity_sign_out" >
     </activity>
+    <fragment
+        android:id="@+id/showPublicProfileFragment"
+        android:name="it.polito.mad.g01_timebanking.ui.profile.ShowPublicProfileFragment"
+        android:label="fragment_show_public_profile"
+        tools:layout="@layout/fragment_show_public_profile" />
 
 </navigation>

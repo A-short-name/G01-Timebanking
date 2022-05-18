@@ -34,6 +34,11 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     // Initialization placeholder variable
     private var _user = UserInfo()
 
+    private val pvtPubUser = MutableLiveData<UserInfo>().also{
+        it.value = UserInfo()
+    }
+    val pubUser : LiveData<UserInfo> = pvtPubUser
+
 
     // This variable contains user info synchronized with the database
     private val pvtUser = MutableLiveData<UserInfo>().also {
@@ -142,6 +147,13 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         pvtBiography.value = userInfo.biography
         pvtSkills.value = userInfo.skills.toMutableSet()
 
+    }
+
+    /**
+     * set the public user used by show public user fragment
+     */
+    fun setPublicUserInfo(pubUserInfo: UserInfo){
+        pvtPubUser.value = pubUserInfo
     }
 
     fun updatePhoto(newProfilePicturePath: String, imageView: ImageView) {
