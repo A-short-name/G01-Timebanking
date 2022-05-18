@@ -1,10 +1,13 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +25,9 @@ class TimeSlotListBySkillFragment : Fragment() {
 
     private var _binding: FragmentTimeSlotListBinding? = null
 
+    private lateinit var sortingButton : Button
+    private lateinit var filteringButton : Button
+
     // This property is only valid between onCreateView and onDestroyView
     private val binding get() = _binding!!
 
@@ -37,6 +43,12 @@ class TimeSlotListBySkillFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sortingButton = view.findViewById(R.id.sortingButton)
+        filteringButton = view.findViewById(R.id.filterButton)
+
+        sortingButton.visibility = View.VISIBLE
+        filteringButton.visibility = View.VISIBLE
 
         val recyclerViewAdv = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerViewAdv.layoutManager = LinearLayoutManager(context)
@@ -59,6 +71,12 @@ class TimeSlotListBySkillFragment : Fragment() {
             adapter.setAdvertisements(it)
         }
 
+    }
+
+    override fun onDetach() {
+        sortingButton.visibility = View.GONE
+        filteringButton.visibility = View.GONE
+        super.onDetach()
     }
 
     override fun onDestroyView() {
