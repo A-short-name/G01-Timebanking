@@ -49,10 +49,10 @@ data class AdvertisementDetails (
 }
 
 class AdvertisementAdapter(
-    var data:List<AdvertisementDetails>,
+    private var data:List<AdvertisementDetails>,
     private val tsDetailsViewModel: TimeSlotDetailsViewModel,
     private val isAdvBySkill: Boolean,
-    private var filterList: List<AdvertisementDetails>
+    //private var filterList: List<AdvertisementDetails>
     )
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 

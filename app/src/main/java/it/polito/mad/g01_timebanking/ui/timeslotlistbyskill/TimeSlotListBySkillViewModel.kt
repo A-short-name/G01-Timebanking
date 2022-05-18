@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
+import java.util.*
 
 class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -50,22 +52,30 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun sortAtoZ() {
-        mAdvList.sortBy { it.title }
-        pvtList.value = mAdvList
+        Log.d("TESTING","Sorting from A to Z")
+        val localList = mAdvList.toMutableList()
+        localList.sortBy { it.title }
+        pvtList.value = localList
     }
 
     fun sortZtoA() {
-        mAdvList.sortBy { it.title }
-        pvtList.value = mAdvList.reversed()
+        Log.d("TESTING","Sorting from Z to A")
+        val localList = mAdvList.toMutableList()
+        localList.sortBy { it.title }
+        pvtList.value = localList.reversed()
     }
 
     fun sortMostRecents() {
-        mAdvList.sortBy { it.calendar.time }
-        pvtList.value = mAdvList
+        Log.d("TESTING","Sorting Most Recents")
+        val localList = mAdvList.toMutableList()
+        localList.sortBy { it.calendar.time }
+        pvtList.value = localList.reversed()
     }
 
     fun sortLessRecents() {
-        mAdvList.sortBy { it.calendar.time }
-        pvtList.value = mAdvList.reversed()
+        Log.d("TESTING","Sorting Less Recents")
+        val localList = mAdvList.toMutableList()
+        localList.sortBy { it.calendar.time }
+        pvtList.value = localList
     }
 }

@@ -5,11 +5,11 @@ import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.util.*
 
-class AdvDiffCallback (private val adv: List<AdvertisementDetails>, private val newAdv: List<AdvertisementDetails>): DiffUtil.Callback() {
+class AdvDiffCallback (val adv: List<AdvertisementDetails>, val newAdv: List<AdvertisementDetails>): DiffUtil.Callback() {
     override fun getOldListSize(): Int = adv.size
     override fun getNewListSize(): Int = newAdv.size
     override fun areItemsTheSame(oldP: Int, newP: Int): Boolean {
-        return adv[oldP].id === newAdv[newP].id
+        return adv[oldP] === newAdv[newP]
     }
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
         val (_, title, location, calendar, duration, description, uid) = adv[oldPosition]

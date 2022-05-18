@@ -1,6 +1,7 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

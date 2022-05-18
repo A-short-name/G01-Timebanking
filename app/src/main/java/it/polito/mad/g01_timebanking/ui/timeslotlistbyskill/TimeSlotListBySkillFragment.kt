@@ -30,6 +30,8 @@ class TimeSlotListBySkillFragment : Fragment() {
     private lateinit var sortingButton : Button
     private lateinit var filteringButton : Button
 
+    private lateinit var adapter : AdvertisementAdapter
+
     // This property is only valid between onCreateView and onDestroyView
     private val binding get() = _binding!!
 
@@ -62,7 +64,7 @@ class TimeSlotListBySkillFragment : Fragment() {
         val emptyAdvText = view.findViewById<TextView>(R.id.emptyAdvertisementsText)
 
 
-        val adapter = AdvertisementAdapter(listOf(), timeSlotDetailsViewModel, true)
+        adapter = AdvertisementAdapter(listOf(), timeSlotDetailsViewModel, true)
         recyclerViewAdv.adapter = adapter
 
         timeSlotListBySkillViewModel.advList.observe(this.viewLifecycleOwner){
@@ -82,15 +84,12 @@ class TimeSlotListBySkillFragment : Fragment() {
         val popup = PopupMenu(this.requireContext(), v);
         val inflater = popup.menuInflater;
         popup.setOnMenuItemClickListener {
-
             when(it.itemId) {
                 R.id.filterFromAtoZ -> timeSlotListBySkillViewModel.sortAtoZ()
                 R.id.filterFromZtoA -> timeSlotListBySkillViewModel.sortZtoA()
                 R.id.filterMostRecents -> timeSlotListBySkillViewModel.sortMostRecents()
                 R.id.filterLessRecents -> timeSlotListBySkillViewModel.sortLessRecents()
             }
-
-            Log.d("TESTING", "Selected item: $it")
             true
         }
 
