@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import it.polito.mad.g01_timebanking.adapters.AdvertisementAdapter
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.util.*
@@ -144,7 +143,6 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
                 actHours <= durationFilter.value!!.toInt()
             }
         }
-
 
         pvtList.value = filteredList
     }
