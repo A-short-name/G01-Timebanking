@@ -48,4 +48,24 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     override fun onCleared() {
         timeslotsBySkillListener.remove()
     }
+
+    fun sortAtoZ() {
+        mAdvList.sortBy { it.title }
+        pvtList.value = mAdvList
+    }
+
+    fun sortZtoA() {
+        mAdvList.sortBy { it.title }
+        pvtList.value = mAdvList.reversed()
+    }
+
+    fun sortMostRecents() {
+        mAdvList.sortBy { it.calendar.time }
+        pvtList.value = mAdvList
+    }
+
+    fun sortLessRecents() {
+        mAdvList.sortBy { it.calendar.time }
+        pvtList.value = mAdvList.reversed()
+    }
 }

@@ -2,14 +2,16 @@ package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
 import android.opengl.Visibility
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
@@ -47,6 +49,10 @@ class TimeSlotListBySkillFragment : Fragment() {
         sortingButton = view.findViewById(R.id.sortingButton)
         filteringButton = view.findViewById(R.id.filterButton)
 
+        sortingButton.setOnClickListener{
+            showPopup(sortingButton)
+        }
+
         sortingButton.visibility = View.VISIBLE
         filteringButton.visibility = View.VISIBLE
 
@@ -67,10 +73,30 @@ class TimeSlotListBySkillFragment : Fragment() {
                 recyclerViewAdv.visibility = View.VISIBLE
                 emptyAdvText.visibility = View.GONE
             }
-
             adapter.setAdvertisements(it)
         }
 
+    }
+
+    private fun showPopup(v: View) {
+        val popup = PopupMenu(this.requireContext(), v);
+        val inflater = popup.menuInflater;
+        popup.setOnMenuItemClickListener {
+
+            when(it.itemId) {
+                R.id.filterFromAtoZ -> timeSlotListBySkillViewModel.sortAtoZ()
+                R.id.filterFromZtoA -> timeSlotListBySkillViewModel.sortZtoA()
+                R.id.filterMostRecents -> timeSlotListBySkillViewModel.sortMostRecents()
+                R.id.filterLessRecents -> timeSlotListBySkillViewModel.sortLessRecents()
+            }
+
+            Log.d("TESTING", "Selected item: $it")
+            true
+        }
+
+
+        inflater.inflate(R.menu.sorting_menu, popup.menu);
+        popup.show();
     }
 
     override fun onDetach() {

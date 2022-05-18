@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filterFromAtoZ"
+        android:title="A-Z"
+        android:menuCategory="secondary"/>
+    <item
+        android:id="@+id/filterFromZtoA"
+        android:title="Z-A"
+        android:menuCategory="secondary"/>
+    <item
+        android:id="@+id/filterMostRecents"
+        android:title="Most Recents"
+        android:menuCategory="secondary"/>
+    <item
+        android:id="@+id/filterLessRecents"
+        android:title="Less Recents"
+        android:menuCategory="secondary"/>
+</menu>
