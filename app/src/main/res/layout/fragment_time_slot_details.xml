@@ -68,7 +68,7 @@
                             android:layout_height="100dp">
 
                             <ImageView
-                                android:id="@+id/profilePicture"
+                                android:id="@+id/advProfilePicture"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:contentDescription="User profile picture"

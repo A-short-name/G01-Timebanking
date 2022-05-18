@@ -1,5 +1,6 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
+
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -16,11 +17,7 @@ import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
-import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
-import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.io.ByteArrayOutputStream
-
-
 import java.io.File
 
 class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
@@ -38,6 +35,9 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         it.value = UserInfo()
     }
     val pubUser : LiveData<UserInfo> = pvtPubUser
+
+    private val pvtPubUserTmpPath = MutableLiveData<String>().also { it.value=UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER }
+    var pubUserTmpPath : LiveData<String> = pvtPubUserTmpPath
 
 
     // This variable contains user info synchronized with the database
@@ -303,6 +303,33 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                 Log.d("PICTURE_DOWNLOAD", "No picture on database")
                 tmpPicturePath = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
                 pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+            }
+        }
+    }
+    fun downloadPublicPhoto(uid : String) {
+        Log.d("PICTURE_DOWNLOAD", "Started download photo of $uid")
+        val imagesRef = storageRef.child("images/")
+        val userPicRef = imagesRef.child("$uid.jpg")
+        // Check if file exists
+        imagesRef.listAll().addOnSuccessListener {
+            // If file exists download it
+            if (it.items.contains(userPicRef)) {
+                val maximumSizeOneMegabyte: Long = 1024 * 1024
+
+                userPicRef.getBytes(maximumSizeOneMegabyte).addOnSuccessListener {
+                    Log.d("PICTURE_DOWNLOAD", "Successfully downloaded picture")
+                    val localFile = File.createTempFile("images", ".jpg")
+                    localFile.writeBytes(it)
+                    Log.d("PICTURE_DOWNLOAD", "Path file: ${localFile.absolutePath}")
+                    pvtPubUserTmpPath.value = localFile.absolutePath
+                }.addOnFailureListener {
+                    // Handle any errors
+                    Log.d("PICTURE_DOWNLOAD", "Failed downloading picture: ${it.message}")
+                    pvtProfilePicturePath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
+                }
+            } else {
+                Log.d("PICTURE_DOWNLOAD", "No picture on database")
+                pvtPubUserTmpPath.value = UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER
             }
         }
     }
