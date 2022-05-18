@@ -127,6 +127,7 @@ class TimeSlotFiltersFragment : Fragment() {
             timeSlotListBySkillViewModel.setDateTime(true,actualToTimeDate)
             timeSlotListBySkillViewModel.setLocationFilter(editTextLocation.text.toString())
             timeSlotListBySkillViewModel.setDurationFilter(selectedDurationText.text.toString())
+            timeSlotListBySkillViewModel.applyFilters()
             activity?.onBackPressed()
         }
 

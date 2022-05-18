@@ -83,7 +83,7 @@
             android:id="@+id/durationFilterTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duration"
+            android:text="Max Duration"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="20sp" />
 

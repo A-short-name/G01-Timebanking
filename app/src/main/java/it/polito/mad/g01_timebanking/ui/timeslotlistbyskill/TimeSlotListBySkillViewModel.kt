@@ -130,7 +130,29 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
         pvtDurationFilter.value = duration
     }
 
-    fun applyFilters(filteredList: List<AdvertisementDetails>) {
+    fun applyFilters() {
+        var filteredList = mAdvList.toList()
+
+        if(locationFilter.value!!.isNotEmpty())
+            filteredList = filteredList.filter { it.location.contains(locationFilter.value!!.toString()) }
+
+        if(durationFilter.value!! != "Disabled") {
+            filteredList = filteredList.filter {
+                val actHours = it.duration.split(":")[0].toInt()
+                actHours <= durationFilter.value!!.toInt()
+            }
+        }
+
+
         pvtList.value = filteredList
+    }
+
+    fun removeFilters() {
+        pvtLocationFilter.value = ""
+        pvtDurationFilter.value = ""
+        pvtFromCalendarFilter.value = Calendar.getInstance()
+        pvtToCalendarFilter.value = Calendar.getInstance()
+
+        pvtList.value = mAdvList
     }
 }
