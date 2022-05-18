@@ -49,9 +49,11 @@ data class AdvertisementDetails (
 }
 
 class AdvertisementAdapter(
-    private var data:List<AdvertisementDetails>,
+    var data:List<AdvertisementDetails>,
     private val tsDetailsViewModel: TimeSlotDetailsViewModel,
-    private val isAdvBySkill: Boolean)
+    private val isAdvBySkill: Boolean,
+    private var filterList: List<AdvertisementDetails>
+    )
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
 
     class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvBySkill: Boolean): RecyclerView.ViewHolder(v) {
