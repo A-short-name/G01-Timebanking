@@ -42,6 +42,8 @@ class TimeSlotFiltersFragment : Fragment() {
         val editTextToDate = view.findViewById<EditText>(R.id.filterByToDateEditText)
         val editTextLocation = view.findViewById<EditText>(R.id.filterByLocationEditText)
         val applyFilterButton = view.findViewById<Button>(R.id.ApplyFilterButton)
+        val cancelFilterButton = view.findViewById<Button>(R.id.CancelFilterButton)
+
         val seekBar = view.findViewById<SeekBar>(R.id.durationSeekBar)
         val selectedDurationText = view.findViewById<TextView>(R.id.selectedDurationText)
 
@@ -57,6 +59,11 @@ class TimeSlotFiltersFragment : Fragment() {
 
         timeSlotListBySkillViewModel.locationFilter.observe(this.viewLifecycleOwner) {
             editTextLocation.setText(it)
+        }
+
+        timeSlotListBySkillViewModel.durationFilter.observe(this.viewLifecycleOwner) {
+            if(it != "" && it!="Disabled")
+                seekBar.progress = it.toInt()
         }
 
         val fromDate = DatePickerDialog.OnDateSetListener { _, year, month, day ->
@@ -124,10 +131,19 @@ class TimeSlotFiltersFragment : Fragment() {
 
         applyFilterButton.setOnClickListener {
             timeSlotListBySkillViewModel.setDateTime(true,actualFromTimeDate)
-            timeSlotListBySkillViewModel.setDateTime(true,actualToTimeDate)
+            timeSlotListBySkillViewModel.setDateTime(false,actualToTimeDate)
             timeSlotListBySkillViewModel.setLocationFilter(editTextLocation.text.toString())
             timeSlotListBySkillViewModel.setDurationFilter(selectedDurationText.text.toString())
             timeSlotListBySkillViewModel.applyFilters()
+            activity?.onBackPressed()
+        }
+
+        cancelFilterButton.setOnClickListener {
+            timeSlotListBySkillViewModel.setDateTime(true,Calendar.getInstance())
+            timeSlotListBySkillViewModel.setDateTime(false,Calendar.getInstance())
+            timeSlotListBySkillViewModel.setLocationFilter("")
+            timeSlotListBySkillViewModel.setDurationFilter("")
+            timeSlotListBySkillViewModel.removeFilters()
             activity?.onBackPressed()
         }
 
