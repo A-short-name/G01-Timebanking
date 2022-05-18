@@ -22,7 +22,7 @@
                 android:id="@+id/titleShowTextInputLayout"
                 style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="4dp"
                 android:hint="@string/shr_hint_title"
                 app:startIconDrawable="@drawable/ic_advertisement_title">
@@ -34,13 +34,90 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/userTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/offered_by"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="20sp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/surfaceColor"
+                >
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/imageCard"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="100dp"
+                        app:cardElevation="10dp">
+
+                        <RelativeLayout
+                            android:layout_width="100dp"
+                            android:layout_height="100dp">
+
+                            <ImageView
+                                android:id="@+id/profilePicture"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:contentDescription="User profile picture"
+                                android:padding="0px"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/avatar" />
+
+                            <ImageButton
+                                android:id="@+id/profilePictureTransparentButton"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_centerVertical="true"
+                                android:background="@android:color/transparent"
+                                android:contentDescription="Profile picture"
+                                android:padding="0px"
+                                android:scaleType="centerCrop"
+                                android:src="@android:color/transparent"
+                                tools:ignore="SpeakableTextPresentCheck" />
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/userFullNameInputLayout"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:hint="@string/name">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/advUserFullNameShowText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:textSize="20sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/locationShowTextInputLayout"
                 style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                android:layout_weight="1"
                 android:hint="@string/shr_hint_location"
                 app:startIconDrawable="@drawable/ic_location">
 
@@ -51,7 +128,6 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/dateShowTextInputLayout"
                 style="@style/Widget.Design.TextInputLayout"
