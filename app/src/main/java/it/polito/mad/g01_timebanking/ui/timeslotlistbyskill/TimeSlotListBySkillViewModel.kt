@@ -26,6 +26,7 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     val advList : LiveData<List<AdvertisementDetails>> = pvtList
 
     /* Filters */
+    private var isFiltered = false
 
     private var mlocationFilter : String = ""
 
@@ -84,25 +85,25 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun sortAtoZ() {
-        val localList = mAdvList
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
         localList.sortBy { it.title }
         pvtList.value = localList
     }
 
     fun sortZtoA() {
-        val localList = mAdvList
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
         localList.sortBy { it.title }
         pvtList.value = localList.reversed()
     }
 
     fun sortMostRecents() {
-        val localList = mAdvList
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
         localList.sortBy { it.calendar.time }
         pvtList.value = localList.reversed()
     }
 
     fun sortLessRecents() {
-        val localList = mAdvList
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
         localList.sortBy { it.calendar.time }
         pvtList.value = localList
     }
@@ -131,6 +132,7 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun applyFilters() {
+        isFiltered = true
         var filteredList = mAdvList.toList()
 
         if(locationFilter.value!!.isNotEmpty())
@@ -148,6 +150,7 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun removeFilters() {
+        isFiltered = false
         pvtLocationFilter.value = ""
         pvtDurationFilter.value = ""
         pvtFromCalendarFilter.value = Calendar.getInstance()
