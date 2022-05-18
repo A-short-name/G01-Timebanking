@@ -125,7 +125,7 @@ class AdvertisementAdapter(
 
     fun setAdvertisements(newAdvs: List<AdvertisementDetails>) {
         val diffs = DiffUtil.calculateDiff( AdvDiffCallback(data, newAdvs) )
-        data = newAdvs //update data
+        data = newAdvs.toList() //update data
         diffs.dispatchUpdatesTo(this) //animate UI
     }
 

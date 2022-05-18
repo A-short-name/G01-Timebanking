@@ -52,29 +52,25 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun sortAtoZ() {
-        Log.d("TESTING","Sorting from A to Z")
-        val localList = mAdvList.toMutableList()
+        val localList = mAdvList
         localList.sortBy { it.title }
         pvtList.value = localList
     }
 
     fun sortZtoA() {
-        Log.d("TESTING","Sorting from Z to A")
-        val localList = mAdvList.toMutableList()
+        val localList = mAdvList
         localList.sortBy { it.title }
         pvtList.value = localList.reversed()
     }
 
     fun sortMostRecents() {
-        Log.d("TESTING","Sorting Most Recents")
-        val localList = mAdvList.toMutableList()
+        val localList = mAdvList
         localList.sortBy { it.calendar.time }
         pvtList.value = localList.reversed()
     }
 
     fun sortLessRecents() {
-        Log.d("TESTING","Sorting Less Recents")
-        val localList = mAdvList.toMutableList()
+        val localList = mAdvList
         localList.sortBy { it.calendar.time }
         pvtList.value = localList
     }
