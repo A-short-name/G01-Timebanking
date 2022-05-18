@@ -2,20 +2,15 @@ package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotFiltersBinding
-import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
-import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
 import java.util.*
 
 class TimeSlotFiltersFragment : Fragment() {
@@ -47,6 +42,8 @@ class TimeSlotFiltersFragment : Fragment() {
         val editTextToDate = view.findViewById<EditText>(R.id.filterByToDateEditText)
         val editTextLocation = view.findViewById<EditText>(R.id.filterByLocationEditText)
         val applyFilterButton = view.findViewById<Button>(R.id.ApplyFilterButton)
+        val seekBar = view.findViewById<SeekBar>(R.id.durationSeekBar)
+        val selectedDurationText = view.findViewById<TextView>(R.id.selectedDurationText)
 
         timeSlotListBySkillViewModel.fromCalendarFilter.observe(this.viewLifecycleOwner) {
             editTextFromDate.setText(it.fromDateToString())
@@ -129,8 +126,11 @@ class TimeSlotFiltersFragment : Fragment() {
             timeSlotListBySkillViewModel.setDateTime(true,actualFromTimeDate)
             timeSlotListBySkillViewModel.setDateTime(true,actualToTimeDate)
             timeSlotListBySkillViewModel.setLocationFilter(editTextLocation.text.toString())
+            timeSlotListBySkillViewModel.setDurationFilter(selectedDurationText.text.toString())
             activity?.onBackPressed()
         }
+
+        seekBar.setOnSeekBarChangeListener(MyOnSeekBarChangeListener(requireView()))
     }
 
 
@@ -138,4 +138,22 @@ class TimeSlotFiltersFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+class MyOnSeekBarChangeListener(val view: View) : SeekBar.OnSeekBarChangeListener {
+    override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+        val text = view.findViewById<TextView>(R.id.selectedDurationText)
+
+        if(p1 != 0)
+            text.text = (p1.toString())
+        else
+            text.text = "Disabled"
+    }
+
+    override fun onStartTrackingTouch(p0: SeekBar?) {
+    }
+
+    override fun onStopTrackingTouch(p0: SeekBar?) {
+    }
+
 }

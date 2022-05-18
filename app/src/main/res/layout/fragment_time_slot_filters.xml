@@ -87,13 +87,19 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/selectedDurationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disabled" />
+
         <SeekBar
             android:id="@+id/durationSeekBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:max="24"
             android:maxWidth="5000dp"
-            android:min="1"
+            android:min="0"
             android:minWidth="5000dp" />
 
     </LinearLayout>

@@ -77,8 +77,8 @@ class TimeSlotListBySkillFragment : Fragment() {
     }
 
     private fun showPopup(v: View) {
-        val popup = PopupMenu(this.requireContext(), v);
-        val inflater = popup.menuInflater;
+        val popup = PopupMenu(this.requireContext(), v)
+        val inflater = popup.menuInflater
         popup.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.filterFromAtoZ -> timeSlotListBySkillViewModel.sortAtoZ()
@@ -90,8 +90,8 @@ class TimeSlotListBySkillFragment : Fragment() {
         }
 
 
-        inflater.inflate(R.menu.sorting_menu, popup.menu);
-        popup.show();
+        inflater.inflate(R.menu.sorting_menu, popup.menu)
+        popup.show()
     }
 
     override fun onDestroyView() {
