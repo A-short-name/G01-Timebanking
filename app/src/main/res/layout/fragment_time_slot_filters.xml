@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="From"
+        android:clickable="false"
         app:layout_constraintBottom_toTopOf="@+id/filterByToDateInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,9 +45,7 @@
             android:id="@+id/filterByFromDateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="yes"
-            android:inputType="date" />
+            android:focusableInTouchMode="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -55,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="To"
+        android:clickable="false"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,9 +65,7 @@
             android:id="@+id/filterByToDateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="yes"
-            android:inputType="date" />
+            android:focusableInTouchMode="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
 

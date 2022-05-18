@@ -1,19 +1,34 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
+import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotFiltersBinding
 import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotListBinding
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
+import java.util.*
 
 class TimeSlotFiltersFragment : Fragment() {
     private val timeSlotListBySkillViewModel : TimeSlotListBySkillViewModel by activityViewModels()
 
     private var _binding: FragmentTimeSlotFiltersBinding? = null
     private val binding get() = _binding!!
+
+    // Variables to handle date and calculation
+    private var nowTimeDate = Calendar.getInstance()
+    private var actualFromTimeDate = Calendar.getInstance()
+    private var actualToTimeDate = Calendar.getInstance()
+    private var desiredTimeDate = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +42,97 @@ class TimeSlotFiltersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val editTextFromDate = view.findViewById<EditText>(R.id.filterByFromDateEditText)
+        val editTextToDate = view.findViewById<EditText>(R.id.filterByToDateEditText)
+        val editTextLocation = view.findViewById<EditText>(R.id.filterByLocationEditText)
+        val applyFilterButton = view.findViewById<Button>(R.id.ApplyFilterButton)
+
+        timeSlotListBySkillViewModel.fromCalendarFilter.observe(this.viewLifecycleOwner) {
+            editTextFromDate.setText(it.fromDateToString())
+            actualFromTimeDate = it
+        }
+
+        timeSlotListBySkillViewModel.toCalendarFilter.observe(this.viewLifecycleOwner) {
+            editTextToDate.setText(it.fromDateToString())
+            actualToTimeDate = it
+        }
+
+        timeSlotListBySkillViewModel.locationFilter.observe(this.viewLifecycleOwner) {
+            editTextLocation.setText(it)
+        }
+
+        val fromDate = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            nowTimeDate = Calendar.getInstance()
+
+            desiredTimeDate.set(Calendar.YEAR, year)
+            desiredTimeDate.set(Calendar.MONTH, month)
+            desiredTimeDate.set(Calendar.DAY_OF_MONTH, day)
+
+            if (desiredTimeDate > nowTimeDate)
+                timeSlotListBySkillViewModel.setDateTime(true,desiredTimeDate)
+            else {
+                desiredTimeDate = actualFromTimeDate
+                val text: CharSequence = "Time is already passed. Choose a future one!"
+                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+
+        val toDate = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            nowTimeDate = Calendar.getInstance()
+
+            desiredTimeDate.set(Calendar.YEAR, year)
+            desiredTimeDate.set(Calendar.MONTH, month)
+            desiredTimeDate.set(Calendar.DAY_OF_MONTH, day)
+
+            if (desiredTimeDate > nowTimeDate)
+                timeSlotListBySkillViewModel.setDateTime(false,desiredTimeDate)
+            else {
+                desiredTimeDate = actualToTimeDate
+                val text: CharSequence = "Time is already passed. Choose a future one!"
+                val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+
+        // When the edit text is clicked, pop-up the date picker instead
+        editTextFromDate.setOnClickListener {
+            nowTimeDate = Calendar.getInstance()
+
+            val dtDialog = DatePickerDialog(
+                this.requireContext(),
+                fromDate, // This is the callback that will be called when date is selected
+                actualFromTimeDate.get(Calendar.YEAR), // This is the date that will be shown to user
+                actualFromTimeDate.get(Calendar.MONTH),
+                actualFromTimeDate.get(Calendar.DAY_OF_MONTH)
+            )
+            dtDialog.datePicker.minDate = nowTimeDate.timeInMillis
+            dtDialog.show()
+        }
+
+        editTextToDate.setOnClickListener {
+            nowTimeDate = Calendar.getInstance()
+
+            val dtDialog = DatePickerDialog(
+                this.requireContext(),
+                toDate, // This is the callback that will be called when date is selected
+                actualToTimeDate.get(Calendar.YEAR), // This is the date that will be shown to user
+                actualToTimeDate.get(Calendar.MONTH),
+                actualToTimeDate.get(Calendar.DAY_OF_MONTH)
+            )
+            dtDialog.datePicker.minDate = nowTimeDate.timeInMillis
+            dtDialog.show()
+        }
+
+        applyFilterButton.setOnClickListener {
+            timeSlotListBySkillViewModel.setDateTime(true,actualFromTimeDate)
+            timeSlotListBySkillViewModel.setDateTime(true,actualToTimeDate)
+            timeSlotListBySkillViewModel.setLocationFilter(editTextLocation.text.toString())
+            activity?.onBackPressed()
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
