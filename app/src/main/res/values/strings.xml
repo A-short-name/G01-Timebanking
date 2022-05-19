@@ -65,6 +65,7 @@
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
     <string name="adv_list_by_skill">Advertisements</string>
+    <string name="adv_list_filters">Apply filters</string>
     <!-- Advertisements Hints -->
     <string name="shr_hint_title">Advertisement title</string>
     <string name="shr_hint_location">Location</string>
@@ -85,6 +86,10 @@
     <string name="SignInActivity">SignInActivity</string>
     <string name="offered_by">Offered by</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="sorting">Sort</string>
+    <string name="filtering">Filter</string>
+
 
 
 </resources>

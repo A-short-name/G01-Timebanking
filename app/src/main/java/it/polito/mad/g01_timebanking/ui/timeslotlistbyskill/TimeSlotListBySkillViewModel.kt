@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
+import java.util.*
 
 class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -22,6 +23,39 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     val advList : LiveData<List<AdvertisementDetails>> = pvtList
+
+    /* Filters */
+    private var isFiltered = false
+
+    private var mlocationFilter : String = ""
+
+    private val pvtLocationFilter = MutableLiveData<String>().also {
+        it.value = mlocationFilter
+    }
+
+    val locationFilter : LiveData<String> = pvtLocationFilter
+
+    private var mFromCalendarFilter = Calendar.getInstance()
+
+    private val pvtFromCalendarFilter = MutableLiveData<Calendar>().also {
+        it.value = mFromCalendarFilter
+    }
+    val fromCalendarFilter : LiveData<Calendar> = pvtFromCalendarFilter
+
+    private var mToCalendarFilter = Calendar.getInstance()
+
+    private val pvtToCalendarFilter = MutableLiveData<Calendar>().also {
+        it.value = mToCalendarFilter
+    }
+    val toCalendarFilter : LiveData<Calendar> = pvtToCalendarFilter
+
+    private var mDurationFilter = ""
+
+    private val pvtDurationFilter = MutableLiveData<String>().also {
+        it.value = mDurationFilter
+    }
+
+    val durationFilter : LiveData<String> = pvtDurationFilter
 
     fun setAdvertisementsBySkill(skill: SkillDetails) {
         timeslotsBySkillListener = db.collection("advertisements")
@@ -47,5 +81,79 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
 
     override fun onCleared() {
         timeslotsBySkillListener.remove()
+    }
+
+    fun sortAtoZ() {
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
+        localList.sortBy { it.title }
+        pvtList.value = localList
+    }
+
+    fun sortZtoA() {
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
+        localList.sortBy { it.title }
+        pvtList.value = localList.reversed()
+    }
+
+    fun sortMostRecents() {
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
+        localList.sortBy { it.calendar.time }
+        pvtList.value = localList.reversed()
+    }
+
+    fun sortLessRecents() {
+        val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
+        localList.sortBy { it.calendar.time }
+        pvtList.value = localList
+    }
+
+    fun setDateTime(isFromDate: Boolean, calendar: Calendar) {
+        val settedCalendar = Calendar.getInstance().apply {
+            set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+            set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+            set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+            set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY))
+            set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
+        }
+
+        if(isFromDate)
+            pvtFromCalendarFilter.value = settedCalendar
+        else
+            pvtToCalendarFilter.value = settedCalendar
+    }
+
+    fun setLocationFilter(location: String) {
+        pvtLocationFilter.value = location
+    }
+
+    fun setDurationFilter(duration: String) {
+        pvtDurationFilter.value = duration
+    }
+
+    fun applyFilters() {
+        isFiltered = true
+        var filteredList = mAdvList.toList()
+
+        if(locationFilter.value!!.isNotEmpty())
+            filteredList = filteredList.filter { it.location.contains(locationFilter.value!!.toString()) }
+
+        if(durationFilter.value!! != "Disabled") {
+            filteredList = filteredList.filter {
+                val actHours = it.duration.split(":")[0].toInt()
+                actHours <= durationFilter.value!!.toInt()
+            }
+        }
+
+        pvtList.value = filteredList
+    }
+
+    fun removeFilters() {
+        isFiltered = false
+        pvtLocationFilter.value = ""
+        pvtDurationFilter.value = ""
+        pvtFromCalendarFilter.value = Calendar.getInstance()
+        pvtToCalendarFilter.value = Calendar.getInstance()
+
+        pvtList.value = mAdvList
     }
 }
