@@ -75,6 +75,7 @@ class SkillAdapter(
             val pos = data.indexOf(skill)
             if (pos != -1) {
                 tsListBySkillViewModel.setAdvertisementsBySkill(skill)
+                tsListBySkillViewModel.removeFilters()
                 Navigation.findNavController(it).navigate(action)
             }
         }
