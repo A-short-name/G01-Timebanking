@@ -14,7 +14,7 @@ import java.util.*
 class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    private lateinit var timeslotsBySkillListener: ListenerRegistration
+    private var timeslotsBySkillListener: ListenerRegistration? = null
 
     private var mAdvList : MutableList<AdvertisementDetails> = mutableListOf()
 
@@ -80,7 +80,7 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     override fun onCleared() {
-        timeslotsBySkillListener.remove()
+        timeslotsBySkillListener?.remove()
     }
 
     fun sortAtoZ() {
