@@ -101,10 +101,9 @@ class SkillAdapter(
 * */
 
 class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) :
-    ArrayAdapter<SkillDetails?>(context, 0, skillList) {
-
-
-
+    ArrayAdapter<SkillDetails?>(context, 0, skillList.toMutableList() as List<SkillDetails?>) {
+//The collection passed to the super ArrayAdapter is the one used by getItem, getSize, .clear, .addAll
+    //different from Java, we have to pass it a mutableList to make this working
 
     private val skillListFull: List<SkillDetails> = ArrayList(skillList)
     private var skillList: MutableList<SkillDetails> = ArrayList(skillList)
@@ -121,22 +120,15 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
         val textViewName = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_name)
         val textViewUsage = internalConvertView.findViewById<TextView>(R.id.skill_suggestion_usage)
         //val imageViewSkill = internalConvertView!!.findViewById<ImageView>(R.id.image_view_skill)
-        val skillItem: SkillDetails = getItem(position)
-        Log.d("AutoComplete_Adapter", "Suggested skill to print: ${skillItem.name}")
-        textViewName.text = skillItem.name
-        textViewUsage.text = skillItem.usageInAdv.toString()
+        val skillItem: SkillDetails? = getItem(position)
+        if(skillItem!= null) {
+            textViewName.text = skillItem.name
+            textViewUsage.text = skillItem.usageInAdv.toString()
+        }
         //imageViewSkill.setImageResource(skillItem.)
         return internalConvertView
     }
 
-    //I've to override it, otherwise it will use the original full list
-    override fun getItem(position: Int): SkillDetails {
-        return skillList[position]
-    }
-
-    override fun getCount(): Int {
-        return skillList.size
-    }
 
 
     override fun getFilter(): Filter {
@@ -152,7 +144,7 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
                     val skillSuggestion: MutableList<SkillDetails> = ArrayList()
                     for (skill in skillListFull) {
                         if (skill.name.lowercase(Locale.getDefault())
-                                .startsWith(constraint.toString().lowercase(Locale.getDefault()))
+                                .startsWith(constraint.toString().lowercase(Locale.getDefault()).trim())
                         ) {
                             skillSuggestion.add(skill)
                         }
@@ -164,21 +156,23 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
                 Log.d("AutoComplete_Adapter", "Filter Result value: ${filterResults.values}")
                 return filterResults
             }
+
+            //Method clear, add, addAll are called on skillList.
+            //This happen because we pass skillList to the super class constructor ArrayAdapter
             override fun publishResults(
                 constraint: CharSequence?,
                 results: FilterResults
             ) {
-                skillList.clear()
+                clear()
                 if (results.count > 0) {
                     for (result in results.values as List<*>) {
                         if (result is SkillDetails) {
-                            skillList.add(result)
+                            add(result)
                         }
                     }
-                    Log.d("AutoComplete_Adapter", "I'm publishing result: $skillList")
                     notifyDataSetChanged()
                 } else if (constraint == null) {
-                    skillList.addAll(skillListFull)
+                    addAll(skillListFull)
                     notifyDataSetInvalidated()
                 }
             }
