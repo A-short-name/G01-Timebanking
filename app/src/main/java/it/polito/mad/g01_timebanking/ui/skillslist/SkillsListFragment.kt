@@ -1,10 +1,10 @@
 package it.polito.mad.g01_timebanking.ui.skillslist
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +13,7 @@ import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.SkillAdapter
 import it.polito.mad.g01_timebanking.databinding.FragmentSkillsListBinding
 import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
+
 
 class SkillsListFragment : Fragment() {
     private val skillsListViewModel : SkillsListViewModel by activityViewModels()
@@ -30,8 +31,12 @@ class SkillsListFragment : Fragment() {
     ): View {
         _binding = FragmentSkillsListBinding.inflate(inflater, container, false)
 
+        setHasOptionsMenu(true)
+
         return binding.root
     }
+
+    private var adapter: SkillAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,7 +46,7 @@ class SkillsListFragment : Fragment() {
 
         val emptySkillsText = view.findViewById<TextView>(R.id.emptySkillsText)
 
-        val adapter = SkillAdapter(listOf(), tsListBySkillViewModel)
+        adapter = SkillAdapter(listOf(), tsListBySkillViewModel)
         recyclerViewSkills.adapter = adapter
 
         skillsListViewModel.skillList.observe(this.viewLifecycleOwner){
@@ -53,8 +58,28 @@ class SkillsListFragment : Fragment() {
                 emptySkillsText.visibility = View.GONE
             }
 
-            adapter.setSkills(it)
+            adapter!!.setSkills(it)
+            adapter!!.dataFull = it.toList()
         }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem: MenuItem = menu.findItem(R.id.action_search)
+        val searchView: SearchView = searchItem.actionView as SearchView
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter!!.filter.filter(newText)
+                return false
+            }
+        })
 
     }
 

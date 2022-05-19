@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
@@ -45,7 +46,10 @@ data class SkillDetails (
 class SkillAdapter(
     private var data:List<SkillDetails>,
     private val tsListBySkillViewModel: TimeSlotListBySkillViewModel)
-    : RecyclerView.Adapter<SkillAdapter.SkillViewHolder>() {
+    : RecyclerView.Adapter<SkillAdapter.SkillViewHolder>(), Filterable {
+
+    var dataFull = data.toList()
+    val dataMutable = data.toMutableList()
 
     class SkillViewHolder(v:View): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.singleSkillTitle)
@@ -85,12 +89,62 @@ class SkillAdapter(
 
     fun setSkills(newSkills: List<SkillDetails>) {
         val diffs = DiffUtil.calculateDiff( SkillDiffCallback(data, newSkills) )
-        data = newSkills //update data
+        data = newSkills.toList() //update data
         diffs.dispatchUpdatesTo(this) //animate UI
     }
 
 
     override fun getItemCount(): Int = data.size
+
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            /*            override fun convertResultToString(resultValue: Any) :String {
+                            Log.d("AutoComplete_Adapter", "Result value: $resultValue")
+                            return (resultValue as SkillDetails).name
+                        }*/
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                Log.d("AutoComplete_Adapter", "Constraint is $constraint")
+                val filterResults = FilterResults()
+                if (constraint != null) {
+                    val skillSuggestion: MutableList<SkillDetails> = ArrayList()
+                    Log.d("AutoComplete_Adapter", "Filtering with dataFull: $dataFull")
+                    for (skill in dataFull) {
+                        if (skill.name.lowercase(Locale.getDefault())
+                                .startsWith(constraint.toString().lowercase(Locale.getDefault()).trim())
+                        ) {
+                            skillSuggestion.add(skill)
+                        }
+                    }
+                    filterResults.values = skillSuggestion
+                    filterResults.count = skillSuggestion.size
+                }
+                Log.d("AutoComplete_Adapter", "Filter Result count: ${filterResults.count}")
+                Log.d("AutoComplete_Adapter", "Filter Result value: ${filterResults.values}")
+                return filterResults
+            }
+
+            //Method clear, add, addAll are called on skillList.
+            //This happen because we pass skillList to the super class constructor ArrayAdapter
+            override fun publishResults(
+                constraint: CharSequence?,
+                results: FilterResults
+            ) {
+                dataMutable.clear()
+                if (results.count > 0) {
+                    for (result in results.values as List<*>) {
+                        if (result is SkillDetails) {
+                            dataMutable.add(result)
+                        }
+                    }
+                    setSkills(dataMutable)
+                } else if (constraint == null) {
+                    dataMutable.addAll(dataFull)
+                    setSkills(dataMutable)
+                }
+            }
+        }
+    }
 }
 
 
