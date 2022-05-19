@@ -35,19 +35,19 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
 
     val locationFilter : LiveData<String> = pvtLocationFilter
 
-    private var mFromCalendarFilter = Calendar.getInstance()
+    private var mFromCalendarFilter : Calendar? = null
 
-    private val pvtFromCalendarFilter = MutableLiveData<Calendar>().also {
+    private val pvtFromCalendarFilter = MutableLiveData<Calendar?>().also {
         it.value = mFromCalendarFilter
     }
-    val fromCalendarFilter : LiveData<Calendar> = pvtFromCalendarFilter
+    val fromCalendarFilter : LiveData<Calendar?> = pvtFromCalendarFilter
 
-    private var mToCalendarFilter = Calendar.getInstance()
+    private var mToCalendarFilter : Calendar? = null
 
-    private val pvtToCalendarFilter = MutableLiveData<Calendar>().also {
+    private val pvtToCalendarFilter = MutableLiveData<Calendar?>().also {
         it.value = mToCalendarFilter
     }
-    val toCalendarFilter : LiveData<Calendar> = pvtToCalendarFilter
+    val toCalendarFilter : LiveData<Calendar?> = pvtToCalendarFilter
 
     private var mDurationFilter = ""
 
@@ -107,7 +107,17 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
         pvtList.value = localList
     }
 
-    fun setDateTime(isFromDate: Boolean, calendar: Calendar) {
+    fun setDateTime(isFromDate: Boolean, calendar: Calendar?) {
+        if(calendar == null) {
+            if(isFromDate) {
+                pvtFromCalendarFilter.value = null
+            } else {
+                pvtToCalendarFilter.value = null
+            }
+
+            return
+        }
+
         val settedCalendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, calendar.get(Calendar.YEAR))
             set(Calendar.MONTH, calendar.get(Calendar.MONTH))
@@ -144,6 +154,18 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
             }
         }
 
+        if(fromCalendarFilter.value != null) {
+            filteredList = filteredList.filter {
+                it.calendar >= fromCalendarFilter.value!!.time
+            }
+        }
+
+        if (toCalendarFilter.value != null) {
+            filteredList = filteredList.filter {
+                it.calendar <= toCalendarFilter.value!!.time
+            }
+        }
+
         pvtList.value = filteredList
     }
 
@@ -151,8 +173,8 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
         isFiltered = false
         pvtLocationFilter.value = ""
         pvtDurationFilter.value = ""
-        pvtFromCalendarFilter.value = Calendar.getInstance()
-        pvtToCalendarFilter.value = Calendar.getInstance()
+        pvtFromCalendarFilter.value = null
+        pvtToCalendarFilter.value = null
 
         pvtList.value = mAdvList
     }

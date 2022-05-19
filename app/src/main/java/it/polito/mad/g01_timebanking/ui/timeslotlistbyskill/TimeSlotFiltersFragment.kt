@@ -21,9 +21,9 @@ class TimeSlotFiltersFragment : Fragment() {
 
     // Variables to handle date and calculation
     private var nowTimeDate = Calendar.getInstance()
-    private var actualFromTimeDate = Calendar.getInstance()
-    private var actualToTimeDate = Calendar.getInstance()
-    private var desiredTimeDate = Calendar.getInstance()
+    private var actualFromTimeDate : Calendar? = null
+    private var actualToTimeDate : Calendar? = null
+    private var desiredTimeDate : Calendar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,12 +48,12 @@ class TimeSlotFiltersFragment : Fragment() {
         val selectedDurationText = view.findViewById<TextView>(R.id.selectedDurationText)
 
         timeSlotListBySkillViewModel.fromCalendarFilter.observe(this.viewLifecycleOwner) {
-            editTextFromDate.setText(it.fromDateToString())
+            editTextFromDate.setText(it?.fromDateToString())
             actualFromTimeDate = it
         }
 
         timeSlotListBySkillViewModel.toCalendarFilter.observe(this.viewLifecycleOwner) {
-            editTextToDate.setText(it.fromDateToString())
+            editTextToDate.setText(it?.fromDateToString())
             actualToTimeDate = it
         }
 
@@ -69,12 +69,14 @@ class TimeSlotFiltersFragment : Fragment() {
         val fromDate = DatePickerDialog.OnDateSetListener { _, year, month, day ->
             nowTimeDate = Calendar.getInstance()
 
-            desiredTimeDate.set(Calendar.YEAR, year)
-            desiredTimeDate.set(Calendar.MONTH, month)
-            desiredTimeDate.set(Calendar.DAY_OF_MONTH, day)
+            desiredTimeDate = Calendar.getInstance()
 
-            if (desiredTimeDate > nowTimeDate)
-                timeSlotListBySkillViewModel.setDateTime(true,desiredTimeDate)
+            desiredTimeDate!!.set(Calendar.YEAR, year)
+            desiredTimeDate!!.set(Calendar.MONTH, month)
+            desiredTimeDate!!.set(Calendar.DAY_OF_MONTH, day)
+
+            if (desiredTimeDate!! >= nowTimeDate)
+                timeSlotListBySkillViewModel.setDateTime(true,desiredTimeDate!!)
             else {
                 desiredTimeDate = actualFromTimeDate
                 val text: CharSequence = "Time is already passed. Choose a future one!"
@@ -86,12 +88,14 @@ class TimeSlotFiltersFragment : Fragment() {
         val toDate = DatePickerDialog.OnDateSetListener { _, year, month, day ->
             nowTimeDate = Calendar.getInstance()
 
-            desiredTimeDate.set(Calendar.YEAR, year)
-            desiredTimeDate.set(Calendar.MONTH, month)
-            desiredTimeDate.set(Calendar.DAY_OF_MONTH, day)
+            desiredTimeDate = Calendar.getInstance()
 
-            if (desiredTimeDate > nowTimeDate)
-                timeSlotListBySkillViewModel.setDateTime(false,desiredTimeDate)
+            desiredTimeDate!!.set(Calendar.YEAR, year)
+            desiredTimeDate!!.set(Calendar.MONTH, month)
+            desiredTimeDate!!.set(Calendar.DAY_OF_MONTH, day)
+
+            if (desiredTimeDate!! >= nowTimeDate)
+                timeSlotListBySkillViewModel.setDateTime(false,desiredTimeDate!!)
             else {
                 desiredTimeDate = actualToTimeDate
                 val text: CharSequence = "Time is already passed. Choose a future one!"
@@ -104,12 +108,14 @@ class TimeSlotFiltersFragment : Fragment() {
         editTextFromDate.setOnClickListener {
             nowTimeDate = Calendar.getInstance()
 
+            val toBeShownTimeDate = actualFromTimeDate ?: nowTimeDate
+
             val dtDialog = DatePickerDialog(
                 this.requireContext(),
                 fromDate, // This is the callback that will be called when date is selected
-                actualFromTimeDate.get(Calendar.YEAR), // This is the date that will be shown to user
-                actualFromTimeDate.get(Calendar.MONTH),
-                actualFromTimeDate.get(Calendar.DAY_OF_MONTH)
+                toBeShownTimeDate.get(Calendar.YEAR), // This is the date that will be shown to user
+                toBeShownTimeDate.get(Calendar.MONTH),
+                toBeShownTimeDate.get(Calendar.DAY_OF_MONTH)
             )
             dtDialog.datePicker.minDate = nowTimeDate.timeInMillis
             dtDialog.show()
@@ -118,12 +124,14 @@ class TimeSlotFiltersFragment : Fragment() {
         editTextToDate.setOnClickListener {
             nowTimeDate = Calendar.getInstance()
 
+            val toBeShownTimeDate = actualFromTimeDate ?: nowTimeDate
+
             val dtDialog = DatePickerDialog(
                 this.requireContext(),
                 toDate, // This is the callback that will be called when date is selected
-                actualToTimeDate.get(Calendar.YEAR), // This is the date that will be shown to user
-                actualToTimeDate.get(Calendar.MONTH),
-                actualToTimeDate.get(Calendar.DAY_OF_MONTH)
+                toBeShownTimeDate.get(Calendar.YEAR), // This is the date that will be shown to user
+                toBeShownTimeDate.get(Calendar.MONTH),
+                toBeShownTimeDate.get(Calendar.DAY_OF_MONTH)
             )
             dtDialog.datePicker.minDate = nowTimeDate.timeInMillis
             dtDialog.show()
@@ -139,8 +147,10 @@ class TimeSlotFiltersFragment : Fragment() {
         }
 
         cancelFilterButton.setOnClickListener {
-            timeSlotListBySkillViewModel.setDateTime(true,Calendar.getInstance())
-            timeSlotListBySkillViewModel.setDateTime(false,Calendar.getInstance())
+            actualFromTimeDate = null
+            actualToTimeDate = null
+            timeSlotListBySkillViewModel.setDateTime(true,actualFromTimeDate)
+            timeSlotListBySkillViewModel.setDateTime(false,actualToTimeDate)
             timeSlotListBySkillViewModel.setLocationFilter("")
             timeSlotListBySkillViewModel.setDurationFilter("")
             timeSlotListBySkillViewModel.removeFilters()
