@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "109354753026",
+    "firebase_url": "https://g01---time-banking-f2780-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "g01---time-banking-f2780",
     "storage_bucket": "g01---time-banking-f2780.appspot.com"
   },
@@ -13,6 +14,38 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "109354753026-42t0asigo0noshmbrgf8mhrhb2iv1hpv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.g01_timebanking",
+            "certificate_hash": "c54e2b6a6242d50a3626221b983ffb88259961e8"
+          }
+        },
+        {
+          "client_id": "109354753026-dbqs3u1pbdpc5f84i5v0sfs3nupp6a1j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.g01_timebanking",
+            "certificate_hash": "65cb668d2b37a16d76f9fb91f82273adc60be0f5"
+          }
+        },
+        {
+          "client_id": "109354753026-f9rjhvdnrqpc3i58jf63mv3phhoii2ep.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.g01_timebanking",
+            "certificate_hash": "8ab81a83c90ed7216ccc8184f6ce84647f5d6da7"
+          }
+        },
+        {
+          "client_id": "109354753026-g8n8dde1kns2a84vdcdao3aqldg99a1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.g01_timebanking",
+            "certificate_hash": "d32baa650622f9de21c86f7d3a4aa4726ea0405e"
+          }
+        },
         {
           "client_id": "109354753026-jjd670ge1lo1n2tlmev5dnhtafq940b8.apps.googleusercontent.com",
           "client_type": 1,
