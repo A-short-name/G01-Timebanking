@@ -24,6 +24,7 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         "Placeholder uid"
     )
 
+
     /* This will be the valid advertisement used by Show */
     private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
         it.value = _adv
@@ -142,6 +143,7 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         pvtCalendar.value = calendar
         pvtSkills.value = adv.skills.toMutableSet()
         tmpSkills = adv.skills.toMutableSet()
+
     }
 
     fun addOrUpdateSkills(newAdvSkillsName: MutableList<String>) {
@@ -177,6 +179,10 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         pvtDescription.value = ""
         pvtDuration.value = ""
         pvtCalendar.value = expTime
+    }
+
+    fun getUserInfoFromDb(uid: String): DocumentReference {
+        return db.collection("users").document(uid)
     }
 }
 
