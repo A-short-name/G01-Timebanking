@@ -62,7 +62,7 @@ class TimeSlotFiltersFragment : Fragment() {
         }
 
         timeSlotListBySkillViewModel.durationFilter.observe(this.viewLifecycleOwner) {
-            if(it != "" && it!="Disabled")
+            if (it != "" && it != "Disabled")
                 seekBar.progress = it.toInt()
         }
 
@@ -75,8 +75,18 @@ class TimeSlotFiltersFragment : Fragment() {
             desiredTimeDate!!.set(Calendar.MONTH, month)
             desiredTimeDate!!.set(Calendar.DAY_OF_MONTH, day)
 
-            if (desiredTimeDate!! >= nowTimeDate)
-                timeSlotListBySkillViewModel.setDateTime(true,desiredTimeDate!!)
+            if (actualToTimeDate != null)
+                if (desiredTimeDate!! > actualToTimeDate) {
+                    desiredTimeDate = actualFromTimeDate
+                    val text: CharSequence = "Origin date cannot be later than the end date"
+                    val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                    toast.show()
+                    return@OnDateSetListener
+                }
+            if (desiredTimeDate!! >= nowTimeDate) {
+                timeSlotListBySkillViewModel.setDateTime(true, desiredTimeDate!!)
+                actualFromTimeDate = desiredTimeDate
+            }
             else {
                 desiredTimeDate = actualFromTimeDate
                 val text: CharSequence = "Time is already passed. Choose a future one!"
@@ -94,8 +104,19 @@ class TimeSlotFiltersFragment : Fragment() {
             desiredTimeDate!!.set(Calendar.MONTH, month)
             desiredTimeDate!!.set(Calendar.DAY_OF_MONTH, day)
 
-            if (desiredTimeDate!! >= nowTimeDate)
-                timeSlotListBySkillViewModel.setDateTime(false,desiredTimeDate!!)
+            if (actualFromTimeDate != null)
+                if (desiredTimeDate!! < actualFromTimeDate) {
+                    desiredTimeDate = actualToTimeDate
+                    val text: CharSequence = "End date cannot be earlier than the origin date"
+                    val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+                    toast.show()
+                    return@OnDateSetListener
+                }
+
+            if (desiredTimeDate!! >= nowTimeDate) {
+                timeSlotListBySkillViewModel.setDateTime(false, desiredTimeDate!!)
+                actualToTimeDate = desiredTimeDate
+            }
             else {
                 desiredTimeDate = actualToTimeDate
                 val text: CharSequence = "Time is already passed. Choose a future one!"
@@ -103,6 +124,8 @@ class TimeSlotFiltersFragment : Fragment() {
                 toast.show()
             }
         }
+
+
 
         // When the edit text is clicked, pop-up the date picker instead
         editTextFromDate.setOnClickListener {
@@ -124,7 +147,7 @@ class TimeSlotFiltersFragment : Fragment() {
         editTextToDate.setOnClickListener {
             nowTimeDate = Calendar.getInstance()
 
-            val toBeShownTimeDate = actualFromTimeDate ?: nowTimeDate
+            val toBeShownTimeDate = actualToTimeDate ?: nowTimeDate
 
             val dtDialog = DatePickerDialog(
                 this.requireContext(),
