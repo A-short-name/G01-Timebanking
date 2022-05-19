@@ -3,9 +3,8 @@ package it.polito.mad.g01_timebanking.ui
 import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
-import java.util.*
 
-class AdvDiffCallback (val adv: List<AdvertisementDetails>, val newAdv: List<AdvertisementDetails>): DiffUtil.Callback() {
+class AdvDiffCallback (private val adv: List<AdvertisementDetails>, val newAdv: List<AdvertisementDetails>): DiffUtil.Callback() {
     override fun getOldListSize(): Int = adv.size
     override fun getNewListSize(): Int = newAdv.size
     override fun areItemsTheSame(oldP: Int, newP: Int): Boolean {

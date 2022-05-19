@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.firestore.*
-import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
@@ -41,14 +40,14 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
 
-    private var tmpSuggestedSkills: MutableSet<Skill> =
-        _adv.skills.map { Skill(name = it) }.toMutableSet()
+    private var tmpSuggestedSkills: MutableSet<SkillDetails> =
+        _adv.skills.map { SkillDetails(name = it) }.toMutableSet()
 
-    private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
+    private val pvtSuggestedSkills = MutableLiveData<MutableSet<SkillDetails>>().also {
         it.value = tmpSuggestedSkills
         getSuggestedSkills()
     }
-    val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
+    val suggestedSkills: LiveData<MutableSet<SkillDetails>> = pvtSuggestedSkills
 
     private val pvtId = MutableLiveData<String>().also {
         it.value = _adv.id
@@ -186,10 +185,6 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
     }
 }
 
-private fun DocumentSnapshot.toSkill(): Skill {
-    return this.toObject(Skill::class.java) ?: Skill()
-}
-
-private fun DocumentSnapshot.toAdvDetails(): AdvertisementDetails {
-    return this.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+private fun DocumentSnapshot.toSkill(): SkillDetails {
+    return this.toObject(SkillDetails::class.java) ?: SkillDetails()
 }

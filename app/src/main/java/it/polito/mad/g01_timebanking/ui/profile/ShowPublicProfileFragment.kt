@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import it.polito.mad.g01_timebanking.R

@@ -14,9 +14,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import it.polito.mad.g01_timebanking.Skill
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
+import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -91,14 +91,14 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val skills: LiveData<MutableSet<String>> = pvtSkills
 
-    private var tmpSuggestedSkills: MutableSet<Skill> =
-        _user.skills.map { Skill(name = it) }.toMutableSet()
+    private var tmpSuggestedSkills: MutableSet<SkillDetails> =
+        _user.skills.map { SkillDetails(name = it) }.toMutableSet()
 
-    private val pvtSuggestedSkills = MutableLiveData<MutableSet<Skill>>().also {
+    private val pvtSuggestedSkills = MutableLiveData<MutableSet<SkillDetails>>().also {
         it.value = tmpSuggestedSkills
         getSuggestedSkills()
     }
-    val suggestedSkills: LiveData<MutableSet<Skill>> = pvtSuggestedSkills
+    val suggestedSkills: LiveData<MutableSet<SkillDetails>> = pvtSuggestedSkills
 
 
     fun setFullname(fullname: String) {
@@ -190,7 +190,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     }
 
-    fun addOrUpdateSkills(newUserSkillsName: MutableList<String>) {
+    private fun addOrUpdateSkills(newUserSkillsName: MutableList<String>) {
         val oldUser = _user
 
         val addedSkills = newUserSkillsName.toSet() subtract oldUser.skills
@@ -216,7 +216,6 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
 
     private fun getSuggestedSkills() {
-
         suggestedSkillsListener = db.collection("suggestedSkills")
             .addSnapshotListener { value, error ->
                 if (error == null && value != null) {
@@ -225,7 +224,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-    fun getUserInfo() {
+    private fun getUserInfo() {
         userInfoListener = db.collection("users").document(auth.currentUser!!.uid)
             .addSnapshotListener { v, e ->
                 if (e == null && v?.exists() == true) {
@@ -234,7 +233,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     _user = v.toUserInfo()
                     Log.d(
                         "User_Picture",
-                        "_user pp = ${_user.profilePicturePath} , newProfPic = ${tmpPicturePath}"
+                        "_user pp = ${_user.profilePicturePath} , newProfPic = $tmpPicturePath"
                     )
                     if (_user.profilePicturePath != tmpPicturePath)
                         downloadPhoto()
@@ -249,7 +248,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-    fun uploadPhoto(imageView: ImageView) {
+    private fun uploadPhoto(imageView: ImageView) {
         // Get the data from an ImageView as bytes
         if (imageView.width == 0 || imageView.height == 0)
             return
@@ -280,7 +279,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         val userPicRef = imagesRef.child("${auth.currentUser!!.uid}.jpg")
 
         // Check if file exists
-        imagesRef.listAll().addOnSuccessListener {
+        imagesRef.listAll().addOnSuccessListener { it ->
             // If file exists download it
             if (it.items.contains(userPicRef)) {
                 val maximumSizeOneMegabyte: Long = 1024 * 1024
@@ -311,7 +310,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
         val imagesRef = storageRef.child("images/")
         val userPicRef = imagesRef.child("$uid.jpg")
         // Check if file exists
-        imagesRef.listAll().addOnSuccessListener {
+        imagesRef.listAll().addOnSuccessListener { it ->
             // If file exists download it
             if (it.items.contains(userPicRef)) {
                 val maximumSizeOneMegabyte: Long = 1024 * 1024
@@ -343,6 +342,6 @@ private fun DocumentSnapshot.toUserInfo(): UserInfo {
     return this.toObject(UserInfo::class.java) ?: UserInfo()
 }
 
-private fun DocumentSnapshot.toSkill(): Skill {
-    return this.toObject(Skill::class.java) ?: Skill()
+private fun DocumentSnapshot.toSkill(): SkillDetails {
+    return this.toObject(SkillDetails::class.java) ?: SkillDetails()
 }

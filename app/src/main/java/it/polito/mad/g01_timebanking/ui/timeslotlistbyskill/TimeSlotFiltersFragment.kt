@@ -1,5 +1,6 @@
 package it.polito.mad.g01_timebanking.ui.timeslotlistbyskill
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -76,7 +77,7 @@ class TimeSlotFiltersFragment : Fragment() {
             desiredTimeDate!!.set(Calendar.DAY_OF_MONTH, day)
 
             if (actualToTimeDate != null)
-                if (desiredTimeDate!! > actualToTimeDate) {
+                if (desiredTimeDate!! > actualToTimeDate!!) {
                     desiredTimeDate = actualFromTimeDate
                     val text: CharSequence = "Origin date cannot be later than the end date"
                     val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
@@ -105,7 +106,7 @@ class TimeSlotFiltersFragment : Fragment() {
             desiredTimeDate!!.set(Calendar.DAY_OF_MONTH, day)
 
             if (actualFromTimeDate != null)
-                if (desiredTimeDate!! < actualFromTimeDate) {
+                if (desiredTimeDate!! < actualFromTimeDate!!) {
                     desiredTimeDate = actualToTimeDate
                     val text: CharSequence = "End date cannot be earlier than the origin date"
                     val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
@@ -191,6 +192,7 @@ class TimeSlotFiltersFragment : Fragment() {
 }
 
 class MyOnSeekBarChangeListener(val view: View) : SeekBar.OnSeekBarChangeListener {
+    @SuppressLint("SetTextI18n")
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
         val text = view.findViewById<TextView>(R.id.selectedDurationText)
 

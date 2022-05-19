@@ -16,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
@@ -69,7 +68,6 @@ class TimeSlotEditFragment : Fragment() {
     private lateinit var confirmAdvButton: Button
     private lateinit var cancelAdvButton: Button
 
-    private lateinit var currentProfilePicturePath: String
     private lateinit var currentSkills: MutableSet<String>
     private  var suggestedSkills: MutableList<SkillDetails> = mutableListOf()
 

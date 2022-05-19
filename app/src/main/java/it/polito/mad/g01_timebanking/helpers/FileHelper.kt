@@ -44,7 +44,6 @@ class FileHelper {
             )
         }
 
-        //@Throws(IOException::class)
         fun createImageFile(context: Context): File {
             // Create an image file name
             val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(Date())
@@ -60,15 +59,6 @@ class FileHelper {
             }
 
             return File(baseFolder,"JPEG_${timeStamp}.jpg")
-/*        return File.createTempFile(
-            "JPEG_${timeStamp}_", *//* prefix *//*
-            ".jpg", *//* suffix *//*
-            storageDir *//* directory *//*
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            //eg. /storage/emulated/0/Android/data/it.polito.mad.g01_timebanking/files/Pictures/JPEG_20220329_123453_7193664665067830656.jpg
-            profilePicturePath = absolutePath
-        }*/
         }
 
         fun getRealPathFromURI(uri: Uri?, context: Context): String {

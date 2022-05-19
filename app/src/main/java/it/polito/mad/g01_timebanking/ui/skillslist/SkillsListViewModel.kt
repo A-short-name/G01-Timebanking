@@ -27,7 +27,7 @@ class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
 
     val skillList : LiveData<List<SkillDetails>> = pvtList
 
-    fun skillCleaner(){
+    private fun skillCleaner(){
         skillCleanerListener = db.collection("suggestedSkills")
             .whereEqualTo("usage_in_user",0L)
             .whereEqualTo("usage_in_adv",0L)

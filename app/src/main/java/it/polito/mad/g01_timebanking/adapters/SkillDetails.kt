@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
@@ -17,6 +16,8 @@ import com.google.firebase.firestore.PropertyName
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.SkillDiffCallback
 import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 data class SkillDetails (
     var name: String = "",
@@ -118,20 +119,18 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
             )
         }
         val textViewName = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_name)
-        val textViewUsage = internalConvertView!!.findViewById<TextView>(R.id.skill_suggestion_usage)
+        val textViewUsage = internalConvertView.findViewById<TextView>(R.id.skill_suggestion_usage)
         //val imageViewSkill = internalConvertView!!.findViewById<ImageView>(R.id.image_view_skill)
-        val skillItem: SkillDetails? = getItem(position)
-        if (skillItem != null) {
-            Log.d("AutoComplete_Adapter", "Suggested skill to print: ${skillItem.name}")
-            textViewName.text = skillItem.name
-            textViewUsage.text = skillItem.usageInAdv.toString()
-            //imageViewSkill.setImageResource(skillItem.)
-        }
+        val skillItem: SkillDetails = getItem(position)
+        Log.d("AutoComplete_Adapter", "Suggested skill to print: ${skillItem.name}")
+        textViewName.text = skillItem.name
+        textViewUsage.text = skillItem.usageInAdv.toString()
+        //imageViewSkill.setImageResource(skillItem.)
         return internalConvertView
     }
 
     //I've to override it, otherwise it will use the original full list
-    override fun getItem(position: Int): SkillDetails? {
+    override fun getItem(position: Int): SkillDetails {
         return skillList[position]
     }
 
@@ -152,8 +151,8 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
                 if (constraint != null) {
                     val skillSuggestion: MutableList<SkillDetails> = ArrayList()
                     for (skill in skillListFull) {
-                        if (skill.name.toLowerCase()
-                                .startsWith(constraint.toString().toLowerCase())
+                        if (skill.name.lowercase(Locale.getDefault())
+                                .startsWith(constraint.toString().lowercase(Locale.getDefault()))
                         ) {
                             skillSuggestion.add(skill)
                         }
@@ -176,7 +175,7 @@ class AutoCompleteSkillAdapter(context: Context, skillList: List<SkillDetails>) 
                             skillList.add(result)
                         }
                     }
-                    Log.d("AutoComplete_Adapter", "I'm publishing result: ${skillList}")
+                    Log.d("AutoComplete_Adapter", "I'm publishing result: $skillList")
                     notifyDataSetChanged()
                 } else if (constraint == null) {
                     skillList.addAll(skillListFull)

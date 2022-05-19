@@ -29,7 +29,7 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
 
     val advList : LiveData<List<AdvertisementDetails>> = pvtList
 
-    fun getAdvertisementList() {
+    private fun getAdvertisementList() {
         timeslotsListener = db.collection("advertisements")
             .whereEqualTo("uid", auth.currentUser!!.uid)
             .addSnapshotListener { value, e ->

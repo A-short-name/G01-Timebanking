@@ -116,10 +116,10 @@ class TimeSlotDetailsFragment : Fragment() {
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
 
-            profilePictureButton.setOnClickListener {
+            profilePictureButton.setOnClickListener { it2 ->
                 Log.d("TimeSlotDetail","going into profile of ${actualAdvertisement.uid}")
 
-                Navigation.findNavController(it).navigate(R.id.action_nav_show_time_slot_to_showPublicProfileFragment)
+                Navigation.findNavController(it2).navigate(R.id.action_nav_show_time_slot_to_showPublicProfileFragment)
 
 
             }

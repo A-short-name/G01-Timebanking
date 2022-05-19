@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.g01_timebanking.MainActivity
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.login.SignInActivity
 
