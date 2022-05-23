@@ -57,7 +57,8 @@ class SkillAdapter(
         private val cardView: CardView = v.findViewById(R.id.skillCardView)
 
         fun bind(skill: SkillDetails, cardAction: (v: View) -> Unit) {
-            title.text = skill.name
+            val skillUpCase = skill.name[0].uppercase() + skill.name.substring(1,skill.name.length)
+            title.text = skillUpCase
             usage.text = skill.usageInAdv.toString()
             cardView.setOnClickListener(cardAction)
         }
