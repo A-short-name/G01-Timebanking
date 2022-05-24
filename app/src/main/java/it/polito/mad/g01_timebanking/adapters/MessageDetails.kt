@@ -36,8 +36,7 @@ class MessageAdapter(
     private val currentUserUid: String
 ) : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
-    class MessageViewHolder(private val parent: ViewGroup,
-                            v: View): RecyclerView.ViewHolder(v) {
+    class MessageViewHolder(v: View): RecyclerView.ViewHolder(v) {
         private val messageTextView = v.findViewById<TextView>(R.id.messageTextView)
         private val messengerTextView = v.findViewById<TextView>(R.id.messengerTextView)
 
@@ -70,7 +69,7 @@ class MessageAdapter(
             }
         }
 
-        return MessageViewHolder(parent, v)
+        return MessageViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
@@ -91,5 +90,7 @@ class MessageAdapter(
 data class MessageCollection(
     var chatId : String = "",
     var advId : String = "",
+    var advOwnerUid : String = "",
+    var requesterUid : String = "",
     val messages : MutableList<MessageDetails> = mutableListOf()
 )

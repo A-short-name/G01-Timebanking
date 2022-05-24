@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
 import it.polito.mad.g01_timebanking.adapters.MessageDetails
 import java.util.*
@@ -29,11 +30,11 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
     private val receiverUid = pvtReceiverUid
 
-    private val pvtAdvertisementId = MutableLiveData<String>().also {
-        it.value = ""
+    private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
+        it.value = AdvertisementDetails()
     }
 
-    private val advertisementId = pvtAdvertisementId
+    private val advertisement = pvtAdvertisement
 
     private val pvtMessageText = MutableLiveData<String>().also {
         it.value = ""
@@ -46,7 +47,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     private var messagesListener: ListenerRegistration? = null
 
     fun getMessagesList() {
-        val chatId = "${auth.currentUser!!.uid}-${receiverUid.value!!}-${advertisementId.value!!}"
+        val chatId = "${auth.currentUser!!.uid}-${receiverUid.value!!}-${advertisement.value!!.id}"
         messagesListener = db.collection("chats")
             .document(chatId)
             .addSnapshotListener { value, e ->
@@ -57,8 +58,10 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                 } else if (e == null) {
                     Log.d("Messages_Listener", "Data not found on database.")
                     val newCollection = MessageCollection().apply {
-                        this.advId = advertisementId.value!!
+                        this.advId = advertisement.value!!.id
                         this.chatId = chatId
+                        this.requesterUid = auth.currentUser!!.uid
+                        this.advOwnerUid = advertisement.value!!.uid
                     }
                     addOrUpdateData(newCollection, chatId)
                 }
@@ -94,8 +97,8 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         pvtReceiverUid.value = uid
     }
 
-    fun setAdvertisementId(id: String) {
-        pvtAdvertisementId.value = id
+    fun setAdvertisement(adv: AdvertisementDetails) {
+        pvtAdvertisement.value = adv
     }
 
     fun sendMessage() {
@@ -107,7 +110,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
             messageText.value!!)
 
         _messagesCollection.messages.add(message)
-        val chatId = "${auth.currentUser!!.uid}-${receiverUid.value!!}-${advertisementId.value!!}"
+        val chatId = "${auth.currentUser!!.uid}-${receiverUid.value!!}-${advertisement.value!!.id}"
         addOrUpdateData(_messagesCollection, chatId)
         messageText.value = ""
     }

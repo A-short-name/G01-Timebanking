@@ -84,7 +84,7 @@ class TimeSlotDetailsFragment : Fragment() {
 
         openChatButton.setOnClickListener {
             chatViewModel.setReceiverUid(timeSlotDetailsViewModel.advertisement.value!!.uid)
-            chatViewModel.setAdvertisementId(timeSlotDetailsViewModel.advertisement.value!!.id)
+            chatViewModel.setAdvertisement(timeSlotDetailsViewModel.advertisement.value!!)
             findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
         }
 
