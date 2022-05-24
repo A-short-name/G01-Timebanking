@@ -53,7 +53,9 @@ class ChatFragment : Fragment() {
         sendImageView = view.findViewById(R.id.sendImageView)
 
         val recyclerViewChat = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
-        recyclerViewChat.layoutManager = LinearLayoutManager(context)
+        val llManager = LinearLayoutManager(context)
+        llManager.reverseLayout = true
+        recyclerViewChat.layoutManager = llManager
 
         adapter = MessageAdapter(listOf(), auth.currentUser!!.uid)
         recyclerViewChat.adapter = adapter
