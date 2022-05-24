@@ -139,6 +139,18 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                             .set(advInfo)
                             .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
 
+                        db.collection("chats")
+                            .whereEqualTo("advId",advInfo.id)
+                            .get()
+                            .addOnSuccessListener {
+                                for(doc in it) {
+                                    val chat = doc.toObject(MessageCollection::class.java)
+                                    chat.accepted = false
+                                    chat.buyerHasRequested = true
+                                    chat.ownerHasDecided = true
+                                    db.collection("chats").document(doc.id).set(chat)
+                                }
+                            }
                         // TODO: Decrement usage of adv in database
                     }
             }
