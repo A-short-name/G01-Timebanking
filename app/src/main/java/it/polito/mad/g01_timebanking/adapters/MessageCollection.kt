@@ -72,6 +72,9 @@ class MessageCollectionAdapter(
 
             if(calendar.time < Calendar.getInstance().time && messageCollection.advertisementInfo.sold) {
                 reviewButton.visibility = View.VISIBLE
+                reviewButton.setOnClickListener {
+                    navController.navigate(R.id.action_nav_my_chats_to_reviewFragment)
+                }
             } else {
                 reviewButton.visibility = View.GONE
                 chatCardView.setOnClickListener {
