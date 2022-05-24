@@ -84,6 +84,13 @@ class MyOnTabSelectedListener(private val vm : MyChatsViewModel) : TabLayout.OnT
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
+        if(tab == null)
+            return
+
+        when(tab.position) {
+            0 -> vm.getIncomingRequestsChats()
+            else -> vm.getMyRequestsChats()
+        }
     }
 
 }

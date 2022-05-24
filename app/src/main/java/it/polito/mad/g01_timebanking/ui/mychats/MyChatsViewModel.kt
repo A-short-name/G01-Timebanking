@@ -28,15 +28,14 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
         chatsListener = db.collection("chats")
             .whereEqualTo("advOwnerUid",auth.currentUser!!.uid)
             .addSnapshotListener { value, e ->
+                _mychats = mutableListOf()
                 if (e != null) {
                     Log.d("Chats", "Error searching for chats. err:${e.message}")
                 } else if (value!!.isEmpty) {
                     Log.d("Chats", "No chats")
-                    _mychats = mutableListOf()
                 } else {
                     for (doc in value) {
                         val chat = doc.toObject(MessageCollection::class.java)
-                        _mychats = mutableListOf()
                         _mychats.add(chat)
                     }
                 }
@@ -48,15 +47,15 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
         chatsListener = db.collection("chats")
             .whereEqualTo("requesterUid",auth.currentUser!!.uid)
             .addSnapshotListener { value, e ->
+                _mychats = mutableListOf()
                 if (e != null) {
                     Log.d("Chats", "Error searching for chats. err:${e.message}")
                 } else if (value!!.isEmpty) {
                     Log.d("Chats", "No chats")
-                    _mychats = mutableListOf()
+
                 } else {
                     for (doc in value) {
                         val chat = doc.toObject(MessageCollection::class.java)
-                        _mychats = mutableListOf()
                         _mychats.add(chat)
                     }
                 }
