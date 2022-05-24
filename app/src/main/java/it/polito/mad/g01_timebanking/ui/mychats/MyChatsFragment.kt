@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,7 +53,14 @@ class MyChatsFragment : Fragment() {
         adapter = MessageCollectionAdapter(listOf(), auth.currentUser!!.uid)
         recyclerViewMyChat.adapter = adapter
 
+        val emptyChatsText = view.findViewById<TextView>(R.id.emptyChatsTextView)
         myChatsViewModel.chatsList.observe(this.viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                emptyChatsText.visibility = View.VISIBLE
+            } else {
+                emptyChatsText.visibility = View.GONE
+            }
+
             adapter!!.setMyChats(it)
         }
     }
