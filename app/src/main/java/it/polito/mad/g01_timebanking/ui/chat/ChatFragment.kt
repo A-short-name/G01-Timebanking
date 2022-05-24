@@ -66,13 +66,13 @@ class ChatFragment : Fragment() {
             messageText.setText(it)
         }
 
-        sendImageView.setOnClickListener {
-            chatViewModel.setMessageText(messageText.text.toString())
-            chatViewModel.sendMessage()
-        }
+        chatViewModel.chatId.observe(this.viewLifecycleOwner) { chatId ->
+            chatViewModel.getMessagesList(profileViewModel.pubUser.value!!.fullName, chatId)
 
-        chatViewModel.chatId.observe(this.viewLifecycleOwner) {
-            chatViewModel.getMessagesList(profileViewModel.pubUser.value!!.fullName, it)
+            sendImageView.setOnClickListener {
+                chatViewModel.setMessageText(messageText.text.toString())
+                chatViewModel.sendMessage(chatId)
+            }
         }
     }
 }

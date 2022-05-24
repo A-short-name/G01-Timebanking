@@ -118,7 +118,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         pvtAdvertisement.value = adv
     }
 
-    fun sendMessage() {
+    fun sendMessage(chatId: String) {
         val message = MessageDetails(
             "",
             receiverUid.value!!,
@@ -127,7 +127,6 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
             messageText.value!!)
 
         _messagesCollection.messages.add(message)
-        val chatId = "${auth.currentUser!!.uid}-${receiverUid.value!!}-${advertisement.value!!.id}"
         addOrUpdateData(_messagesCollection, chatId)
         messageText.value = ""
     }

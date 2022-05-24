@@ -66,6 +66,8 @@ class MyChatsFragment : Fragment() {
 
             adapter!!.setMyChats(it)
         }
+
+        myChatsViewModel.getIncomingRequestsChats()
     }
 }
 
