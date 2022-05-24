@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_filter"
+        android:title="Filter"
+        android:icon="@drawable/ic_filter"
+        app:showAsAction="always" />
+    <group
+        android:id="@+id/action_sort">
+        <item
+            android:id="@+id/filterFromAtoZ"
+            android:icon="@drawable/ic_sort"
+            android:menuCategory="secondary"
+            android:title="A-Z" />
+        <item
+            android:id="@+id/filterFromZtoA"
+            android:icon="@drawable/ic_sort"
+            android:menuCategory="secondary"
+            android:title="Z-A" />
+        <item
+            android:id="@+id/filterMostRecents"
+            android:icon="@drawable/ic_sort"
+            android:menuCategory="secondary"
+            android:title="Most Recents" />
+        <item
+            android:id="@+id/filterLessRecents"
+            android:icon="@drawable/ic_sort"
+            android:menuCategory="secondary"
+            android:title="Less Recents" />
+    </group>
+
+</menu>
