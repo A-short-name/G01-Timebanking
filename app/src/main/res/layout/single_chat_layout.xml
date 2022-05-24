@@ -38,6 +38,7 @@
                 android:id="@+id/chatAdvertisementTitle"
                 android:layout_width="375dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"

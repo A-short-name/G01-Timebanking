@@ -18,9 +18,12 @@ import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.MessageAdapter
 import it.polito.mad.g01_timebanking.databinding.FragmentChatBinding
+import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 
 class ChatFragment : Fragment() {
     private val chatViewModel : ChatViewModel by activityViewModels()
+    private val profileViewModel : ProfileViewModel by activityViewModels()
+
     private val auth = Firebase.auth
 
     private var _binding: FragmentChatBinding? = null
@@ -68,6 +71,8 @@ class ChatFragment : Fragment() {
             chatViewModel.sendMessage()
         }
 
-        chatViewModel.getMessagesList()
+        chatViewModel.chatId.observe(this.viewLifecycleOwner) {
+            chatViewModel.getMessagesList(profileViewModel.pubUser.value!!.fullName, it)
+        }
     }
 }
