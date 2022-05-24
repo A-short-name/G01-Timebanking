@@ -7,10 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -67,8 +64,31 @@ class ChatFragment : Fragment() {
 
         chatViewModel.messagesCollection.observe(this.viewLifecycleOwner){ chat ->
             val requestLayout = view.findViewById<LinearLayout>(R.id.requestToAcceptLayout)
+            val messageAcceptTextView = view.findViewById<TextView>(R.id.messageAcceptTextView)
 
-            if(chat.advOwnerUid == auth.currentUser!!.uid && !chat.hasDecided) {
+            val isTheOwner = chat.advOwnerUid == auth.currentUser!!.uid
+
+            if(!isTheOwner && !chat.buyerHasRequested && !chat.ownerHasDecided) {
+                messageAcceptTextView.text = "Do you want to send a request for this advertisement?"
+                acceptButton.text = "YES"
+                refuseButton.text = "NOT YET"
+
+                acceptButton.setOnClickListener {
+                    chatViewModel.buyerTakesDecision(chat,true)
+                }
+
+                refuseButton.setOnClickListener {
+                    requestLayout.visibility = View.GONE
+                }
+
+                requestLayout.visibility = View.VISIBLE
+            } else if (!isTheOwner && chat.buyerHasRequested) {
+                requestLayout.visibility = View.GONE
+            } else if(isTheOwner && !chat.ownerHasDecided && chat.buyerHasRequested) {
+                messageAcceptTextView.text = "Request arrived! \nDo you want to accept this request?"
+                acceptButton.text = "ACCEPT"
+                refuseButton.text = "REFUSE"
+
                 acceptButton.setOnClickListener {
                     chatViewModel.takeDecision(chat,true)
                 }
