@@ -92,7 +92,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                                                 this.requesterUid = auth.currentUser!!.uid
                                                 this.advOwnerUid = advertisement.value!!.uid
                                                 this.advOwnerName = userInfoOwner.fullName
-                                                this.hasDecided = false
+                                                this.ownerHasDecided = false
                                                 this.accepted = false
                                             }
                                             addOrUpdateData(newCollection, chatId)
@@ -122,7 +122,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun takeDecision(collection: MessageCollection, accepted: Boolean) {
-        collection.hasDecided = true
+        collection.ownerHasDecided = true
         collection.accepted = accepted
         db.collection("chats").document(collection.chatId).set(collection)
             .addOnSuccessListener {
@@ -187,5 +187,25 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
     fun setChatId(chatId: String) {
         this.chatId.value = chatId
+    }
+
+    fun buyerTakesDecision(chat: MessageCollection, requested: Boolean) {
+        chat.buyerHasRequested = true
+        chat.accepted = requested
+
+        db.collection("chats").document(chat.chatId).set(chat)
+            .addOnSuccessListener {
+                Log.d("InsertOrUpdateMesColl", "Success!")
+                _messagesCollection = chat
+                pvtMessagesCollection.value = _messagesCollection
+            }
+            .addOnFailureListener {
+                Log.d("InsertOrUpdateMesColl", "Exception: ${it.message}")
+                Toast.makeText(
+                    a.applicationContext,
+                    "Failed updating data. Try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 }
