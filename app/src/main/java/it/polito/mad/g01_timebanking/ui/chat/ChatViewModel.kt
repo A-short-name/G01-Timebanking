@@ -9,7 +9,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.auth.User
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
 import it.polito.mad.g01_timebanking.adapters.MessageDetails
@@ -52,7 +54,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     private val auth = Firebase.auth
     private var messagesListener: ListenerRegistration? = null
 
-    fun getMessagesList(fullname: String, chatId: String) {
+    fun getMessagesList(chatId: String) {
         messagesListener = db.collection("chats")
             .document(chatId)
             .addSnapshotListener { value, e ->
@@ -65,22 +67,28 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
                     db.collection("advertisements")
                         .document(advertisement.value!!.id)
-                        .addSnapshotListener{ value, e ->
-                            if(value?.exists() == true) {
-                                val adv = value.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                        .get()
+                        .addOnSuccessListener{ adv ->
+                            val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
 
-                                val newCollection = MessageCollection().apply {
-                                    this.advId = advertisement.value!!.id
-                                    this.advTitle = adv.title
-                                    this.requesterName = fullname
-                                    this.chatId = chatId
-                                    this.requesterUid = auth.currentUser!!.uid
-                                    this.advOwnerUid = advertisement.value!!.uid
-                                    this.hasDecided = false
-                                    this.accepted = false
-                                }
-                                addOrUpdateData(newCollection, chatId)
-                            }
+                            db.collection("users")
+                                .document(auth.currentUser!!.uid)
+                                .get()
+                                .addOnSuccessListener{ user ->
+                                    val userInfo = user.toObject(UserInfo::class.java) ?: UserInfo()
+                                    val newCollection = MessageCollection().apply {
+                                        this.advId = advertisement.value!!.id
+                                        this.advTitle = advInfo.title
+                                        this.requesterName = userInfo.fullName
+                                        this.chatId = chatId
+                                        this.requesterUid = auth.currentUser!!.uid
+                                        this.advOwnerUid = advertisement.value!!.uid
+                                        this.hasDecided = false
+                                        this.accepted = false
+                                    }
+                                    addOrUpdateData(newCollection, chatId)
+                                    }
+
                         }
                 }
             }

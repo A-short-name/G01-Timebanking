@@ -89,7 +89,7 @@ class ChatFragment : Fragment() {
         }
 
         chatViewModel.chatId.observe(this.viewLifecycleOwner) { chatId ->
-            chatViewModel.getMessagesList(profileViewModel.pubUser.value!!.fullName, chatId)
+            chatViewModel.getMessagesList(chatId)
 
             sendImageView.setOnClickListener {
                 chatViewModel.setMessageText(messageText.text.toString())

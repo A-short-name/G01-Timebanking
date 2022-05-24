@@ -44,7 +44,9 @@ class MessageCollectionAdapter(
 
         fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel) {
             chatAdvertisementTitle.text = messageCollection.advTitle
+
             fromTextView.text = messageCollection.requesterName
+
             val messages = messageCollection.messages
 
             if(messages.size != 0)
