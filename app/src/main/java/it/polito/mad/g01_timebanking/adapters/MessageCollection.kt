@@ -3,6 +3,8 @@ package it.polito.mad.g01_timebanking.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
@@ -23,9 +25,22 @@ class MessageCollectionAdapter(
 ) : RecyclerView.Adapter<MessageCollectionAdapter.MessageCollectionViewHolder>() {
 
     class MessageCollectionViewHolder(v: View): RecyclerView.ViewHolder(v) {
+        private val chatCardView = v.findViewById<CardView>(R.id.chatCardView)
+        private val chatAdvertisementTitle = v.findViewById<TextView>(R.id.chatAdvertisementTitle)
+        private val fromTextView = v.findViewById<TextView>(R.id.fromTextView)
+        private val lastMessageTextView = v.findViewById<TextView>(R.id.lastMessageTextView)
 
         fun bind (messageCollection: MessageCollection) {
+            chatAdvertisementTitle.text = messageCollection.advId
+            fromTextView.text = messageCollection.requesterUid
+            val messages = messageCollection.messages
 
+            if(messages.size != 0)
+                lastMessageTextView.text = messages[messages.lastIndex].content
+
+            chatCardView.setOnClickListener {
+
+            }
         }
     }
 
@@ -33,7 +48,7 @@ class MessageCollectionAdapter(
         val v : View =
                 LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.single_sender_message_layout, parent,false)
+                    .inflate(R.layout.single_chat_layout, parent,false)
 
         return MessageCollectionViewHolder(v)
     }
