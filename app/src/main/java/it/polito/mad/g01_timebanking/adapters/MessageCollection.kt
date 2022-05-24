@@ -47,9 +47,9 @@ class MessageCollectionAdapter(
             chatAdvertisementTitle.text = messageCollection.advTitle
 
             if(messageCollection.advOwnerUid == Firebase.auth.currentUser!!.uid) {
-                fromTextView.text = messageCollection.requesterName
+                fromTextView.text = "Requested from: ${messageCollection.requesterName}"
             } else {
-                fromTextView.text = messageCollection.advOwnerName
+                fromTextView.text = "Seller: ${messageCollection.advOwnerName}"
             }
 
             val messages = messageCollection.messages
