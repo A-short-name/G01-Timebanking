@@ -1,7 +1,9 @@
 package it.polito.mad.g01_timebanking.ui
 
+import android.os.Message
 import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.adapters.MessageDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 
 class AdvDiffCallback (private val adv: List<AdvertisementDetails>, val newAdv: List<AdvertisementDetails>): DiffUtil.Callback() {
@@ -28,6 +30,19 @@ class SkillDiffCallback (private val skill: List<SkillDetails>, private val newS
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
         val (_, usageInAdv, usageInUser) = skill[oldPosition]
         val (_, usageInAdv1, usageInUser1) = newSkill[newPosition]
+        return usageInAdv == usageInAdv1 && usageInUser == usageInUser1
+    }
+}
+
+class MessageDiffCallback (private val messages: List<MessageDetails>, private val newMessages: List<MessageDetails>): DiffUtil.Callback() {
+    override fun getOldListSize(): Int = messages.size
+    override fun getNewListSize(): Int = newMessages.size
+    override fun areItemsTheSame(oldP: Int, newP: Int): Boolean {
+        return messages[oldP].messageId === newMessages[newP].messageId
+    }
+    override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
+        val (_, usageInAdv, usageInUser) = messages[oldPosition]
+        val (_, usageInAdv1, usageInUser1) = newMessages[newPosition]
         return usageInAdv == usageInAdv1 && usageInUser == usageInUser1
     }
 }
