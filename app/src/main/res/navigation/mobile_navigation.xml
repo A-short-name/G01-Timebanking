@@ -31,6 +31,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_nav_show_time_slot_to_nav_chat_list"
+            app:destination="@id/nav_chat_list" />
     </fragment>
 
     <fragment
@@ -146,7 +149,19 @@
         android:id="@+id/showPublicProfileFragment"
         android:name="it.polito.mad.g01_timebanking.ui.profile.ShowPublicProfileFragment"
         android:label="User profile"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
         tools:layout="@layout/fragment_show_public_profile"
         />
+    <fragment
+        android:id="@+id/nav_chat_list"
+        android:name="it.polito.mad.g01_timebanking.ui.chat.ChatFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        android:label="nav_chat_list" />
 
 </navigation>

@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -42,7 +40,7 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var textViewDescription: EditText
     private lateinit var imageViewAdvProfilePicture: ImageView
     private lateinit var textViewAdvUserName : EditText
-
+    private lateinit var openChatButton : Button
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
     private lateinit var profilePictureButton : ImageButton
@@ -79,7 +77,11 @@ class TimeSlotDetailsFragment : Fragment() {
         textViewAdvUserName = view.findViewById(R.id.advUserFullNameShowText)
         imageViewAdvProfilePicture = view.findViewById(R.id.advProfilePicture)
         profilePictureButton = view.findViewById(R.id.advProfilePictureTransparentButton)
+        openChatButton = view.findViewById(R.id.openChatButton)
 
+        openChatButton.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
+        }
 
         profileViewModel.pubUserTmpPath.observe(this.viewLifecycleOwner){
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)

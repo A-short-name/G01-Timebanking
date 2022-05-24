@@ -21,6 +21,7 @@ import it.polito.mad.g01_timebanking.UserKey.HASTOBEEMPTY
 import it.polito.mad.g01_timebanking.databinding.ActivityMainBinding
 import it.polito.mad.g01_timebanking.helpers.FileHelper
 import it.polito.mad.g01_timebanking.login.SignInActivity
+import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 import it.polito.mad.g01_timebanking.ui.skillslist.SkillsListViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         val profileVM = ViewModelProvider(this)[ProfileViewModel::class.java]
         val skillsVM = ViewModelProvider(this)[SkillsListViewModel::class.java]
         val listSkillVM = ViewModelProvider(this)[TimeSlotListBySkillViewModel::class.java]
+        val chatVM = ViewModelProvider(this)[ChatViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
