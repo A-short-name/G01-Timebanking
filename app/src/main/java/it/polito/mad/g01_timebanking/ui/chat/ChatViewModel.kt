@@ -126,9 +126,21 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         collection.accepted = accepted
         db.collection("chats").document(collection.chatId).set(collection)
             .addOnSuccessListener {
-                Log.d("InsertOrUpdateMesColl", "Success: $it")
                 _messagesCollection = collection
                 pvtMessagesCollection.value = _messagesCollection
+
+                db.collection("advertisements").document(collection.advId)
+                    .get()
+                    .addOnSuccessListener { adv ->
+                        val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                        advInfo.sold = true
+
+                        db.collection("advertisements").document(collection.advId)
+                            .set(advInfo)
+                            .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
+
+                        // TODO: Decrement usage of adv in database
+                    }
             }
             .addOnFailureListener {
                 Log.d("InsertOrUpdateMesColl", "Exception: ${it.message}")
