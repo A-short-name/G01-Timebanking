@@ -86,11 +86,3 @@ class MessageAdapter(
         diffs.dispatchUpdatesTo(this) //animate UI
     }
 }
-
-data class MessageCollection(
-    var chatId : String = "",
-    var advId : String = "",
-    var advOwnerUid : String = "",
-    var requesterUid : String = "",
-    val messages : MutableList<MessageDetails> = mutableListOf()
-)

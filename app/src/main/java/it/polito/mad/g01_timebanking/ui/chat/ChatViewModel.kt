@@ -62,6 +62,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                         this.chatId = chatId
                         this.requesterUid = auth.currentUser!!.uid
                         this.advOwnerUid = advertisement.value!!.uid
+                        this.accepted = false
                     }
                     addOrUpdateData(newCollection, chatId)
                 }
