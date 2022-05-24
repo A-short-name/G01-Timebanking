@@ -66,7 +66,10 @@ class MyChatsFragment : Fragment() {
             adapter!!.setMyChats(it)
         }
 
-        myChatsViewModel.getIncomingRequestsChats()
+        if(tabLayout.selectedTabPosition == 0)
+            myChatsViewModel.getIncomingRequestsChats()
+        else
+            myChatsViewModel.getMyRequestsChats()
     }
 }
 
