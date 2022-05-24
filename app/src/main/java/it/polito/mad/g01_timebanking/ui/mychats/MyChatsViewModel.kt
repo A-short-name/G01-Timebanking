@@ -8,6 +8,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 
@@ -31,15 +32,21 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                 _mychats = mutableListOf()
                 if (e != null) {
                     Log.d("Chats", "Error searching for chats. err:${e.message}")
+                    pvtMyChats.value = _mychats
                 } else if (value!!.isEmpty) {
                     Log.d("Chats", "No chats")
+                    pvtMyChats.value = _mychats
                 } else {
                     for (doc in value) {
                         val chat = doc.toObject(MessageCollection::class.java)
-                        _mychats.add(chat)
+                        db.collection("advertisements").document(chat.advId).get()
+                            .addOnSuccessListener {
+                                chat.advertisementInfo = it.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                                _mychats.add(chat)
+                                pvtMyChats.value = _mychats
+                            }
                     }
                 }
-                pvtMyChats.value = _mychats
             }
     }
 
@@ -50,16 +57,21 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                 _mychats = mutableListOf()
                 if (e != null) {
                     Log.d("Chats", "Error searching for chats. err:${e.message}")
+                    pvtMyChats.value = _mychats
                 } else if (value!!.isEmpty) {
                     Log.d("Chats", "No chats")
-
+                    pvtMyChats.value = _mychats
                 } else {
                     for (doc in value) {
                         val chat = doc.toObject(MessageCollection::class.java)
-                        _mychats.add(chat)
+                        db.collection("advertisements").document(chat.advId).get()
+                            .addOnSuccessListener {
+                                chat.advertisementInfo = it.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                                _mychats.add(chat)
+                                pvtMyChats.value = _mychats
+                            }
                     }
                 }
-                pvtMyChats.value = _mychats
             }
     }
 }

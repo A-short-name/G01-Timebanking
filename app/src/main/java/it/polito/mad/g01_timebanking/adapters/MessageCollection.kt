@@ -3,6 +3,7 @@ package it.polito.mad.g01_timebanking.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.NavController
@@ -16,6 +17,7 @@ import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.MessageCollectionDiffCallback
 import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
 import it.polito.mad.g01_timebanking.ui.mychats.MyChatsViewModel
+import java.util.*
 
 data class MessageCollection (
     var chatId : String = "",
@@ -25,6 +27,7 @@ data class MessageCollection (
     var advOwnerName : String = "",
     var requesterUid : String = "",
     var requesterName : String = "",
+    var advertisementInfo : AdvertisementDetails = AdvertisementDetails(),
     var buyerHasRequested: Boolean = false,
     var ownerHasDecided : Boolean = false,
     var accepted : Boolean = false,
@@ -43,6 +46,7 @@ class MessageCollectionAdapter(
         private val chatAdvertisementTitle = v.findViewById<TextView>(R.id.chatAdvertisementTitle)
         private val fromTextView = v.findViewById<TextView>(R.id.fromTextView)
         private val lastMessageTextView = v.findViewById<TextView>(R.id.lastMessageTextView)
+        private val reviewButton = v.findViewById<Button>(R.id.reviewButton)
 
         fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel) {
             chatAdvertisementTitle.text = messageCollection.advTitle
@@ -58,9 +62,22 @@ class MessageCollectionAdapter(
             if(messages.size != 0)
                 lastMessageTextView.text = messages[messages.lastIndex].content
 
-            chatCardView.setOnClickListener {
-                chatViewModel.setChatId(messageCollection.chatId)
-                navController.navigate(R.id.action_nav_my_chats_to_nav_chat_list)
+            val calendar = Calendar.getInstance()
+            calendar.time = messageCollection.advertisementInfo.calendar
+
+            val duration = messageCollection.advertisementInfo.duration.split(":")
+
+            calendar.add(Calendar.HOUR,duration[0].toInt())
+            calendar.add(Calendar.MINUTE,duration[1].toInt())
+
+            if(calendar.time < Calendar.getInstance().time && messageCollection.advertisementInfo.sold) {
+                reviewButton.visibility = View.VISIBLE
+            } else {
+                reviewButton.visibility = View.GONE
+                chatCardView.setOnClickListener {
+                    chatViewModel.setChatId(messageCollection.chatId)
+                    navController.navigate(R.id.action_nav_my_chats_to_nav_chat_list)
+                }
             }
         }
     }

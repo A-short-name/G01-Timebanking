@@ -36,12 +36,12 @@
 
             <TextView
                 android:id="@+id/chatAdvertisementTitle"
-                android:layout_width="375dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/reviewButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Advertisement Name" />
@@ -51,8 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/reviewButton"
                 app:layout_constraintStart_toEndOf="@+id/profileImageView"
                 app:layout_constraintTop_toBottomOf="@+id/chatAdvertisementTitle"
                 tools:text="FirstName FullName" />
@@ -88,11 +87,20 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="@+id/fromTextView"
                 app:layout_constraintStart_toEndOf="@+id/messagesImageView"
                 app:layout_constraintTop_toBottomOf="@+id/fromTextView"
                 tools:text="Last message" />
+
+            <Button
+                android:id="@+id/reviewButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Review"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
