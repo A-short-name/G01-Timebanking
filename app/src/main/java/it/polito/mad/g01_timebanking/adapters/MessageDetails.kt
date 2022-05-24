@@ -12,11 +12,10 @@ import java.util.*
 
 data class MessageDetails (
     val messageId: String = "",
-    val receiverUid: String = "",
+    var receiverUid: String = "",
     val senderUid: String = "",
-    val advertisementId : String = "",
-    val timestamp: Date = Date(),
-    val content: String = ""
+    var timestamp: Date = Date(),
+    var content: String = ""
 ) {
     override fun equals(other: Any?): Boolean {
         other as MessageDetails
@@ -88,3 +87,9 @@ class MessageAdapter(
         diffs.dispatchUpdatesTo(this) //animate UI
     }
 }
+
+data class MessageCollection(
+    var chatId : String = "",
+    var advId : String = "",
+    val messages : MutableList<MessageDetails> = mutableListOf()
+)

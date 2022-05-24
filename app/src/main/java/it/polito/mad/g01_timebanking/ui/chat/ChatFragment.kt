@@ -1,9 +1,14 @@
 package it.polito.mad.g01_timebanking.ui.chat
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +30,9 @@ class ChatFragment : Fragment() {
 
     private var adapter: MessageAdapter? = null
 
+    private lateinit var messageText: EditText
+    private lateinit var sendImageView: ImageView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +46,8 @@ class ChatFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        messageText = view.findViewById(R.id.messageTextEdit)
+        sendImageView = view.findViewById(R.id.sendImageView)
 
         val recyclerViewChat = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
         recyclerViewChat.layoutManager = LinearLayoutManager(context)
@@ -45,8 +55,19 @@ class ChatFragment : Fragment() {
         adapter = MessageAdapter(listOf(), auth.currentUser!!.uid)
         recyclerViewChat.adapter = adapter
 
-        chatViewModel.messageList.observe(this.viewLifecycleOwner){
-            adapter!!.setMessages(it)
+        chatViewModel.messagesCollection.observe(this.viewLifecycleOwner){
+            adapter!!.setMessages(it.messages)
         }
+
+        chatViewModel.messageText.observe(this.viewLifecycleOwner) {
+            messageText.setText(it)
+        }
+
+        sendImageView.setOnClickListener {
+            chatViewModel.setMessageText(messageText.text.toString())
+            chatViewModel.sendMessage()
+        }
+
+        chatViewModel.getMessagesList()
     }
 }

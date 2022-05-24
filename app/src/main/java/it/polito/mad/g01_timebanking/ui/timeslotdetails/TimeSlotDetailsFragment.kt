@@ -23,6 +23,7 @@ import it.polito.mad.g01_timebanking.databinding.FragmentTimeSlotDetailsBinding
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
 import it.polito.mad.g01_timebanking.helpers.FileHelper
+import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
 import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 import java.util.*
 
@@ -31,6 +32,8 @@ class TimeSlotDetailsFragment : Fragment() {
     private val timeSlotDetailsViewModel : TimeSlotDetailsViewModel by activityViewModels()
 
     private val profileViewModel : ProfileViewModel by activityViewModels()
+
+    private val chatViewModel : ChatViewModel by activityViewModels()
     // Views to be handled
     private lateinit var textViewTitle: EditText
     private lateinit var textViewLocation: EditText
@@ -80,6 +83,8 @@ class TimeSlotDetailsFragment : Fragment() {
         openChatButton = view.findViewById(R.id.openChatButton)
 
         openChatButton.setOnClickListener {
+            chatViewModel.setReceiverUid(timeSlotDetailsViewModel.advertisement.value!!.uid)
+            chatViewModel.setAdvertisementId(timeSlotDetailsViewModel.advertisement.value!!.id)
             findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
         }
 
