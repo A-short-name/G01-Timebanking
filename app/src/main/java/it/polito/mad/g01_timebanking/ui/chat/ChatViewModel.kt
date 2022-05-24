@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.auth.User
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -76,17 +77,26 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                                 .get()
                                 .addOnSuccessListener{ user ->
                                     val userInfo = user.toObject(UserInfo::class.java) ?: UserInfo()
-                                    val newCollection = MessageCollection().apply {
-                                        this.advId = advertisement.value!!.id
-                                        this.advTitle = advInfo.title
-                                        this.requesterName = userInfo.fullName
-                                        this.chatId = chatId
-                                        this.requesterUid = auth.currentUser!!.uid
-                                        this.advOwnerUid = advertisement.value!!.uid
-                                        this.hasDecided = false
-                                        this.accepted = false
-                                    }
-                                    addOrUpdateData(newCollection, chatId)
+
+                                    db.collection("users")
+                                        .document(advInfo.uid)
+                                        .get()
+                                        .addOnSuccessListener { advOwner ->
+                                            val userInfoOwner = advOwner.toObject(UserInfo::class.java) ?: UserInfo()
+
+                                            val newCollection = MessageCollection().apply {
+                                                this.advId = advertisement.value!!.id
+                                                this.advTitle = advInfo.title
+                                                this.requesterName = userInfo.fullName
+                                                this.chatId = chatId
+                                                this.requesterUid = auth.currentUser!!.uid
+                                                this.advOwnerUid = advertisement.value!!.uid
+                                                this.advOwnerName = userInfoOwner.fullName
+                                                this.hasDecided = false
+                                                this.accepted = false
+                                            }
+                                            addOrUpdateData(newCollection, chatId)
+                                        }
                                     }
 
                         }

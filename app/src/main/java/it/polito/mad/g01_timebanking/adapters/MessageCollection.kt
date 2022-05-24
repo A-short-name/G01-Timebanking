@@ -22,6 +22,7 @@ data class MessageCollection (
     var advId : String = "",
     var advTitle : String = "",
     var advOwnerUid : String = "",
+    var advOwnerName : String = "",
     var requesterUid : String = "",
     var requesterName : String = "",
     var hasDecided : Boolean = false,
@@ -45,7 +46,11 @@ class MessageCollectionAdapter(
         fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel) {
             chatAdvertisementTitle.text = messageCollection.advTitle
 
-            fromTextView.text = messageCollection.requesterName
+            if(messageCollection.advOwnerUid == Firebase.auth.currentUser!!.uid) {
+                fromTextView.text = messageCollection.requesterName
+            } else {
+                fromTextView.text = messageCollection.advOwnerName
+            }
 
             val messages = messageCollection.messages
 
