@@ -84,13 +84,6 @@ class TimeSlotDetailsFragment : Fragment() {
         profilePictureButton = view.findViewById(R.id.advProfilePictureTransparentButton)
         openChatButton = view.findViewById(R.id.openChatButton)
 
-        openChatButton.setOnClickListener {
-            chatViewModel.setReceiverUid(timeSlotDetailsViewModel.advertisement.value!!.uid)
-            chatViewModel.setAdvertisement(timeSlotDetailsViewModel.advertisement.value!!)
-            val chatId = "${Firebase.auth.currentUser!!.uid}-${timeSlotDetailsViewModel.advertisement.value!!.uid}-${timeSlotDetailsViewModel.advertisement.value!!.id}"
-            chatViewModel.setChatId(chatId)
-            findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
-        }
 
         profileViewModel.pubUserTmpPath.observe(this.viewLifecycleOwner){
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
@@ -106,6 +99,18 @@ class TimeSlotDetailsFragment : Fragment() {
             textViewDuration.setText(it.duration)
             textViewDescription.setText(it.description)
 
+            if(it.uid == Firebase.auth.currentUser!!.uid) {
+                openChatButton.visibility = View.GONE
+            } else {
+                openChatButton.visibility = View.VISIBLE
+                openChatButton.setOnClickListener {
+                    chatViewModel.setReceiverUid(timeSlotDetailsViewModel.advertisement.value!!.uid)
+                    chatViewModel.setAdvertisement(timeSlotDetailsViewModel.advertisement.value!!)
+                    val chatId = "${Firebase.auth.currentUser!!.uid}-${timeSlotDetailsViewModel.advertisement.value!!.uid}-${timeSlotDetailsViewModel.advertisement.value!!.id}"
+                    chatViewModel.setChatId(chatId)
+                    findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
+                }
+            }
 
             val calendar = Calendar.getInstance()
             calendar.time = it.calendar
