@@ -7,7 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.g01_timebanking.R
+import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.ui.MessageDiffCallback
+import java.text.SimpleDateFormat
 import java.util.*
 
 data class MessageDetails (
@@ -42,7 +44,7 @@ class MessageAdapter(
 
         fun bind(message: MessageDetails) {
             messageTextView.text = message.content
-            messengerTextView.text = message.timestamp.toString()
+            messengerTextView.text = message.timestamp.toBetterStringDate()
         }
     }
 
@@ -85,4 +87,12 @@ class MessageAdapter(
         data = newMessages.toList() //update data
         diffs.dispatchUpdatesTo(this) //animate UI
     }
+}
+
+fun Date.toBetterStringDate() : String {
+    Calendar.getInstance().time = this
+    val myFormat = "dd/MM/yyyy HH:mm"
+
+    val dateFormat = SimpleDateFormat(myFormat, Locale.US)
+    return dateFormat.format(this.time)
 }
