@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.RatingBar
 import androidx.fragment.app.Fragment
 import it.polito.mad.g01_timebanking.R
-import it.polito.mad.g01_timebanking.databinding.FragmentChatBinding
 import it.polito.mad.g01_timebanking.databinding.FragmentWriteReviewBinding
 
 class ReviewFragment : Fragment() {

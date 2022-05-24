@@ -1,14 +1,11 @@
 package it.polito.mad.g01_timebanking.ui.chat
 
-import android.opengl.Visibility
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +15,9 @@ import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.MessageAdapter
 import it.polito.mad.g01_timebanking.databinding.FragmentChatBinding
-import it.polito.mad.g01_timebanking.ui.profile.ProfileViewModel
 
 class ChatFragment : Fragment() {
     private val chatViewModel : ChatViewModel by activityViewModels()
-    private val profileViewModel : ProfileViewModel by activityViewModels()
 
     private val auth = Firebase.auth
 
@@ -48,6 +43,7 @@ class ChatFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         messageText = view.findViewById(R.id.messageTextEdit)
         sendImageView = view.findViewById(R.id.sendImageView)
