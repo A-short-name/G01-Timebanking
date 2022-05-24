@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -47,8 +48,6 @@ class MyChatsFragment : Fragment() {
         tabLayout = view.findViewById(R.id.myChatsTabLayout)
 
         tabLayout.addOnTabSelectedListener(MyOnTabSelectedListener(myChatsViewModel))
-        val incRequests = tabLayout.getTabAt(0)
-        val myRequests = tabLayout.getTabAt(1)
 
         val recyclerViewMyChat = view.findViewById<RecyclerView>(R.id.myChatsRecyclerView)
         recyclerViewMyChat.layoutManager = LinearLayoutManager(context)

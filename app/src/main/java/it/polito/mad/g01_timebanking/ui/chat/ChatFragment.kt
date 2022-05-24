@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -54,6 +55,8 @@ class ChatFragment : Fragment() {
         messageText = view.findViewById(R.id.messageTextEdit)
         sendImageView = view.findViewById(R.id.sendImageView)
 
+        val acceptButton = view.findViewById<Button>(R.id.acceptRequestButton)
+        val refuseButton = view.findViewById<Button>(R.id.refuseRequestButton)
         val recyclerViewChat = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
         val llManager = LinearLayoutManager(context)
         llManager.stackFromEnd = true
@@ -62,15 +65,23 @@ class ChatFragment : Fragment() {
         adapter = MessageAdapter(listOf(), auth.currentUser!!.uid)
         recyclerViewChat.adapter = adapter
 
-        chatViewModel.messagesCollection.observe(this.viewLifecycleOwner){
+        chatViewModel.messagesCollection.observe(this.viewLifecycleOwner){ chat ->
             val requestLayout = view.findViewById<LinearLayout>(R.id.requestToAcceptLayout)
 
-            if(it.advOwnerUid == auth.currentUser!!.uid && !it.hasDecided)
+            if(chat.advOwnerUid == auth.currentUser!!.uid && !chat.hasDecided) {
+                acceptButton.setOnClickListener {
+                    chatViewModel.takeDecision(chat,true)
+                }
+
+                refuseButton.setOnClickListener {
+                    chatViewModel.takeDecision(chat, false)
+                }
                 requestLayout.visibility = View.VISIBLE
+            }
             else
                 requestLayout.visibility = View.GONE
 
-            adapter!!.setMessages(it.messages)
+            adapter!!.setMessages(chat.messages)
         }
 
         chatViewModel.messageText.observe(this.viewLifecycleOwner) {

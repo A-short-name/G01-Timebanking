@@ -103,6 +103,25 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
+    fun takeDecision(collection: MessageCollection, accepted: Boolean) {
+        collection.hasDecided = true
+        collection.accepted = accepted
+        db.collection("chats").document(collection.chatId).set(collection)
+            .addOnSuccessListener {
+                Log.d("InsertOrUpdateMesColl", "Success: $it")
+                _messagesCollection = collection
+                pvtMessagesCollection.value = _messagesCollection
+            }
+            .addOnFailureListener {
+                Log.d("InsertOrUpdateMesColl", "Exception: ${it.message}")
+                Toast.makeText(
+                    a.applicationContext,
+                    "Failed updating data. Try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
     private fun DocumentSnapshot.toMessageCollection(): MessageCollection {
         return this.toObject(MessageCollection::class.java) ?: MessageCollection()
     }
