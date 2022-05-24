@@ -1,5 +1,6 @@
 package it.polito.mad.g01_timebanking.ui.chat
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -54,13 +56,20 @@ class ChatFragment : Fragment() {
 
         val recyclerViewChat = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
         val llManager = LinearLayoutManager(context)
-        llManager.reverseLayout = true
+        llManager.stackFromEnd = true
         recyclerViewChat.layoutManager = llManager
 
         adapter = MessageAdapter(listOf(), auth.currentUser!!.uid)
         recyclerViewChat.adapter = adapter
 
         chatViewModel.messagesCollection.observe(this.viewLifecycleOwner){
+            val requestLayout = view.findViewById<LinearLayout>(R.id.requestToAcceptLayout)
+
+            if(it.advOwnerUid == auth.currentUser!!.uid && !it.hasDecided)
+                requestLayout.visibility = View.VISIBLE
+            else
+                requestLayout.visibility = View.GONE
+
             adapter!!.setMessages(it.messages)
         }
 

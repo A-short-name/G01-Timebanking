@@ -24,6 +24,7 @@ data class MessageCollection (
     var advOwnerUid : String = "",
     var requesterUid : String = "",
     var requesterName : String = "",
+    var hasDecided : Boolean = false,
     var accepted : Boolean = false,
     val messages : MutableList<MessageDetails> = mutableListOf()
 )
