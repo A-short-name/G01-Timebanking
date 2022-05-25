@@ -1,5 +1,7 @@
 package it.polito.mad.g01_timebanking.adapters
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,8 +9,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
@@ -16,7 +16,6 @@ import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.MessageCollectionDiffCallback
 import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
-import it.polito.mad.g01_timebanking.ui.mychats.MyChatsViewModel
 import it.polito.mad.g01_timebanking.ui.review.Review
 import it.polito.mad.g01_timebanking.ui.review.ReviewViewModel
 import java.util.*
@@ -29,7 +28,8 @@ data class MessageCollection (
     var advOwnerName : String = "",
     var requesterUid : String = "",
     var requesterName : String = "",
-    var advertisementInfo : AdvertisementDetails = AdvertisementDetails(),
+    var duration : String = "",
+    var calendar : Date = Date(),
     var buyerHasRequested: Boolean = false,
     var ownerHasDecided : Boolean = false,
     var ownerHasReviewed : Boolean = false,
@@ -52,6 +52,7 @@ class MessageCollectionAdapter(
         private val lastMessageTextView = v.findViewById<TextView>(R.id.lastMessageTextView)
         private val reviewButton = v.findViewById<Button>(R.id.reviewButton)
 
+        @SuppressLint("SetTextI18n")
         fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel, reviewViewModel : ReviewViewModel) {
             chatAdvertisementTitle.text = messageCollection.advTitle
             val isTheOwner = messageCollection.advOwnerUid == Firebase.auth.currentUser!!.uid
@@ -67,14 +68,17 @@ class MessageCollectionAdapter(
                 lastMessageTextView.text = messages[messages.lastIndex].content
 
             val calendar = Calendar.getInstance()
-            calendar.time = messageCollection.advertisementInfo.calendar
+            calendar.time = messageCollection.calendar
 
-            val duration = messageCollection.advertisementInfo.duration.split(":")
+            if(messageCollection.duration.isEmpty())
+                return
+
+            val duration = messageCollection.duration.split(":")
 
             calendar.add(Calendar.HOUR,duration[0].toInt())
             calendar.add(Calendar.MINUTE,duration[1].toInt())
 
-            if(calendar.time < Calendar.getInstance().time && messageCollection.advertisementInfo.sold) {
+            if(calendar.time < Calendar.getInstance().time && messageCollection.accepted) {
 
                 if((isTheOwner && !messageCollection.ownerHasReviewed)) {
                     reviewButton.visibility = View.VISIBLE

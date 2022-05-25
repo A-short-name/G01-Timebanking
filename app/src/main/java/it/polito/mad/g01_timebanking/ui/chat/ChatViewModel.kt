@@ -64,40 +64,34 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                 } else if (e == null) {
                     Log.d("Messages_Listener", "Data not found on database.")
 
-                    db.collection("advertisements")
-                        .document(advertisement.value!!.id)
+                    db.collection("users")
+                        .document(auth.currentUser!!.uid)
                         .get()
-                        .addOnSuccessListener{ adv ->
-                            val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                        .addOnSuccessListener{ user ->
+                            val userInfo = user.toObject(UserInfo::class.java) ?: UserInfo()
 
                             db.collection("users")
-                                .document(auth.currentUser!!.uid)
+                                .document(pvtAdvertisement.value!!.uid)
                                 .get()
-                                .addOnSuccessListener{ user ->
-                                    val userInfo = user.toObject(UserInfo::class.java) ?: UserInfo()
+                                .addOnSuccessListener { advOwner ->
+                                    val userInfoOwner = advOwner.toObject(UserInfo::class.java) ?: UserInfo()
 
-                                    db.collection("users")
-                                        .document(advInfo.uid)
-                                        .get()
-                                        .addOnSuccessListener { advOwner ->
-                                            val userInfoOwner = advOwner.toObject(UserInfo::class.java) ?: UserInfo()
-
-                                            val newCollection = MessageCollection().apply {
-                                                this.advId = advertisement.value!!.id
-                                                this.advTitle = advInfo.title
-                                                this.requesterName = userInfo.fullName
-                                                this.chatId = chatId
-                                                this.requesterUid = auth.currentUser!!.uid
-                                                this.advOwnerUid = advertisement.value!!.uid
-                                                this.advOwnerName = userInfoOwner.fullName
-                                                this.ownerHasDecided = false
-                                                this.accepted = false
-                                            }
-                                            addOrUpdateData(newCollection, chatId)
-                                        }
+                                    val newCollection = MessageCollection().apply {
+                                        this.advId = advertisement.value!!.id
+                                        this.advTitle = pvtAdvertisement.value!!.title
+                                        this.calendar = pvtAdvertisement.value!!.calendar
+                                        this.duration = pvtAdvertisement.value!!.duration
+                                        this.requesterName = userInfo.fullName
+                                        this.chatId = chatId
+                                        this.requesterUid = auth.currentUser!!.uid
+                                        this.advOwnerUid = advertisement.value!!.uid
+                                        this.advOwnerName = userInfoOwner.fullName
+                                        this.ownerHasDecided = false
+                                        this.accepted = false
                                     }
-
-                        }
+                                    addOrUpdateData(newCollection, chatId)
+                                }
+                            }
                 }
             }
     }
@@ -122,8 +116,10 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     fun takeDecision(collection: MessageCollection, accepted: Boolean) {
         collection.ownerHasDecided = true
         collection.accepted = accepted
+
         db.collection("chats").document(collection.chatId).set(collection)
             .addOnSuccessListener {
+                Log.d("TESTING","Accepted is: ${collection.accepted}")
                 _messagesCollection = collection
                 pvtMessagesCollection.value = _messagesCollection
 
@@ -139,6 +135,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
                         db.collection("chats")
                             .whereEqualTo("advId",advInfo.id)
+                            .whereNotEqualTo("advId",collection.advId)
                             .get()
                             .addOnSuccessListener {
                                 for(doc in it) {
@@ -170,14 +167,6 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         messagesListener?.remove()
     }
 
-    fun setReceiverUid(uid: String) {
-        pvtReceiverUid.value = uid
-    }
-
-    fun setAdvertisement(adv: AdvertisementDetails) {
-        pvtAdvertisement.value = adv
-    }
-
     fun sendMessage(chatId: String) {
         val message = MessageDetails(
             "",
@@ -200,8 +189,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun buyerTakesDecision(chat: MessageCollection, requested: Boolean) {
-        chat.buyerHasRequested = true
-        chat.accepted = requested
+        chat.buyerHasRequested = requested
 
         db.collection("chats").document(chat.chatId).set(chat)
             .addOnSuccessListener {
@@ -217,5 +205,11 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+    }
+
+    fun setChat(adv: AdvertisementDetails) {
+        pvtReceiverUid.value = adv.uid
+        pvtAdvertisement.value = adv
+        pvtChatId.value = "${Firebase.auth.currentUser!!.uid}-${adv.uid}-${adv.id}"
     }
 }

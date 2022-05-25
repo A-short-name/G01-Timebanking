@@ -54,20 +54,22 @@ class MyChatsFragment : Fragment() {
         recyclerViewMyChat.adapter = adapter
 
         val emptyChatsText = view.findViewById<TextView>(R.id.emptyChatsTextView)
+
         myChatsViewModel.chatsList.observe(this.viewLifecycleOwner) {
             if (it.isEmpty()) {
                 emptyChatsText.visibility = View.VISIBLE
             } else {
                 emptyChatsText.visibility = View.GONE
             }
-
             adapter!!.setMyChats(it)
         }
 
-        if(tabLayout.selectedTabPosition == 0)
-            myChatsViewModel.getIncomingRequestsChats()
-        else
-            myChatsViewModel.getMyRequestsChats()
+        tabLayout.selectTab(tabLayout.getTabAt(0))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tabLayout.selectTab(tabLayout.getTabAt(myChatsViewModel.selectedTab.value!!))
     }
 }
 
@@ -75,6 +77,8 @@ class MyOnTabSelectedListener(private val vm : MyChatsViewModel) : TabLayout.OnT
     override fun onTabSelected(tab: TabLayout.Tab?) {
         if(tab == null)
             return
+
+        vm.setSelectedTab(tab.position)
 
         when(tab.position) {
             0 -> vm.getIncomingRequestsChats()
@@ -86,13 +90,6 @@ class MyOnTabSelectedListener(private val vm : MyChatsViewModel) : TabLayout.OnT
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
-        if(tab == null)
-            return
-
-        when(tab.position) {
-            0 -> vm.getIncomingRequestsChats()
-            else -> vm.getMyRequestsChats()
-        }
     }
 
 }

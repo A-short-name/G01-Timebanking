@@ -93,37 +93,34 @@ class TimeSlotDetailsFragment : Fragment() {
 
         }
 
-        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) {
-            textViewTitle.setText(it.title)
-            textViewLocation.setText(it.location)
-            textViewDuration.setText(it.duration)
-            textViewDescription.setText(it.description)
+        timeSlotDetailsViewModel.advertisement.observe(this.viewLifecycleOwner) { advDet ->
+            textViewTitle.setText(advDet.title)
+            textViewLocation.setText(advDet.location)
+            textViewDuration.setText(advDet.duration)
+            textViewDescription.setText(advDet.description)
 
-            if(it.uid == Firebase.auth.currentUser!!.uid) {
+            if(advDet.uid == Firebase.auth.currentUser!!.uid) {
                 openChatButton.visibility = View.GONE
             } else {
                 openChatButton.visibility = View.VISIBLE
                 openChatButton.setOnClickListener {
-                    chatViewModel.setReceiverUid(timeSlotDetailsViewModel.advertisement.value!!.uid)
-                    chatViewModel.setAdvertisement(timeSlotDetailsViewModel.advertisement.value!!)
-                    val chatId = "${Firebase.auth.currentUser!!.uid}-${timeSlotDetailsViewModel.advertisement.value!!.uid}-${timeSlotDetailsViewModel.advertisement.value!!.id}"
-                    chatViewModel.setChatId(chatId)
+                    chatViewModel.setChat(advDet)
                     findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
                 }
             }
 
             val calendar = Calendar.getInstance()
-            calendar.time = it.calendar
+            calendar.time = advDet.calendar
             textViewDate.setText(calendar.fromDateToString())
             textViewTime.setText(calendar.fromTimeToString(DateFormat.is24HourFormat(activity)))
-            actualAdvertisement = it
+            actualAdvertisement = advDet
 
             skillGroup.removeAllViews()
 
-            if(it.skills.isEmpty())
+            if(advDet.skills.isEmpty())
                 noSkills.isVisible = true
             else
-                it.skills
+                advDet.skills
                     .forEach{ content ->
                         val chip = Chip(context)
                         chip.text = content
