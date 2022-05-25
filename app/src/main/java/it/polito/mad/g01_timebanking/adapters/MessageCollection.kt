@@ -17,6 +17,8 @@ import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.MessageCollectionDiffCallback
 import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
 import it.polito.mad.g01_timebanking.ui.mychats.MyChatsViewModel
+import it.polito.mad.g01_timebanking.ui.review.Review
+import it.polito.mad.g01_timebanking.ui.review.ReviewViewModel
 import java.util.*
 
 data class MessageCollection (
@@ -36,7 +38,7 @@ data class MessageCollection (
 
 class MessageCollectionAdapter(
     private var data:List<MessageCollection>,
-    private val myChatsViewModel: MyChatsViewModel,
+    private val reviewViewModel: ReviewViewModel,
     private val chatViewModel: ChatViewModel,
     private val navController: NavController
 ) : RecyclerView.Adapter<MessageCollectionAdapter.MessageCollectionViewHolder>() {
@@ -48,7 +50,7 @@ class MessageCollectionAdapter(
         private val lastMessageTextView = v.findViewById<TextView>(R.id.lastMessageTextView)
         private val reviewButton = v.findViewById<Button>(R.id.reviewButton)
 
-        fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel) {
+        fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel, reviewViewModel : ReviewViewModel) {
             chatAdvertisementTitle.text = messageCollection.advTitle
 
             if(messageCollection.advOwnerUid == Firebase.auth.currentUser!!.uid) {
@@ -73,6 +75,14 @@ class MessageCollectionAdapter(
             if(calendar.time < Calendar.getInstance().time && messageCollection.advertisementInfo.sold) {
                 reviewButton.visibility = View.VISIBLE
                 reviewButton.setOnClickListener {
+                    val newReview = Review().apply {
+                        this.advId = messageCollection.advId
+                        this.fromUid = Firebase.auth.currentUser!!.uid
+                        this.toUid = messageCollection.advOwnerUid
+                        this.reviewId = "${Firebase.auth.currentUser!!.uid}-${messageCollection.advOwnerUid}-${messageCollection.advId}"
+                    }
+
+                    reviewViewModel.setReview(newReview)
                     navController.navigate(R.id.action_nav_my_chats_to_reviewFragment)
                 }
             } else {
@@ -97,7 +107,7 @@ class MessageCollectionAdapter(
     override fun onBindViewHolder(holder: MessageCollectionViewHolder, position: Int) {
         val messageCollection = data[position]
 
-        holder.bind(messageCollection, navController, chatViewModel)
+        holder.bind(messageCollection, navController, chatViewModel, reviewViewModel)
     }
 
     override fun getItemCount() = data.size

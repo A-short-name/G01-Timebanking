@@ -15,10 +15,12 @@ import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.MessageCollectionAdapter
 import it.polito.mad.g01_timebanking.databinding.FragmentMyChatsBinding
 import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
+import it.polito.mad.g01_timebanking.ui.review.ReviewViewModel
 
 class MyChatsFragment : Fragment() {
     private val myChatsViewModel : MyChatsViewModel by activityViewModels()
     private val chatViewModel : ChatViewModel by activityViewModels()
+    private val reviewViewModel : ReviewViewModel by activityViewModels()
 
     private var _binding: FragmentMyChatsBinding? = null
 
@@ -48,7 +50,7 @@ class MyChatsFragment : Fragment() {
         val recyclerViewMyChat = view.findViewById<RecyclerView>(R.id.myChatsRecyclerView)
         recyclerViewMyChat.layoutManager = LinearLayoutManager(context)
 
-        adapter = MessageCollectionAdapter(listOf(), myChatsViewModel, chatViewModel, findNavController())
+        adapter = MessageCollectionAdapter(listOf(), reviewViewModel, chatViewModel, findNavController())
         recyclerViewMyChat.adapter = adapter
 
         val emptyChatsText = view.findViewById<TextView>(R.id.emptyChatsTextView)
