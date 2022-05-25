@@ -12,11 +12,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
+import it.polito.mad.g01_timebanking.ui.review.Review
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -100,6 +102,11 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val suggestedSkills: LiveData<MutableSet<SkillDetails>> = pvtSuggestedSkills
 
+    private val pvtRating = MutableLiveData<Float>().also {
+        it.value = -1f
+    }
+
+    val rating : LiveData<Float> = pvtRating
 
     fun setFullname(fullname: String) {
         pvtFullName.value = fullname
@@ -237,6 +244,22 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     )
                     if (_user.profilePicturePath != tmpPicturePath)
                         downloadPhoto()
+
+                    db.collection("reviews")
+                        .whereEqualTo("toUid", auth.currentUser!!.uid)
+                        .get()
+                        .addOnSuccessListener {
+                            var ratesCount = 0
+                            var nReviews = 0
+                            for(doc in it) {
+                                val review = doc.toObject(Review::class.java)
+                                ratesCount += review.rating
+                                nReviews++
+                            }
+
+                            val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                            pvtRating.value = average
+                        }
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
                     val newUser = UserInfo().apply {

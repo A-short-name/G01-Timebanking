@@ -65,6 +65,10 @@ class ShowProfileFragment : Fragment() {
         noSkills = view.findViewById(R.id.noSkillsTextView)
         ratingBar = view.findViewById(R.id.profileReviewRatingBar)
 
+        profileViewModel.rating.observe(this.viewLifecycleOwner) {
+            ratingBar.rating = it
+        }
+
         profileViewModel.user.observe(this.viewLifecycleOwner) {
             actUserInfo = it
             tvFullName.text = it.fullName
