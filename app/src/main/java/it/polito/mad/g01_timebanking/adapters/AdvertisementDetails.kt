@@ -57,7 +57,8 @@ class AdvertisementAdapter(
 
     class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvBySkill: Boolean): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
-        private val date: TextView = v.findViewById(R.id.advDate)
+        private val date: TextView = v.findViewById(R.id.advCalendar)
+        private val clock: TextView = v.findViewById(R.id.advClock)
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
         private val cardView: CardView = v.findViewById(R.id.advCardView)
 
@@ -67,8 +68,8 @@ class AdvertisementAdapter(
             val calendar = Calendar.getInstance()
             calendar.time = adv.calendar
 
-            date.text = "${calendar.fromDateToString()} ${calendar.fromTimeToString(
-                DateFormat.is24HourFormat(parent.context))}"
+            date.text = calendar.fromDateToString()
+            clock.text = calendar.fromTimeToString(DateFormat.is24HourFormat(parent.context))
 
             if(!isAdvBySkill) {
                 button.setOnClickListener(buttonAction)
