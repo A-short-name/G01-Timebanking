@@ -62,6 +62,13 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textSize="24sp" />
 
+                <RatingBar
+                    android:id="@+id/profileReviewRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:numStars="5" />
+
                 <TextView
                     android:id="@+id/fullNameTitle"
                     android:layout_width="wrap_content"
