@@ -8,5 +8,6 @@ data class Review (
         var text : String = "",
         var fromUid : String = "",
         var toUid : String = "",
-        var advId : String = ""
+        var advId : String = "",
+        var reviewerIsTheOwner : Boolean = false
         )
