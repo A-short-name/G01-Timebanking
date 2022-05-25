@@ -32,6 +32,8 @@ data class MessageCollection (
     var advertisementInfo : AdvertisementDetails = AdvertisementDetails(),
     var buyerHasRequested: Boolean = false,
     var ownerHasDecided : Boolean = false,
+    var ownerHasReviewed : Boolean = false,
+    var requesterHasReviewed : Boolean = false,
     var accepted : Boolean = false,
     val messages : MutableList<MessageDetails> = mutableListOf()
 )
@@ -52,8 +54,8 @@ class MessageCollectionAdapter(
 
         fun bind (messageCollection: MessageCollection, navController: NavController, chatViewModel: ChatViewModel, reviewViewModel : ReviewViewModel) {
             chatAdvertisementTitle.text = messageCollection.advTitle
-
-            if(messageCollection.advOwnerUid == Firebase.auth.currentUser!!.uid) {
+            val isTheOwner = messageCollection.advOwnerUid == Firebase.auth.currentUser!!.uid
+            if(isTheOwner) {
                 fromTextView.text = "Requested from: ${messageCollection.requesterName}"
             } else {
                 fromTextView.text = "Seller: ${messageCollection.advOwnerName}"
@@ -73,17 +75,39 @@ class MessageCollectionAdapter(
             calendar.add(Calendar.MINUTE,duration[1].toInt())
 
             if(calendar.time < Calendar.getInstance().time && messageCollection.advertisementInfo.sold) {
-                reviewButton.visibility = View.VISIBLE
-                reviewButton.setOnClickListener {
-                    val newReview = Review().apply {
-                        this.advId = messageCollection.advId
-                        this.fromUid = Firebase.auth.currentUser!!.uid
-                        this.toUid = messageCollection.advOwnerUid
-                        this.reviewId = "${Firebase.auth.currentUser!!.uid}-${messageCollection.advOwnerUid}-${messageCollection.advId}"
-                    }
 
-                    reviewViewModel.setReview(newReview)
-                    navController.navigate(R.id.action_nav_my_chats_to_reviewFragment)
+                if((isTheOwner && !messageCollection.ownerHasReviewed)) {
+                    reviewButton.visibility = View.VISIBLE
+                    reviewButton.setOnClickListener {
+                        val newReview = Review().apply {
+                            this.chatId = messageCollection.chatId
+                            this.advId = messageCollection.advId
+                            this.fromUid = Firebase.auth.currentUser!!.uid
+                            this.toUid = messageCollection.requesterUid
+                            this.reviewId =
+                                "${Firebase.auth.currentUser!!.uid}-${messageCollection.requesterUid}-${messageCollection.advId}"
+                        }
+
+                        reviewViewModel.setReview(newReview)
+                        navController.navigate(R.id.action_nav_my_chats_to_reviewFragment)
+                    }
+                }
+
+                if((!isTheOwner && !messageCollection.requesterHasReviewed)) {
+                    reviewButton.visibility = View.VISIBLE
+                    reviewButton.setOnClickListener {
+                        val newReview = Review().apply {
+                            this.chatId = messageCollection.chatId
+                            this.advId = messageCollection.advId
+                            this.fromUid = Firebase.auth.currentUser!!.uid
+                            this.toUid = messageCollection.advOwnerUid
+                            this.reviewId = "${Firebase.auth.currentUser!!.uid}-${messageCollection.advOwnerUid}-${messageCollection.advId}"
+                        }
+
+                        reviewViewModel.setReview(newReview)
+                        navController.navigate(R.id.action_nav_my_chats_to_reviewFragment)
+
+                    }
                 }
             } else {
                 reviewButton.visibility = View.GONE

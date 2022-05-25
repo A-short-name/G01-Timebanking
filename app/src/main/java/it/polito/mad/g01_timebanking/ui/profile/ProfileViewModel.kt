@@ -29,6 +29,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     private lateinit var userInfoListener: ListenerRegistration
     private lateinit var suggestedSkillsListener: ListenerRegistration
+    private lateinit var reviewsListener : ListenerRegistration
 
     // Initialization placeholder variable
     private var _user = UserInfo()
@@ -104,6 +105,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     private val pvtRating = MutableLiveData<Float>().also {
         it.value = -1f
+        getReviewAverage()
     }
 
     val rating : LiveData<Float> = pvtRating
@@ -244,22 +246,6 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     )
                     if (_user.profilePicturePath != tmpPicturePath)
                         downloadPhoto()
-
-                    db.collection("reviews")
-                        .whereEqualTo("toUid", auth.currentUser!!.uid)
-                        .get()
-                        .addOnSuccessListener {
-                            var ratesCount = 0
-                            var nReviews = 0
-                            for(doc in it) {
-                                val review = doc.toObject(Review::class.java)
-                                ratesCount += review.rating
-                                nReviews++
-                            }
-
-                            val average = (ratesCount.toFloat())/(nReviews.toFloat())
-                            pvtRating.value = average
-                        }
                 } else if (e == null) {
                     Log.d("UserInfo_Listener", "Data not found on database. Setting new user info")
                     val newUser = UserInfo().apply {
@@ -267,6 +253,28 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                         fullName = auth.currentUser!!.displayName.toString()
                     }
                     addOrUpdateData(newUser)
+                }
+            }
+    }
+
+    private fun getReviewAverage() {
+        reviewsListener = db.collection("reviews")
+            .whereEqualTo("toUid", auth.currentUser!!.uid)
+            .addSnapshotListener { value, e ->
+                if(e == null && value?.isEmpty == true) {
+                    pvtRating.value = 0f
+                } else if (e == null && value?.isEmpty == false) {
+                    var ratesCount = 0
+                    var nReviews = 0
+
+                    for(doc in value) {
+                        val review = doc.toObject(Review::class.java)
+                        ratesCount += review.rating
+                        nReviews++
+                    }
+
+                    val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                    pvtRating.value = average
                 }
             }
     }
