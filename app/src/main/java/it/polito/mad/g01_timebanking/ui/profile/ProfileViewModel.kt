@@ -29,7 +29,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     private lateinit var userInfoListener: ListenerRegistration
     private lateinit var suggestedSkillsListener: ListenerRegistration
-    private lateinit var reviewsListener : ListenerRegistration
+    private lateinit var buyerReviewsListener : ListenerRegistration
+    private lateinit var sellerReviewsListener : ListenerRegistration
 
     // Initialization placeholder variable
     private var _user = UserInfo()
@@ -103,12 +104,19 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val suggestedSkills: LiveData<MutableSet<SkillDetails>> = pvtSuggestedSkills
 
-    private val pvtRating = MutableLiveData<Float>().also {
+    private val pvtBuyerRating = MutableLiveData<Float>().also {
         it.value = -1f
-        getReviewAverage()
+        getBuyerReviewAverage()
     }
 
-    val rating : LiveData<Float> = pvtRating
+    val buyerRating : LiveData<Float> = pvtBuyerRating
+
+    private val pvtSellerRating = MutableLiveData<Float>().also {
+        it.value = -1f
+        getSellerReviewAverage()
+    }
+
+    val sellerRating : LiveData<Float> = pvtSellerRating
 
     fun setFullname(fullname: String) {
         pvtFullName.value = fullname
@@ -257,12 +265,13 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-    private fun getReviewAverage() {
-        reviewsListener = db.collection("reviews")
+    private fun getBuyerReviewAverage() {
+        buyerReviewsListener = db.collection("reviews")
             .whereEqualTo("toUid", auth.currentUser!!.uid)
+            .whereEqualTo("reviewerIsTheOwner",true)
             .addSnapshotListener { value, e ->
                 if(e == null && value?.isEmpty == true) {
-                    pvtRating.value = 0f
+                    pvtBuyerRating.value = 0f
                 } else if (e == null && value?.isEmpty == false) {
                     var ratesCount = 0
                     var nReviews = 0
@@ -274,7 +283,29 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     }
 
                     val average = (ratesCount.toFloat())/(nReviews.toFloat())
-                    pvtRating.value = average
+                    pvtBuyerRating.value = average
+                }
+            }
+    }
+
+    private fun getSellerReviewAverage() {
+        sellerReviewsListener = db.collection("reviews")
+            .whereEqualTo("toUid", auth.currentUser!!.uid)
+            .whereEqualTo("reviewerIsTheOwner",false)
+            .addSnapshotListener { value, e ->
+                if(e == null && value?.isEmpty == true) {
+                    pvtSellerRating.value = 0f
+                } else if (e == null && value?.isEmpty == false) {
+                    var ratesCount = 0
+                    var nReviews = 0
+                    for(doc in value) {
+                        val review = doc.toObject(Review::class.java)
+                        ratesCount += review.rating
+                        nReviews++
+                    }
+
+                    val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                    pvtSellerRating.value = average
                 }
             }
     }

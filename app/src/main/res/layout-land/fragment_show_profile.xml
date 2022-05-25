@@ -66,7 +66,7 @@
                     android:textSize="24sp" />
 
                 <RatingBar
-                    android:id="@+id/profileReviewRatingBar"
+                    android:id="@+id/profileBuyerReviewRatingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

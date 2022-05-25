@@ -1,7 +1,6 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
 import android.content.res.Configuration
-import android.media.Rating
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -33,7 +32,8 @@ class ShowProfileFragment : Fragment() {
     private lateinit var ivProfilePicture: ImageView
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
-    private lateinit var ratingBar: RatingBar
+    private lateinit var buyerRatingBar: RatingBar
+    private lateinit var sellerRatingBar: RatingBar
 
     private lateinit var actUserInfo : UserInfo
 
@@ -63,10 +63,15 @@ class ShowProfileFragment : Fragment() {
         ivProfilePicture = view.findViewById(R.id.profilePicture)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
-        ratingBar = view.findViewById(R.id.profileReviewRatingBar)
+        buyerRatingBar = view.findViewById(R.id.profileBuyerReviewRatingBar)
+        sellerRatingBar = view.findViewById(R.id.profileSellerReviewRatingBar)
 
-        profileViewModel.rating.observe(this.viewLifecycleOwner) {
-            ratingBar.rating = it
+        profileViewModel.buyerRating.observe(this.viewLifecycleOwner) {
+            buyerRatingBar.rating = it
+        }
+
+        profileViewModel.sellerRating.observe(this.viewLifecycleOwner) {
+            sellerRatingBar.rating = it
         }
 
         profileViewModel.user.observe(this.viewLifecycleOwner) {
