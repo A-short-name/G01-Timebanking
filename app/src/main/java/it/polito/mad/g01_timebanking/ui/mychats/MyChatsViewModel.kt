@@ -73,7 +73,6 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
 
     private fun getAllMyChats() {
         chatsListener = db.collection("chats")
-            .whereEqualTo("requesterUid",auth.currentUser!!.uid)
             .addSnapshotListener { value, e ->
                 _myChats = mutableListOf()
                 if (e != null) {
@@ -83,20 +82,17 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                 } else {
                     for (doc in value) {
                         val chat = doc.toObject(MessageCollection::class.java)
-                        _myChats.add(chat)
+                        val index = _myChats.indexOf(chat)
+                        if(index == -1)
+                            _myChats.add(chat)
+                        else
+                            _myChats[index] = chat
+                    }
+                    when(selectedTab.value!!) {
+                        0 -> getIncomingRequestsChats()
+                        else -> getMyRequestsChats()
                     }
                 }
-
-                db.collection("chats")
-                    .whereEqualTo("advOwnerUid",auth.currentUser!!.uid)
-                    .get()
-                    .addOnSuccessListener {
-                        for(doc in it) {
-                            val chat = doc.toObject(MessageCollection::class.java)
-                            _myChats.add(chat)
-                        }
-                        pvtMyChats.value = _myChats
-                    }
             }
     }
 

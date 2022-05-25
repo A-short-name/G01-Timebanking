@@ -64,7 +64,12 @@ class MyChatsFragment : Fragment() {
             adapter!!.setMyChats(it)
         }
 
-        tabLayout.selectTab(tabLayout.getTabAt(0))
+        myChatsViewModel.selectedTab.observe(this.viewLifecycleOwner) {
+            when(it) {
+                0 -> myChatsViewModel.getIncomingRequestsChats()
+                else -> myChatsViewModel.getMyRequestsChats()
+            }
+        }
     }
 
     override fun onResume() {
@@ -79,17 +84,16 @@ class MyOnTabSelectedListener(private val vm : MyChatsViewModel) : TabLayout.OnT
             return
 
         vm.setSelectedTab(tab.position)
-
-        when(tab.position) {
-            0 -> vm.getIncomingRequestsChats()
-            else -> vm.getMyRequestsChats()
-        }
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab?) {
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
+        if(tab == null)
+            return
+
+        vm.setSelectedTab(tab.position)
     }
 
 }
