@@ -178,6 +178,7 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         pvtDescription.value = ""
         pvtDuration.value = ""
         pvtCalendar.value = expTime
+        pvtSkills.value = mutableSetOf()
     }
 
     fun getUserInfoFromDb(uid: String): DocumentReference {

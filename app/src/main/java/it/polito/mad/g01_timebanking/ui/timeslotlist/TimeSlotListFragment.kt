@@ -54,7 +54,8 @@ class TimeSlotListFragment : Fragment() {
                 emptyAdvText.visibility = View.GONE
             }
 
-            adapter.setAdvertisements(it)
+            val unsoldList  = it.toList().filter { el -> !el.sold }
+            adapter.setAdvertisements(unsoldList)
         }
 
     }

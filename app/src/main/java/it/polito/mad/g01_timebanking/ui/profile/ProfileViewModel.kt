@@ -12,11 +12,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
+import it.polito.mad.g01_timebanking.ui.review.Review
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -27,6 +29,8 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
 
     private lateinit var userInfoListener: ListenerRegistration
     private lateinit var suggestedSkillsListener: ListenerRegistration
+    private lateinit var buyerReviewsListener : ListenerRegistration
+    private lateinit var sellerReviewsListener : ListenerRegistration
 
     // Initialization placeholder variable
     private var _user = UserInfo()
@@ -100,6 +104,19 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val suggestedSkills: LiveData<MutableSet<SkillDetails>> = pvtSuggestedSkills
 
+    private val pvtBuyerRating = MutableLiveData<Float>().also {
+        it.value = -1f
+        getBuyerReviewAverage()
+    }
+
+    val buyerRating : LiveData<Float> = pvtBuyerRating
+
+    private val pvtSellerRating = MutableLiveData<Float>().also {
+        it.value = -1f
+        getSellerReviewAverage()
+    }
+
+    val sellerRating : LiveData<Float> = pvtSellerRating
 
     fun setFullname(fullname: String) {
         pvtFullName.value = fullname
@@ -244,6 +261,51 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                         fullName = auth.currentUser!!.displayName.toString()
                     }
                     addOrUpdateData(newUser)
+                }
+            }
+    }
+
+    private fun getBuyerReviewAverage() {
+        buyerReviewsListener = db.collection("reviews")
+            .whereEqualTo("toUid", auth.currentUser!!.uid)
+            .whereEqualTo("reviewerIsTheOwner",true)
+            .addSnapshotListener { value, e ->
+                if(e == null && value?.isEmpty == true) {
+                    pvtBuyerRating.value = 0f
+                } else if (e == null && value?.isEmpty == false) {
+                    var ratesCount = 0
+                    var nReviews = 0
+
+                    for(doc in value) {
+                        val review = doc.toObject(Review::class.java)
+                        ratesCount += review.rating
+                        nReviews++
+                    }
+
+                    val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                    pvtBuyerRating.value = average
+                }
+            }
+    }
+
+    private fun getSellerReviewAverage() {
+        sellerReviewsListener = db.collection("reviews")
+            .whereEqualTo("toUid", auth.currentUser!!.uid)
+            .whereEqualTo("reviewerIsTheOwner",false)
+            .addSnapshotListener { value, e ->
+                if(e == null && value?.isEmpty == true) {
+                    pvtSellerRating.value = 0f
+                } else if (e == null && value?.isEmpty == false) {
+                    var ratesCount = 0
+                    var nReviews = 0
+                    for(doc in value) {
+                        val review = doc.toObject(Review::class.java)
+                        ratesCount += review.rating
+                        nReviews++
+                    }
+
+                    val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                    pvtSellerRating.value = average
                 }
             }
     }

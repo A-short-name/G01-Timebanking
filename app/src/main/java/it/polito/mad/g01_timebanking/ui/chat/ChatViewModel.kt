@@ -4,13 +4,12 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.auth.User
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -25,31 +24,31 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         it.value = _messagesCollection
     }
 
-    val messagesCollection = pvtMessagesCollection
+    val messagesCollection : LiveData<MessageCollection> = pvtMessagesCollection
 
     private val pvtReceiverUid = MutableLiveData<String>().also {
         it.value = ""
     }
 
-    val receiverUid = pvtReceiverUid
+    val receiverUid : LiveData<String> = pvtReceiverUid
 
     private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
         it.value = AdvertisementDetails()
     }
 
-    val advertisement = pvtAdvertisement
+    val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
 
     private val pvtMessageText = MutableLiveData<String>().also {
         it.value = ""
     }
 
-    val messageText = pvtMessageText
+    val messageText : LiveData<String> = pvtMessageText
 
     private val pvtChatId = MutableLiveData<String>().also {
         it.value = ""
     }
 
-    val chatId = pvtChatId
+    val chatId : LiveData<String> = pvtChatId
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth = Firebase.auth
@@ -66,40 +65,34 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                 } else if (e == null) {
                     Log.d("Messages_Listener", "Data not found on database.")
 
-                    db.collection("advertisements")
-                        .document(advertisement.value!!.id)
+                    db.collection("users")
+                        .document(auth.currentUser!!.uid)
                         .get()
-                        .addOnSuccessListener{ adv ->
-                            val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                        .addOnSuccessListener{ user ->
+                            val userInfo = user.toObject(UserInfo::class.java) ?: UserInfo()
 
                             db.collection("users")
-                                .document(auth.currentUser!!.uid)
+                                .document(pvtAdvertisement.value!!.uid)
                                 .get()
-                                .addOnSuccessListener{ user ->
-                                    val userInfo = user.toObject(UserInfo::class.java) ?: UserInfo()
+                                .addOnSuccessListener { advOwner ->
+                                    val userInfoOwner = advOwner.toObject(UserInfo::class.java) ?: UserInfo()
 
-                                    db.collection("users")
-                                        .document(advInfo.uid)
-                                        .get()
-                                        .addOnSuccessListener { advOwner ->
-                                            val userInfoOwner = advOwner.toObject(UserInfo::class.java) ?: UserInfo()
-
-                                            val newCollection = MessageCollection().apply {
-                                                this.advId = advertisement.value!!.id
-                                                this.advTitle = advInfo.title
-                                                this.requesterName = userInfo.fullName
-                                                this.chatId = chatId
-                                                this.requesterUid = auth.currentUser!!.uid
-                                                this.advOwnerUid = advertisement.value!!.uid
-                                                this.advOwnerName = userInfoOwner.fullName
-                                                this.hasDecided = false
-                                                this.accepted = false
-                                            }
-                                            addOrUpdateData(newCollection, chatId)
-                                        }
+                                    val newCollection = MessageCollection().apply {
+                                        this.advId = advertisement.value!!.id
+                                        this.advTitle = pvtAdvertisement.value!!.title
+                                        this.calendar = pvtAdvertisement.value!!.calendar
+                                        this.duration = pvtAdvertisement.value!!.duration
+                                        this.requesterName = userInfo.fullName
+                                        this.chatId = chatId
+                                        this.requesterUid = auth.currentUser!!.uid
+                                        this.advOwnerUid = advertisement.value!!.uid
+                                        this.advOwnerName = userInfoOwner.fullName
+                                        this.ownerHasDecided = false
+                                        this.accepted = false
                                     }
-
-                        }
+                                    addOrUpdateData(newCollection, chatId)
+                                }
+                            }
                 }
             }
     }
@@ -122,13 +115,40 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun takeDecision(collection: MessageCollection, accepted: Boolean) {
-        collection.hasDecided = true
+        collection.ownerHasDecided = true
         collection.accepted = accepted
+
         db.collection("chats").document(collection.chatId).set(collection)
             .addOnSuccessListener {
-                Log.d("InsertOrUpdateMesColl", "Success: $it")
+                Log.d("TESTING","Accepted is: ${collection.accepted}")
                 _messagesCollection = collection
                 pvtMessagesCollection.value = _messagesCollection
+
+                db.collection("advertisements").document(collection.advId)
+                    .get()
+                    .addOnSuccessListener { adv ->
+                        val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                        advInfo.sold = true
+
+                        db.collection("advertisements").document(collection.advId)
+                            .set(advInfo)
+                            .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
+
+                        db.collection("chats")
+                            .whereEqualTo("advId",advInfo.id)
+                            .whereNotEqualTo("advId",collection.advId)
+                            .get()
+                            .addOnSuccessListener {
+                                for(doc in it) {
+                                    val chat = doc.toObject(MessageCollection::class.java)
+                                    chat.accepted = false
+                                    chat.buyerHasRequested = true
+                                    chat.ownerHasDecided = true
+                                    db.collection("chats").document(doc.id).set(chat)
+                                }
+                            }
+                        // TODO: Decrement usage of adv in database
+                    }
             }
             .addOnFailureListener {
                 Log.d("InsertOrUpdateMesColl", "Exception: ${it.message}")
@@ -148,14 +168,6 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         messagesListener?.remove()
     }
 
-    fun setReceiverUid(uid: String) {
-        pvtReceiverUid.value = uid
-    }
-
-    fun setAdvertisement(adv: AdvertisementDetails) {
-        pvtAdvertisement.value = adv
-    }
-
     fun sendMessage(chatId: String) {
         val message = MessageDetails(
             "",
@@ -166,7 +178,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
         _messagesCollection.messages.add(message)
         addOrUpdateData(_messagesCollection, chatId)
-        messageText.value = ""
+        pvtMessageText.value = ""
     }
 
     fun setMessageText(text: String) {
@@ -174,6 +186,31 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun setChatId(chatId: String) {
-        this.chatId.value = chatId
+        pvtChatId.value = chatId
+    }
+
+    fun buyerTakesDecision(chat: MessageCollection, requested: Boolean) {
+        chat.buyerHasRequested = requested
+
+        db.collection("chats").document(chat.chatId).set(chat)
+            .addOnSuccessListener {
+                Log.d("InsertOrUpdateMesColl", "Success!")
+                _messagesCollection = chat
+                pvtMessagesCollection.value = _messagesCollection
+            }
+            .addOnFailureListener {
+                Log.d("InsertOrUpdateMesColl", "Exception: ${it.message}")
+                Toast.makeText(
+                    a.applicationContext,
+                    "Failed updating data. Try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    fun setChat(adv: AdvertisementDetails) {
+        pvtReceiverUid.value = adv.uid
+        pvtAdvertisement.value = adv
+        pvtChatId.value = "${Firebase.auth.currentUser!!.uid}-${adv.uid}-${adv.id}"
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -12,19 +11,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.adapters.MessageCollectionAdapter
 import it.polito.mad.g01_timebanking.databinding.FragmentMyChatsBinding
 import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
+import it.polito.mad.g01_timebanking.ui.review.ReviewViewModel
 
 class MyChatsFragment : Fragment() {
     private val myChatsViewModel : MyChatsViewModel by activityViewModels()
     private val chatViewModel : ChatViewModel by activityViewModels()
+    private val reviewViewModel : ReviewViewModel by activityViewModels()
 
     private var _binding: FragmentMyChatsBinding? = null
-    private val auth = Firebase.auth
 
     private val binding get() = _binding!!
 
@@ -52,24 +50,31 @@ class MyChatsFragment : Fragment() {
         val recyclerViewMyChat = view.findViewById<RecyclerView>(R.id.myChatsRecyclerView)
         recyclerViewMyChat.layoutManager = LinearLayoutManager(context)
 
-        adapter = MessageCollectionAdapter(listOf(), myChatsViewModel, chatViewModel, findNavController())
+        adapter = MessageCollectionAdapter(listOf(), reviewViewModel, chatViewModel, findNavController())
         recyclerViewMyChat.adapter = adapter
 
         val emptyChatsText = view.findViewById<TextView>(R.id.emptyChatsTextView)
+
         myChatsViewModel.chatsList.observe(this.viewLifecycleOwner) {
             if (it.isEmpty()) {
                 emptyChatsText.visibility = View.VISIBLE
             } else {
                 emptyChatsText.visibility = View.GONE
             }
-
             adapter!!.setMyChats(it)
         }
 
-        if(tabLayout.selectedTabPosition == 0)
-            myChatsViewModel.getIncomingRequestsChats()
-        else
-            myChatsViewModel.getMyRequestsChats()
+        myChatsViewModel.selectedTab.observe(this.viewLifecycleOwner) {
+            when(it) {
+                0 -> myChatsViewModel.getIncomingRequestsChats()
+                else -> myChatsViewModel.getMyRequestsChats()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tabLayout.selectTab(tabLayout.getTabAt(myChatsViewModel.selectedTab.value!!))
     }
 }
 
@@ -78,10 +83,7 @@ class MyOnTabSelectedListener(private val vm : MyChatsViewModel) : TabLayout.OnT
         if(tab == null)
             return
 
-        when(tab.position) {
-            0 -> vm.getIncomingRequestsChats()
-            else -> vm.getMyRequestsChats()
-        }
+        vm.setSelectedTab(tab.position)
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -91,10 +93,7 @@ class MyOnTabSelectedListener(private val vm : MyChatsViewModel) : TabLayout.OnT
         if(tab == null)
             return
 
-        when(tab.position) {
-            0 -> vm.getIncomingRequestsChats()
-            else -> vm.getMyRequestsChats()
-        }
+        vm.setSelectedTab(tab.position)
     }
 
 }

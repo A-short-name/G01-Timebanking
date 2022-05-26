@@ -1,6 +1,5 @@
 package it.polito.mad.g01_timebanking.ui
 
-import android.os.Message
 import androidx.recyclerview.widget.DiffUtil
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.MessageCollection

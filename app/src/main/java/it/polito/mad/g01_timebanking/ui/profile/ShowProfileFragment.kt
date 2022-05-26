@@ -32,6 +32,8 @@ class ShowProfileFragment : Fragment() {
     private lateinit var ivProfilePicture: ImageView
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
+    private lateinit var buyerRatingBar: RatingBar
+    private lateinit var sellerRatingBar: RatingBar
 
     private lateinit var actUserInfo : UserInfo
 
@@ -61,6 +63,16 @@ class ShowProfileFragment : Fragment() {
         ivProfilePicture = view.findViewById(R.id.profilePicture)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
+        buyerRatingBar = view.findViewById(R.id.profileBuyerReviewRatingBar)
+        sellerRatingBar = view.findViewById(R.id.profileSellerReviewRatingBar)
+
+        profileViewModel.buyerRating.observe(this.viewLifecycleOwner) {
+            buyerRatingBar.rating = it
+        }
+
+        profileViewModel.sellerRating.observe(this.viewLifecycleOwner) {
+            sellerRatingBar.rating = it
+        }
 
         profileViewModel.user.observe(this.viewLifecycleOwner) {
             actUserInfo = it
