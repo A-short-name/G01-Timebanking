@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -23,31 +24,31 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         it.value = _messagesCollection
     }
 
-    val messagesCollection = pvtMessagesCollection
+    val messagesCollection : LiveData<MessageCollection> = pvtMessagesCollection
 
     private val pvtReceiverUid = MutableLiveData<String>().also {
         it.value = ""
     }
 
-    val receiverUid = pvtReceiverUid
+    val receiverUid : LiveData<String> = pvtReceiverUid
 
     private val pvtAdvertisement = MutableLiveData<AdvertisementDetails>().also {
         it.value = AdvertisementDetails()
     }
 
-    val advertisement = pvtAdvertisement
+    val advertisement : LiveData<AdvertisementDetails> = pvtAdvertisement
 
     private val pvtMessageText = MutableLiveData<String>().also {
         it.value = ""
     }
 
-    val messageText = pvtMessageText
+    val messageText : LiveData<String> = pvtMessageText
 
     private val pvtChatId = MutableLiveData<String>().also {
         it.value = ""
     }
 
-    val chatId = pvtChatId
+    val chatId : LiveData<String> = pvtChatId
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth = Firebase.auth
@@ -177,7 +178,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
         _messagesCollection.messages.add(message)
         addOrUpdateData(_messagesCollection, chatId)
-        messageText.value = ""
+        pvtMessageText.value = ""
     }
 
     fun setMessageText(text: String) {
@@ -185,7 +186,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun setChatId(chatId: String) {
-        this.chatId.value = chatId
+        pvtChatId.value = chatId
     }
 
     fun buyerTakesDecision(chat: MessageCollection, requested: Boolean) {
