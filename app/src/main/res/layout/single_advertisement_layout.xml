@@ -24,29 +24,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/advInfoLayout"
-            android:layout_width="349dp"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imageCard"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:shape="ring"
-                app:cardCornerRadius="90dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/advInfo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/profilePicture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="0px"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/avatar" />
-            </androidx.cardview.widget.CardView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/advInfo"
@@ -54,79 +39,83 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imageCard"
+                app:layout_constraintEnd_toStartOf="@+id/imageCard"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/advTitleLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="37dp"
                     android:layout_margin="0dp"
+                    android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:padding="0dp"
-                    app:boxStrokeColor="@color/primaryColor"
+                    app:layout_constraintBottom_toTopOf="@id/advUserFullNameLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:startIconDrawable="@drawable/ic_advertisement_title">
+                    app:startIconDrawable="@drawable/ic_advertisement_title"
+
+                    >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/advTitle"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
-                        android:clickable="false"
+                        android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:padding="0dp"
                         android:text="Title"
-                        android:textColor="#616161" />
+                        android:textColor="#757575" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/advUserFullNameLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="37dp"
+                    android:focusable="false"
                     android:focusableInTouchMode="false"
-                    app:boxStrokeColor="@color/primaryColor"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/advDateLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/advTitleLayout"
-                    app:layout_constraintVertical_bias="0.0"
                     app:startIconDrawable="@drawable/ic_account_outline">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/advUserFullName"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
-                        android:clickable="false"
+                        android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:padding="0dp"
                         android:text="Full Name"
-                        android:textColor="#616161"
+                        android:textColor="#757575"
                         android:textSize="12sp" />
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/advDateLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="37dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/advUserFullNameLayout">
 
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/advCalendarLayout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:focusableInTouchMode="false"
                         app:boxStrokeColor="@color/primaryColor"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -138,16 +127,16 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/advCalendar"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="40dp"
                             android:layout_margin="0dp"
                             android:background="@android:color/transparent"
-                            android:clickable="false"
+                            android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:padding="0dp"
                             android:text="MonDDYY"
-                            android:textColor="#616161"
+                            android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -155,6 +144,7 @@
                         android:id="@+id/advClockLayout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:focusableInTouchMode="false"
                         app:boxStrokeColor="@color/primaryColor"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -165,47 +155,72 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/advClock"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="40dp"
                             android:layout_margin="0dp"
                             android:background="@android:color/transparent"
-                            android:clickable="false"
+                            android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:padding="0dp"
                             android:text="hh:mm"
-                            android:textColor="#616161"
+                            android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/imageCard"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/imageCardDet"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:shape="ring"
+                    app:cardCornerRadius="90dp"
+                    app:layout_constraintBottom_toTopOf="@id/editAdvButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/profilePicture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0px"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/avatar" />
+                </androidx.cardview.widget.CardView>
+
+                <ImageButton
+                    android:id="@+id/editAdvButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="edit adv"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageCardDet"
+                    app:srcCompat="@drawable/ic_edit" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/editLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toStartOf="@+id/advInfoLayout"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageButton
-                android:id="@+id/editAdvButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:contentDescription="edit adv"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_edit" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
