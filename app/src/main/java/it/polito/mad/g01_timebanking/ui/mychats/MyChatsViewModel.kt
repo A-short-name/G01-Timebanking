@@ -31,6 +31,12 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
 
     val selectedTab : LiveData<Int> = pvtSelectedTab
 
+    private val pvtChatCounter = MutableLiveData<Int>().also {
+        it.value = 0
+    }
+
+    val chatCounter : LiveData<Int> = pvtChatCounter
+
 //    fun getIncomingRequestsChats() {
 //        chatsListener?.remove()
 //        chatsListener = db.collection("chats")
@@ -80,7 +86,9 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                 } else if (value!!.isEmpty) {
                     Log.d("Chats", "No chats")
                 } else {
+                    var counter = 0
                     for (doc in value) {
+                        counter++
                         val chat = doc.toObject(MessageCollection::class.java)
                         val index = _myChats.indexOf(chat)
                         if(index == -1)
@@ -88,6 +96,7 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                         else
                             _myChats[index] = chat
                     }
+                    pvtChatCounter.value = counter
                     when(selectedTab.value!!) {
                         0 -> getIncomingRequestsChats()
                         else -> getMyRequestsChats()
