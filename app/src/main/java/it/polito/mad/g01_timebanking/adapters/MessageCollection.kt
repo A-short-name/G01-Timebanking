@@ -111,6 +111,8 @@ class MessageCollectionAdapter(
 
             if(messages.size != 0)
                 lastMessageTextView.text = messages[messages.lastIndex].content
+            else
+                lastMessageTextView.text = ""
 
             val calendar = Calendar.getInstance()
             calendar.time = messageCollection.calendar
