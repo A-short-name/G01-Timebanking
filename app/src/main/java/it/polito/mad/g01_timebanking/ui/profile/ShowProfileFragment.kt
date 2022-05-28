@@ -34,6 +34,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var noSkills: TextView
     private lateinit var buyerRatingBar: RatingBar
     private lateinit var sellerRatingBar: RatingBar
+    private lateinit var tvCurrentBalance: TextView
 
     private lateinit var actUserInfo : UserInfo
 
@@ -65,6 +66,7 @@ class ShowProfileFragment : Fragment() {
         noSkills = view.findViewById(R.id.noSkillsTextView)
         buyerRatingBar = view.findViewById(R.id.profileBuyerReviewRatingBar)
         sellerRatingBar = view.findViewById(R.id.profileSellerReviewRatingBar)
+        tvCurrentBalance = view.findViewById(R.id.currentBalance)
 
         profileViewModel.buyerRating.observe(this.viewLifecycleOwner) {
             buyerRatingBar.rating = it
@@ -81,6 +83,7 @@ class ShowProfileFragment : Fragment() {
             tvEmail.text = it.email
             tvLocation.text = it.location
             tvBiography.text = it.biography
+            tvCurrentBalance.text = it.balance
 
             skillGroup.removeAllViews()
 
