@@ -141,6 +141,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                                 // Check if it is possible to sell advertisement
                                 if (requesterInfo.balance.toAmountTime() >= collection.duration.toAmountTime()) {
                                     advInfo.sold = true
+                                    advInfo.soldToUid = collection.requesterUid
                                     val newRequesterBalance =
                                         requesterInfo.balance.toAmountTime() - collection.duration.toAmountTime()
                                     requesterInfo.balance = newRequesterBalance.toDurationString()
