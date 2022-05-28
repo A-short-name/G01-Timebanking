@@ -17,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
+import it.polito.mad.g01_timebanking.adapters.MessageCollection
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
 import it.polito.mad.g01_timebanking.ui.review.Review
 import java.io.ByteArrayOutputStream
@@ -230,6 +231,29 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                 ).show()
             }
 
+        db.collection("chats")
+            .whereEqualTo("advOwnerUid",auth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener {
+                it.forEach{ value ->
+                    val chat = value.toObject(MessageCollection::class.java)
+                    chat.advOwnerName = toBeSaved.fullName
+
+                    db.collection("chats").document(chat.chatId).set(chat)
+                }
+            }
+
+        db.collection("chats")
+            .whereEqualTo("requesterUid",auth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener {
+                it.forEach{ value ->
+                    val chat = value.toObject(MessageCollection::class.java)
+                    chat.requesterName = toBeSaved.fullName
+
+                    db.collection("chats").document(chat.chatId).set(chat)
+                }
+            }
     }
 
     private fun addOrUpdateSkills(newUserSkillsName: MutableList<String>) {
