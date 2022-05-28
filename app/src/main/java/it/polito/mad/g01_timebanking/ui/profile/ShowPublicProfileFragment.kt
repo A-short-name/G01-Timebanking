@@ -42,7 +42,7 @@ class ShowPublicProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_show_profile, container, false)
+        val root = inflater.inflate(R.layout.fragment_show_public_profile, container, false)
 
         setHasOptionsMenu(true)
 
