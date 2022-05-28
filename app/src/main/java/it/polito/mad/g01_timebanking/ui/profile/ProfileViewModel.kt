@@ -35,6 +35,11 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     // Initialization placeholder variable
     private var _user = UserInfo()
 
+    private val pvtPubUserId = MutableLiveData<String>().also{
+        it.value = ""
+    }
+    val pubUserId : LiveData<String> = pvtPubUserId
+
     private val pvtPubUser = MutableLiveData<UserInfo>().also{
         it.value = UserInfo()
     }
@@ -104,6 +109,23 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     }
     val suggestedSkills: LiveData<MutableSet<SkillDetails>> = pvtSuggestedSkills
 
+    //public user rating  (used in show public profile fragment)
+    private val pvtAdvOwnerBuyerRating = MutableLiveData<Float>().also {
+        it.value = -1f
+        getUserBuyerReviewAverage(pvtPubUserId.value!!)
+    }
+
+    val advOwnerBuyerRating : LiveData<Float> = pvtAdvOwnerBuyerRating
+
+    private val pvtAdvOwnerSellerRating = MutableLiveData<Float>().also {
+        it.value = -1f
+        getUserSellerReviewAverage(pvtPubUserId.value!!)
+    }
+
+    val advOwnerSellerRating : LiveData<Float> = pvtAdvOwnerSellerRating
+
+
+    // logged in user rating
     private val pvtBuyerRating = MutableLiveData<Float>().also {
         it.value = -1f
         getBuyerReviewAverage()
@@ -169,8 +191,11 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
     /**
      * set the public user used by show public user fragment
      */
-    fun setPublicUserInfo(pubUserInfo: UserInfo){
+    fun setPublicUserInfo(pubUserInfo: UserInfo, userId : String){
         pvtPubUser.value = pubUserInfo
+        pvtPubUserId.value = userId
+        getUserBuyerReviewAverage(userId)
+        getUserSellerReviewAverage(userId)
     }
 
     fun updatePhoto(newProfilePicturePath: String, imageView: ImageView) {
@@ -261,6 +286,52 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                         fullName = auth.currentUser!!.displayName.toString()
                     }
                     addOrUpdateData(newUser)
+                }
+            }
+    }
+
+
+    private fun getUserSellerReviewAverage(uid :String) {
+        sellerReviewsListener = db.collection("reviews")
+            .whereEqualTo("toUid", uid)
+            .whereEqualTo("reviewerIsTheOwner",false)
+            .addSnapshotListener { value, e ->
+                if(e == null && value?.isEmpty == true) {
+                    pvtAdvOwnerSellerRating.value = 0f
+                } else if (e == null && value?.isEmpty == false) {
+                    var ratesCount = 0
+                    var nReviews = 0
+                    for(doc in value) {
+                        val review = doc.toObject(Review::class.java)
+                        ratesCount += review.rating
+                        nReviews++
+                    }
+
+                    val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                    pvtAdvOwnerSellerRating.value = average
+                }
+            }
+    }
+
+    private fun getUserBuyerReviewAverage(uid: String) {
+        buyerReviewsListener = db.collection("reviews")
+            .whereEqualTo("toUid", uid)
+            .whereEqualTo("reviewerIsTheOwner",true)
+            .addSnapshotListener { value, e ->
+                if(e == null && value?.isEmpty == true) {
+                    pvtAdvOwnerBuyerRating.value = 0f
+                } else if (e == null && value?.isEmpty == false) {
+                    var ratesCount = 0
+                    var nReviews = 0
+
+                    for(doc in value) {
+                        val review = doc.toObject(Review::class.java)
+                        ratesCount += review.rating
+                        nReviews++
+                    }
+
+                    val average = (ratesCount.toFloat())/(nReviews.toFloat())
+                    pvtAdvOwnerBuyerRating.value = average
                 }
             }
     }

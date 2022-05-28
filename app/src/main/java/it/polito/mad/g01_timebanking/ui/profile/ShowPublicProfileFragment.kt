@@ -30,6 +30,8 @@ class ShowPublicProfileFragment : Fragment() {
     private lateinit var tvLocation: TextView
     private lateinit var tvBiography: TextView
     private lateinit var ivProfilePicture: ImageView
+    private lateinit var rbRatingBuyer: RatingBar
+    private lateinit var rbRatingSeller: RatingBar
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
 
@@ -58,9 +60,20 @@ class ShowPublicProfileFragment : Fragment() {
         tvEmail = view.findViewById(R.id.email)
         tvLocation = view.findViewById(R.id.location)
         tvBiography = view.findViewById(R.id.biography)
+        rbRatingSeller = view.findViewById(R.id.profileSellerReviewRatingBar)
+        rbRatingBuyer = view.findViewById(R.id.profileBuyerReviewRatingBar)
         ivProfilePicture = view.findViewById(R.id.profilePicture)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
+
+
+        profileViewModel.advOwnerBuyerRating.observe(this.viewLifecycleOwner) {
+            rbRatingBuyer.rating = it
+        }
+
+        profileViewModel.advOwnerSellerRating.observe(this.viewLifecycleOwner) {
+            rbRatingSeller.rating = it
+        }
 
         profileViewModel.pubUserTmpPath.observe(this.viewLifecycleOwner){
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
@@ -94,11 +107,6 @@ class ShowPublicProfileFragment : Fragment() {
         }
 
 
-//        profileViewModel.profilePicturePath.observe(this.viewLifecycleOwner) {
-//            if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER) {
-//                FileHelper.readImage(it, ivProfilePicture)
-//            }
-//        }
 
         //the only way to set height image to 1/3 of the screen is programmatically
         //This is ue to the fact that we use a scroll view with a bio with variable length
@@ -108,24 +116,6 @@ class ShowPublicProfileFragment : Fragment() {
             Log.e(TAG, "No external volume mounted")
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        inflater.inflate(R.menu.user_menu, menu)
-//    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        // Handle item selection
-//        return NavigationUI.onNavDestinationSelected(
-//            item,
-//            requireView().findNavController())
-//                || super.onOptionsItemSelected(item)
-//    }
-
-    override fun onPause() {
-        // This updates ViewModel if the show is disappearing because the edit is being opened
-        profileViewModel.setPublicUserInfo(actUserInfo)
-        super.onPause()
-    }
 
     private fun arrangeViewByRatio(view: View) {
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {

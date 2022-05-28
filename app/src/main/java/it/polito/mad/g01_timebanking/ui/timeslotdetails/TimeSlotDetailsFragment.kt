@@ -142,7 +142,7 @@ class TimeSlotDetailsFragment : Fragment() {
                     val userFromDb = userDocFromDb.toUserInfo()
                     textViewAdvUserName.setText(userFromDb.fullName)
 
-                    profileViewModel.setPublicUserInfo(userFromDb)
+                    profileViewModel.setPublicUserInfo(userFromDb, userDocFromDb.id)
                     //if(userFromDb.profilePicturePath != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
                         profileViewModel.downloadPublicPhoto(actualAdvertisement.uid)
 
