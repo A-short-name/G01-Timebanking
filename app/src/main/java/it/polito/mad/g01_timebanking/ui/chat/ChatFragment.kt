@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,10 +60,14 @@ class ChatFragment : Fragment() {
         recyclerViewChat.adapter = adapter
 
         chatViewModel.messagesCollection.observe(this.viewLifecycleOwner){ chat ->
+            val toolbar = activity?.findViewById<Toolbar>(R.id.toolbar)
+
             val requestLayout = view.findViewById<LinearLayout>(R.id.requestToAcceptLayout)
             val messageAcceptTextView = view.findViewById<TextView>(R.id.messageAcceptTextView)
 
             val isTheOwner = chat.advOwnerUid == auth.currentUser!!.uid
+
+            toolbar?.title = if (isTheOwner) "Chat with ${chat.requesterName}" else "Chat with ${chat.advOwnerName}"
 
             if(!isTheOwner && !chat.buyerHasRequested && !chat.ownerHasDecided) {
                 messageAcceptTextView.text = "Do you want to send a request for this advertisement?"

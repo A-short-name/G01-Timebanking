@@ -133,6 +133,8 @@ class MessageCollectionAdapter(
                             this.fromUid = Firebase.auth.currentUser!!.uid
                             this.toUid = messageCollection.requesterUid
                             this.reviewerIsTheOwner = true
+                            this.reviewerToName = messageCollection.requesterName
+                            this.advTitle = messageCollection.advTitle
                             this.reviewId =
                                 "${Firebase.auth.currentUser!!.uid}-${messageCollection.requesterUid}-${messageCollection.advId}"
                         }
@@ -151,6 +153,8 @@ class MessageCollectionAdapter(
                             this.fromUid = Firebase.auth.currentUser!!.uid
                             this.toUid = messageCollection.advOwnerUid
                             this.reviewerIsTheOwner = false
+                            this.reviewerToName = messageCollection.advOwnerName
+                            this.advTitle = messageCollection.advTitle
                             this.reviewId = "${Firebase.auth.currentUser!!.uid}-${messageCollection.advOwnerUid}-${messageCollection.advId}"
                         }
 

@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp">
 
+    <TextView
+        android:id="@+id/advTitleReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/writeRatingBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <RatingBar
         android:id="@+id/writeRatingBar"
         android:layout_width="wrap_content"

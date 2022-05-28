@@ -9,5 +9,7 @@ data class Review (
         var fromUid : String = "",
         var toUid : String = "",
         var advId : String = "",
+        var reviewerToName : String = "",
+        var advTitle : String = "",
         var reviewerIsTheOwner : Boolean = false
         )
