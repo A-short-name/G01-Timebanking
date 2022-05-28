@@ -36,7 +36,51 @@ data class MessageCollection (
     var requesterHasReviewed : Boolean = false,
     var accepted : Boolean = false,
     val messages : MutableList<MessageDetails> = mutableListOf()
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MessageCollection
+
+        if (chatId != other.chatId) return false
+        if (advId != other.advId) return false
+        if (advTitle != other.advTitle) return false
+        if (advOwnerUid != other.advOwnerUid) return false
+        if (advOwnerName != other.advOwnerName) return false
+        if (requesterUid != other.requesterUid) return false
+        if (requesterName != other.requesterName) return false
+        if (duration != other.duration) return false
+        if (calendar != other.calendar) return false
+        if (buyerHasRequested != other.buyerHasRequested) return false
+        if (ownerHasDecided != other.ownerHasDecided) return false
+        if (ownerHasReviewed != other.ownerHasReviewed) return false
+        if (requesterHasReviewed != other.requesterHasReviewed) return false
+        if (accepted != other.accepted) return false
+        if (messages != other.messages) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = chatId.hashCode()
+        result = 31 * result + advId.hashCode()
+        result = 31 * result + advTitle.hashCode()
+        result = 31 * result + advOwnerUid.hashCode()
+        result = 31 * result + advOwnerName.hashCode()
+        result = 31 * result + requesterUid.hashCode()
+        result = 31 * result + requesterName.hashCode()
+        result = 31 * result + duration.hashCode()
+        result = 31 * result + calendar.hashCode()
+        result = 31 * result + buyerHasRequested.hashCode()
+        result = 31 * result + ownerHasDecided.hashCode()
+        result = 31 * result + ownerHasReviewed.hashCode()
+        result = 31 * result + requesterHasReviewed.hashCode()
+        result = 31 * result + accepted.hashCode()
+        result = 31 * result + messages.hashCode()
+        return result
+    }
+}
 
 class MessageCollectionAdapter(
     private var data:List<MessageCollection>,

@@ -54,8 +54,6 @@ class MessageCollectionDiffCallback (private val chats: List<MessageCollection>,
         return chats[oldP].chatId === newChats[newP].chatId
     }
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
-        val (_, usageInAdv, usageInUser) = chats[oldPosition]
-        val (_, usageInAdv1, usageInUser1) = newChats[newPosition]
-        return usageInAdv == usageInAdv1 && usageInUser == usageInUser1
+        return chats[oldPosition] == newChats[newPosition]
     }
 }

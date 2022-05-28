@@ -129,14 +129,14 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                     .addOnSuccessListener { adv ->
                         val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
                         advInfo.sold = true
-
+                        // TODO: Exchange money here and decrement usage in skills
                         db.collection("advertisements").document(collection.advId)
                             .set(advInfo)
                             .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
 
                         db.collection("chats")
                             .whereEqualTo("advId",advInfo.id)
-                            .whereNotEqualTo("advId",collection.advId)
+                            .whereNotEqualTo("chatId",collection.chatId)
                             .get()
                             .addOnSuccessListener {
                                 for(doc in it) {
@@ -147,7 +147,6 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                                     db.collection("chats").document(doc.id).set(chat)
                                 }
                             }
-                        // TODO: Decrement usage of adv in database
                     }
             }
             .addOnFailureListener {
