@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/chatCardView"
@@ -12,8 +14,6 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/secondaryLightColor"
-
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
@@ -34,63 +34,112 @@
             tools:layout_editor_absoluteX="4dp"
             tools:layout_editor_absoluteY="6dp">
 
-            <TextView
-                android:id="@+id/chatAdvertisementTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textSize="24sp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/chatAdvertisementTitleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_margin="0dp"
+                android:focusable="false"
+                android:longClickable="false"
+                android:focusableInTouchMode="false"
+                android:padding="0dp"
                 app:layout_constraintEnd_toStartOf="@+id/reviewButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Advertisement Name" />
+                app:startIconDrawable="@drawable/ic_advertisement_title"
 
-            <TextView
-                android:id="@+id/fromTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/chatAdvertisementTitle"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:background="@android:color/transparent"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:focusableInTouchMode="false"
+                    android:padding="0dp"
+                    android:text="Title"
+                    android:textColor="#757575" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fromTextViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:focusable="false"
+                android:longClickable="false"
+                android:focusableInTouchMode="false"
                 app:layout_constraintEnd_toStartOf="@+id/reviewButton"
-                app:layout_constraintStart_toEndOf="@+id/profileImageView"
-                app:layout_constraintTop_toBottomOf="@+id/chatAdvertisementTitle"
-                tools:text="FirstName FullName" />
-
-            <ImageView
-                android:id="@+id/profileImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/fromTextView"
-                app:layout_constraintHeight_max="24dp"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chatAdvertisementTitle"
-                app:layout_constraintWidth_max="24dp"
-                app:srcCompat="@drawable/ic_user" />
+                app:layout_constraintTop_toBottomOf="@+id/chatAdvertisementTitleLayout"
+                app:layout_constraintBottom_toTopOf="@id/lastMessageTextViewLayout"
+                app:startIconDrawable="@drawable/ic_account_outline">
 
-            <ImageView
-                android:id="@+id/messagesImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fromTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:background="@android:color/transparent"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:focusableInTouchMode="false"
+                    android:padding="0dp"
+                    android:text="Full Name"
+                    android:textColor="#757575"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lastMessageTextViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:focusable="false"
+                android:longClickable="false"
+                android:focusableInTouchMode="false"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/lastMessageTextView"
-                app:layout_constraintHeight_max="24dp"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profileImageView"
-                app:layout_constraintWidth_max="24dp"
-                app:srcCompat="@drawable/ic_chats" />
+                app:layout_constraintTop_toBottomOf="@+id/fromTextViewLayout"
+                app:startIconDrawable="@drawable/ic_chats"
+                app:boxStrokeWidth="0px">
 
-            <TextView
-                android:id="@+id/lastMessageTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lastMessageTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:background="@android:color/transparent"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:focusableInTouchMode="false"
+                    android:padding="0dp"
+                    android:text="Last message"
+                    android:textColor="#757575"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/chatButton"
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:padding="0px"
+                android:scaleType="centerCrop"
+                android:src="@android:color/transparent"
+                tools:ignore="SpeakableTextPresentCheck"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/fromTextView"
-                app:layout_constraintStart_toEndOf="@+id/messagesImageView"
-                app:layout_constraintTop_toBottomOf="@+id/fromTextView"
-                tools:text="Last message" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:clickable="true"
+                />
 
             <Button
                 android:id="@+id/reviewButton"

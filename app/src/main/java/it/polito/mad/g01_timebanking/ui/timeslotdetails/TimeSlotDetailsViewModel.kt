@@ -4,9 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.ktx.toObject
+import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
+import kotlinx.coroutines.awaitAll
 import java.util.*
 
 class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {

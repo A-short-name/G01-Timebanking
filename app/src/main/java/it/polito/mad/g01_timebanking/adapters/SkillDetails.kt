@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
@@ -54,7 +51,7 @@ class SkillAdapter(
     class SkillViewHolder(v:View): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.singleSkillTitle)
         private val usage: TextView = v.findViewById(R.id.singleSkillUsage)
-        private val cardView: CardView = v.findViewById(R.id.skillCardView)
+        private val cardView: ImageButton = v.findViewById(R.id.skillButton)
 
         fun bind(skill: SkillDetails, cardAction: (v: View) -> Unit) {
             val skillUpCase = skill.name[0].uppercase() + skill.name.substring(1,skill.name.length)

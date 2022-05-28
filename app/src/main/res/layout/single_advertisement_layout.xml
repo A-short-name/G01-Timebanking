@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/advCardView"
@@ -12,7 +14,6 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
@@ -39,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageCard"
+                app:layout_constraintEnd_toStartOf="@+id/editAdvButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -50,9 +51,10 @@
                     android:layout_height="37dp"
                     android:layout_margin="0dp"
                     android:focusable="false"
+                    android:longClickable="false"
                     android:focusableInTouchMode="false"
                     android:padding="0dp"
-                    app:layout_constraintBottom_toTopOf="@id/advUserFullNameLayout"
+                    app:layout_constraintBottom_toTopOf="@id/advDateLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -68,6 +70,7 @@
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
                         android:focusable="false"
+                        android:longClickable="false"
                         android:focusableInTouchMode="false"
                         android:padding="0dp"
                         android:text="Title"
@@ -75,31 +78,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/advUserFullNameLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="37dp"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    app:layout_constraintBottom_toTopOf="@id/advDateLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/advTitleLayout"
-                    app:startIconDrawable="@drawable/ic_account_outline">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/advUserFullName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:background="@android:color/transparent"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:padding="0dp"
-                        android:text="Full Name"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/advDateLayout"
@@ -108,7 +86,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/advUserFullNameLayout">
+                    app:layout_constraintTop_toBottomOf="@id/advTitleLayout">
 
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -116,6 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
+                        android:longClickable="false"
                         android:focusableInTouchMode="false"
                         app:boxStrokeColor="@color/primaryColor"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -133,9 +112,10 @@
                             android:layout_margin="0dp"
                             android:background="@android:color/transparent"
                             android:focusable="false"
+                            android:longClickable="false"
                             android:focusableInTouchMode="false"
                             android:padding="0dp"
-                            android:text="MonDDYY"
+                            android:text="dd/MM/YYYY"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -145,6 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
+                        android:longClickable="false"
                         android:focusableInTouchMode="false"
                         app:boxStrokeColor="@color/primaryColor"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -161,63 +142,51 @@
                             android:layout_margin="0dp"
                             android:background="@android:color/transparent"
                             android:focusable="false"
+                            android:longClickable="false"
                             android:focusableInTouchMode="false"
                             android:padding="0dp"
-                            android:text="hh:mm"
+                            android:text="hh:mm AM"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageButton
+                    android:id="@+id/advInfoButton"
+                    android:layout_height="110dp"
+                    android:layout_width="match_parent"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:padding="0px"
+                    android:scaleType="centerCrop"
+                    android:src="@android:color/transparent"
+                    tools:ignore="SpeakableTextPresentCheck"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:clickable="true"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/imageCard"
+
+            <ImageButton
+                android:id="@+id/editAdvButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="8dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="edit adv"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_edit"
+                />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/imageCardDet"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:shape="ring"
-                    app:cardCornerRadius="90dp"
-                    app:layout_constraintBottom_toTopOf="@id/editAdvButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/profilePicture"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="0px"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avatar" />
-                </androidx.cardview.widget.CardView>
-
-                <ImageButton
-                    android:id="@+id/editAdvButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="edit adv"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imageCardDet"
-                    app:srcCompat="@drawable/ic_edit" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

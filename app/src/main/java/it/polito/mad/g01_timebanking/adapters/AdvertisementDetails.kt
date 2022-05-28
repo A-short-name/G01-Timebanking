@@ -60,18 +60,19 @@ class AdvertisementAdapter(
     class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvBySkill: Boolean): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advCalendar)
-        private val clock: TextView = v.findViewById(R.id.advClock)
+        private val duration: TextView = v.findViewById(R.id.advClock)
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
         private val cardView: CardView = v.findViewById(R.id.advCardView)
+        private val advInfoButton: ImageButton = v.findViewById(R.id.advInfoButton)
+
 
         @SuppressLint("SetTextI18n")
         fun bind(adv: AdvertisementDetails, buttonAction: (v: View) -> Unit, cardAction: (v: View) -> Unit) {
             title.text = adv.title
             val calendar = Calendar.getInstance()
             calendar.time = adv.calendar
-
-            date.text = calendar.fromDateToString()
-            clock.text = calendar.fromTimeToString(DateFormat.is24HourFormat(parent.context))
+            date.text = "${calendar.fromDateToString()} | ${calendar.fromTimeToString(DateFormat.is24HourFormat(parent.context))}"
+            duration.text = adv.duration
 
             if(!isAdvBySkill) {
                 button.setOnClickListener(buttonAction)
@@ -80,6 +81,7 @@ class AdvertisementAdapter(
                 button.visibility = View.GONE
 
             cardView.setOnClickListener(cardAction)
+            advInfoButton.setOnClickListener(cardAction)
         }
     }
 
@@ -124,6 +126,7 @@ class AdvertisementAdapter(
         }
         return callback
     }
+
 
     fun setAdvertisements(newAdvs: List<AdvertisementDetails>) {
         val diffs = DiffUtil.calculateDiff( AdvDiffCallback(data, newAdvs) )

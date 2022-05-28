@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.NavController
@@ -90,7 +91,7 @@ class MessageCollectionAdapter(
 ) : RecyclerView.Adapter<MessageCollectionAdapter.MessageCollectionViewHolder>() {
 
     class MessageCollectionViewHolder(v: View): RecyclerView.ViewHolder(v) {
-        private val chatCardView = v.findViewById<CardView>(R.id.chatCardView)
+        private val chatCardView = v.findViewById<ImageButton>(R.id.chatButton)
         private val chatAdvertisementTitle = v.findViewById<TextView>(R.id.chatAdvertisementTitle)
         private val fromTextView = v.findViewById<TextView>(R.id.fromTextView)
         private val lastMessageTextView = v.findViewById<TextView>(R.id.lastMessageTextView)
