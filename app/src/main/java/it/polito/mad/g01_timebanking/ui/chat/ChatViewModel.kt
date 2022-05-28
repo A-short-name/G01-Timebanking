@@ -136,7 +136,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
 
                         db.collection("chats")
                             .whereEqualTo("advId",advInfo.id)
-                            .whereNotEqualTo("advId",collection.advId)
+                            .whereNotEqualTo("chatId",collection.chatId)
                             .get()
                             .addOnSuccessListener {
                                 for(doc in it) {
