@@ -15,6 +15,7 @@ import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
 import it.polito.mad.g01_timebanking.adapters.MessageDetails
+import java.text.DecimalFormat
 import java.util.*
 
 class ChatViewModel(val a: Application) : AndroidViewModel(a) {
@@ -128,25 +129,45 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                     .get()
                     .addOnSuccessListener { adv ->
                         val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
-                        advInfo.sold = true
-                        // TODO: Exchange money here and decrement usage in skills
-                        db.collection("advertisements").document(collection.advId)
-                            .set(advInfo)
-                            .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
 
-                        db.collection("chats")
-                            .whereEqualTo("advId",advInfo.id)
-                            .whereNotEqualTo("chatId",collection.chatId)
-                            .get()
-                            .addOnSuccessListener {
-                                for(doc in it) {
-                                    val chat = doc.toObject(MessageCollection::class.java)
-                                    chat.accepted = false
-                                    chat.buyerHasRequested = true
-                                    chat.ownerHasDecided = true
-                                    db.collection("chats").document(doc.id).set(chat)
+                        db.collection("users").document(collection.requesterUid).get().addOnSuccessListener { requester ->
+                            val requesterInfo = requester.toObject(UserInfo::class.java) ?: UserInfo()
+
+                            db.collection("users").document(collection.advOwnerUid).get().addOnSuccessListener { seller ->
+                                val sellerInfo = seller.toObject(UserInfo::class.java) ?: UserInfo()
+
+                                if(requesterInfo.balance.toAmountTime() >= collection.duration.toAmountTime()) {
+                                    advInfo.sold = true
+                                    val newRequesterBalance = requesterInfo.balance.toAmountTime() - collection.duration.toAmountTime()
+                                    requesterInfo.balance = newRequesterBalance.toDurationString()
+
+                                    val newSellerBalance = sellerInfo.balance.toAmountTime() + collection.duration.toAmountTime()
+                                    sellerInfo.balance = newSellerBalance.toDurationString()
+
+                                    db.collection("users").document(collection.requesterUid).set(requesterInfo)
+                                    db.collection("users").document(collection.advOwnerUid).set(sellerInfo)
+
+                                    // TODO: decrement usage in skills
+                                    db.collection("advertisements").document(collection.advId)
+                                        .set(advInfo)
+                                        .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
+
+                                    db.collection("chats")
+                                        .whereEqualTo("advId",advInfo.id)
+                                        .whereNotEqualTo("chatId",collection.chatId)
+                                        .get()
+                                        .addOnSuccessListener {
+                                            for(doc in it) {
+                                                val chat = doc.toObject(MessageCollection::class.java)
+                                                chat.accepted = false
+                                                chat.buyerHasRequested = true
+                                                chat.ownerHasDecided = true
+                                                db.collection("chats").document(doc.id).set(chat)
+                                            }
+                                        }
                                 }
                             }
+                        }
                     }
             }
             .addOnFailureListener {
@@ -212,4 +233,31 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
         pvtAdvertisement.value = adv
         pvtChatId.value = "${Firebase.auth.currentUser!!.uid}-${adv.uid}-${adv.id}"
     }
+}
+
+fun String.toAmountTime() : Int {
+    val split = this.split(":")
+    var result = 0
+
+    if(split.size != 2)
+        return result
+
+    try {
+        val hours = split[0].toInt()
+        val minutes = split[1].toInt()
+
+        result = (hours*60)+minutes
+    } catch(e: Exception) {
+        return result
+    }
+    return result
+}
+
+fun Int.toDurationString() : String {
+    val hours = this/60
+    val minutes = this%60
+
+    val f = DecimalFormat("00")
+
+    return "${f.format(hours)}:${f.format(minutes)}"
 }
