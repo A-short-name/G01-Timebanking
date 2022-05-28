@@ -116,42 +116,56 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     fun takeDecision(collection: MessageCollection, accepted: Boolean) {
-        collection.ownerHasDecided = true
-        collection.accepted = accepted
+        // Get advertisements info
+        db.collection("advertisements")
+            .document(collection.advId)
+            .get()
+            .addOnSuccessListener { adv ->
+                val advInfo =
+                    adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
 
-        db.collection("chats").document(collection.chatId).set(collection)
-            .addOnSuccessListener {
-                Log.d("TESTING","Accepted is: ${collection.accepted}")
-                _messagesCollection = collection
-                pvtMessagesCollection.value = _messagesCollection
-
-                db.collection("advertisements").document(collection.advId)
+                // Get requester info
+                db.collection("users")
+                    .document(collection.requesterUid)
                     .get()
-                    .addOnSuccessListener { adv ->
-                        val advInfo = adv.toObject(AdvertisementDetails::class.java) ?: AdvertisementDetails()
+                    .addOnSuccessListener { requester ->
+                        val requesterInfo = requester.toObject(UserInfo::class.java) ?: UserInfo()
 
-                        db.collection("users").document(collection.requesterUid).get().addOnSuccessListener { requester ->
-                            val requesterInfo = requester.toObject(UserInfo::class.java) ?: UserInfo()
-
-                            db.collection("users").document(collection.advOwnerUid).get().addOnSuccessListener { seller ->
+                        // Get seller info
+                        db.collection("users")
+                            .document(collection.advOwnerUid)
+                            .get()
+                            .addOnSuccessListener { seller ->
                                 val sellerInfo = seller.toObject(UserInfo::class.java) ?: UserInfo()
 
-                                if(requesterInfo.balance.toAmountTime() >= collection.duration.toAmountTime()) {
+                                // Check if it is possible to sell advertisement
+                                if (requesterInfo.balance.toAmountTime() >= collection.duration.toAmountTime()) {
                                     advInfo.sold = true
-                                    val newRequesterBalance = requesterInfo.balance.toAmountTime() - collection.duration.toAmountTime()
+                                    val newRequesterBalance =
+                                        requesterInfo.balance.toAmountTime() - collection.duration.toAmountTime()
                                     requesterInfo.balance = newRequesterBalance.toDurationString()
 
-                                    val newSellerBalance = sellerInfo.balance.toAmountTime() + collection.duration.toAmountTime()
+                                    val newSellerBalance =
+                                        sellerInfo.balance.toAmountTime() + collection.duration.toAmountTime()
                                     sellerInfo.balance = newSellerBalance.toDurationString()
 
-                                    db.collection("users").document(collection.requesterUid).set(requesterInfo)
-                                    db.collection("users").document(collection.advOwnerUid).set(sellerInfo)
+                                    // Update balance
+                                    db.collection("users").document(collection.requesterUid)
+                                        .set(requesterInfo)
+                                    db.collection("users").document(collection.advOwnerUid)
+                                        .set(sellerInfo)
 
-                                    // TODO: decrement usage in skills
+                                    // Update advertisement status
                                     db.collection("advertisements").document(collection.advId)
                                         .set(advInfo)
-                                        .addOnSuccessListener { Log.d("InsertOrUpdateMesColl", "Success: $it") }
+                                        .addOnSuccessListener {
+                                            Log.d(
+                                                "InsertOrUpdateMesColl",
+                                                "Success: $it"
+                                            )
+                                        }
 
+                                    // Update all chats as no more available
                                     db.collection("chats")
                                         .whereEqualTo("advId",advInfo.id)
                                         .whereNotEqualTo("chatId",collection.chatId)
@@ -165,9 +179,24 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                                                 db.collection("chats").document(doc.id).set(chat)
                                             }
                                         }
+
+                                    // Update collection
+                                    collection.ownerHasDecided = true
+                                    collection.accepted = accepted
+                                    db.collection("chats").document(collection.chatId).set(collection)
+                                        .addOnSuccessListener {
+                                            _messagesCollection = collection
+                                            pvtMessagesCollection.value = _messagesCollection
+                                        }
+
+                                } else {
+                                    Toast.makeText(
+                                        a.applicationContext,
+                                        "The buyer has not enough money. Can't accept",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
                             }
-                        }
                     }
             }
             .addOnFailureListener {
