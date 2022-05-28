@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RatingBar
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -42,6 +43,9 @@ class ReviewFragment : Fragment() {
         reviewViewModel.review.observe(this.viewLifecycleOwner) { review ->
             val toolbar = activity?.findViewById<Toolbar>(R.id.toolbar)
             toolbar?.title = "Review ${review.reviewerToName}"
+
+            val advTitle = view.findViewById<TextView>(R.id.advTitleReview)
+            advTitle.text = review.advTitle
 
             sendReviewButton.setOnClickListener {
                 reviewViewModel.sendReview(review, reviewText.text.toString(), ratingBar.rating.toInt() )
