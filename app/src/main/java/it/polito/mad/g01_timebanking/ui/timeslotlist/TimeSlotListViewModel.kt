@@ -9,9 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
+import it.polito.mad.g01_timebanking.adapters.MessageCollection
 
 class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -79,6 +81,20 @@ class TimeSlotListViewModel(val a: Application) : AndroidViewModel(a) {
                     "Failed updating data. Try again.",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+
+        db.collection("chats")
+            .whereEqualTo("advId",toBeSaved.id)
+            .get()
+            .addOnSuccessListener {
+                it.forEach{ value ->
+                    val chat = value.toObject(MessageCollection::class.java)
+                    chat.advTitle = toBeSaved.title
+                    chat.calendar = toBeSaved.calendar
+                    chat.duration = toBeSaved.duration
+
+                    db.collection("chats").document(chat.chatId).set(chat)
+                }
             }
     }
 
