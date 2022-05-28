@@ -88,8 +88,9 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                 } else {
                     var counter = 0
                     for (doc in value) {
-                        counter++
                         val chat = doc.toObject(MessageCollection::class.java)
+                        if(chat.requesterUid == auth.currentUser!!.uid || chat.advOwnerUid == auth.currentUser!!.uid)
+                            counter++
                         val index = _myChats.indexOf(chat)
                         if(index == -1)
                             _myChats.add(chat)
