@@ -118,7 +118,7 @@
                             android:focusableInTouchMode="false"
                             android:longClickable="false"
                             android:padding="0dp"
-                            android:text="dd/MM/YYYY"
+                            android:text="dd/MM/YYYY | hh:mm"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -148,7 +148,7 @@
                             android:focusableInTouchMode="false"
                             android:longClickable="false"
                             android:padding="0dp"
-                            android:text="hh:mm AM"
+                            android:text="hh:mm"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -192,20 +192,22 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_edit" />
 
-            <TextView
+            <com.google.android.material.chip.Chip
                 android:id="@+id/sellingInfoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:backgroundTint="@color/primaryColor"
+                android:clickable="false"
+                android:text="Prova"
+                android:textSize="12sp"
                 android:visibility="gone"
+                app:chipMinHeight="14dp"
+                app:chipMinTouchTargetSize="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/advInfo"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/editAdvButton"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.cardview.widget.CardView>
 

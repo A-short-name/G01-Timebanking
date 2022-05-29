@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
@@ -67,7 +68,7 @@ class AdvertisementAdapter(
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
         private val cardView: CardView = v.findViewById(R.id.advCardView)
         private val advInfoButton: ImageButton = v.findViewById(R.id.advInfoButton)
-        private val advSellingInfo: TextView = v.findViewById(R.id.sellingInfoTextView)
+        private val advSellingInfo: Chip = v.findViewById(R.id.sellingInfoTextView)
 
 
 
