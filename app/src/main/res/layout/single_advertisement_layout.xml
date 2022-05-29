@@ -27,11 +27,10 @@
             android:id="@+id/advInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,11 +66,11 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textNoSuggestions"
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
+                        android:inputType="textNoSuggestions"
                         android:longClickable="false"
                         android:padding="0dp"
                         android:text="Title"
@@ -184,17 +183,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_edit"
-                />
+                app:srcCompat="@drawable/ic_edit" />
 
             <TextView
                 android:id="@+id/sellingInfoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="top|end"
                 android:text=""
-                android:visibility="gone"
+                android:visibility="visible"
+
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/advInfo"
+
                 app:layout_constraintTop_toTopOf="parent" />
 
 

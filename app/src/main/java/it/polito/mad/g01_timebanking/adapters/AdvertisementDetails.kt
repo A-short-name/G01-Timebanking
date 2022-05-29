@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
@@ -87,10 +88,12 @@ class AdvertisementAdapter(
                 button.visibility = View.GONE
             if(adv.sold) {
                 if (uid.equals(adv.soldToUid)) {
-                    advSellingInfo.text = "BOUGHT"
+                    advSellingInfo.text = "PURCHASED"
+                    advSellingInfo.background = ContextCompat.getDrawable(parent.context, R.drawable.rounded_badge_purchased)
                     advSellingInfo.visibility = View.VISIBLE
                 } else if (uid.equals(adv.uid)) {
                     advSellingInfo.text = "SOLD"
+                    advSellingInfo.background = ContextCompat.getDrawable(parent.context, R.drawable.rounded_badge_sold)
                     advSellingInfo.visibility = View.VISIBLE
                 }
             }
