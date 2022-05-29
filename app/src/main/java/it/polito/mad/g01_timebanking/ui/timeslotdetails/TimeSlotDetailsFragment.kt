@@ -172,6 +172,7 @@ class TimeSlotDetailsFragment : Fragment() {
          * has the same ID as the menu item. (This code only works if the menu item
          * and the fragment have identical ID values.)
          */
+        timeSlotDetailsViewModel.clearTmpSkills()
         return NavigationUI.onNavDestinationSelected(
             item,
             requireView().findNavController())
