@@ -118,7 +118,7 @@
                             android:focusableInTouchMode="false"
                             android:longClickable="false"
                             android:padding="0dp"
-                            android:text="dd/MM/YYYY | hh:mm"
+                            android:text="dd/MM/YYYY | hh:mm AM"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -135,7 +135,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/advCalendarLayout"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:startIconDrawable="@drawable/ic_clock">
+                        app:startIconDrawable="@drawable/ic_stopwatch">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/advClock"
