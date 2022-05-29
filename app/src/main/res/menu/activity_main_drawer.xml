@@ -21,6 +21,14 @@
             android:icon="@drawable/ic_chats"
             android:title="@string/menu_my_chats" />
         <item
+            android:id="@+id/nav_assigned_timeslots"
+            android:icon="@drawable/ic_assigned_timeslots"
+            android:title="@string/menu_assigned_timeslots" />
+        <item
+            android:id="@+id/nav_saved_timeslots"
+            android:icon="@drawable/ic_favorite_menu"
+            android:title="@string/menu_saved_timeslots" />
+        <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
             android:title="@string/menu_logout" />

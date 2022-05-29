@@ -12,6 +12,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromDateToString
 import it.polito.mad.g01_timebanking.helpers.CalendarHelper.Companion.fromTimeToString
@@ -52,18 +54,21 @@ data class AdvertisementDetails (
 class AdvertisementAdapter(
     private var data:List<AdvertisementDetails>,
     private val tsDetailsViewModel: TimeSlotDetailsViewModel,
-    private val isAdvBySkill: Boolean,
+    private val isAdvForVisualizationOnly: Boolean,
     //private var filterList: List<AdvertisementDetails>
     )
         : RecyclerView.Adapter<AdvertisementAdapter.AdvertisementViewHolder>() {
+    private val auth = Firebase.auth
 
-    class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvBySkill: Boolean): RecyclerView.ViewHolder(v) {
+    class AdvertisementViewHolder(private val parent: ViewGroup, v:View, private val isAdvForVisualizationOnly: Boolean, private val uid: String): RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.advTitle)
         private val date: TextView = v.findViewById(R.id.advCalendar)
         private val duration: TextView = v.findViewById(R.id.advClock)
         private val button: ImageButton = v.findViewById(R.id.editAdvButton)
         private val cardView: CardView = v.findViewById(R.id.advCardView)
         private val advInfoButton: ImageButton = v.findViewById(R.id.advInfoButton)
+        private val advSellingInfo: TextView = v.findViewById(R.id.sellingInfoTextView)
+
 
 
         @SuppressLint("SetTextI18n")
@@ -74,11 +79,21 @@ class AdvertisementAdapter(
             date.text = "${calendar.fromDateToString()} | ${calendar.fromTimeToString(DateFormat.is24HourFormat(parent.context))}"
             duration.text = adv.duration
 
-            if(!isAdvBySkill) {
+
+            if(!isAdvForVisualizationOnly) {
                 button.setOnClickListener(buttonAction)
                 button.visibility = View.VISIBLE
             } else
                 button.visibility = View.GONE
+            if(adv.sold) {
+                if (uid.equals(adv.soldToUid)) {
+                    advSellingInfo.text = "BOUGHT"
+                    advSellingInfo.visibility = View.VISIBLE
+                } else if (uid.equals(adv.uid)) {
+                    advSellingInfo.text = "SOLD"
+                    advSellingInfo.visibility = View.VISIBLE
+                }
+            }
 
             cardView.setOnClickListener(cardAction)
             advInfoButton.setOnClickListener(cardAction)
@@ -90,7 +105,7 @@ class AdvertisementAdapter(
         val v : View = LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.single_advertisement_layout, parent,false)
-        return AdvertisementViewHolder(parent,v,isAdvBySkill)
+        return AdvertisementViewHolder(parent,v,isAdvForVisualizationOnly, auth.currentUser!!.uid)
     }
 
     override fun onBindViewHolder(holder: AdvertisementViewHolder, position: Int) {
@@ -108,7 +123,7 @@ class AdvertisementAdapter(
     private fun defineCallbacks(adv: AdvertisementDetails, destination: String): (v: View) -> Unit {
         val action = when (destination) {
             "button" -> R.id.action_nav_your_offers_to_nav_edit_time_slot
-            "cardView" -> if(!isAdvBySkill) R.id.action_nav_your_offers_to_nav_show_time_slot else R.id.action_nav_adv_list_by_skill_to_nav_show_time_slot
+            "cardView" -> if(!isAdvForVisualizationOnly) R.id.action_nav_your_offers_to_nav_show_time_slot else R.id.nav_show_time_slot
             else -> -1
         }
 
@@ -117,7 +132,7 @@ class AdvertisementAdapter(
             if (pos != -1) {
                 tsDetailsViewModel.setAdvertisement(adv)
 
-                if(isAdvBySkill) {
+                if(isAdvForVisualizationOnly) {
                     val b = bundleOf("HideOptionMenu" to true)
                     Navigation.findNavController(it).navigate(action, b)
                 } else

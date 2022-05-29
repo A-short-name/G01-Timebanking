@@ -51,8 +51,8 @@
                     android:layout_height="37dp"
                     android:layout_margin="0dp"
                     android:focusable="false"
-                    android:longClickable="false"
                     android:focusableInTouchMode="false"
+                    android:longClickable="false"
                     android:padding="0dp"
                     app:layout_constraintBottom_toTopOf="@id/advDateLayout"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -70,8 +70,8 @@
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
                         android:focusable="false"
-                        android:longClickable="false"
                         android:focusableInTouchMode="false"
+                        android:longClickable="false"
                         android:padding="0dp"
                         android:text="Title"
                         android:textColor="#757575" />
@@ -94,8 +94,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
-                        android:longClickable="false"
                         android:focusableInTouchMode="false"
+                        android:longClickable="false"
                         app:boxStrokeColor="@color/primaryColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/advClockLayout"
@@ -112,8 +112,8 @@
                             android:layout_margin="0dp"
                             android:background="@android:color/transparent"
                             android:focusable="false"
-                            android:longClickable="false"
                             android:focusableInTouchMode="false"
+                            android:longClickable="false"
                             android:padding="0dp"
                             android:text="dd/MM/YYYY"
                             android:textColor="#757575"
@@ -125,8 +125,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
-                        android:longClickable="false"
                         android:focusableInTouchMode="false"
+                        android:longClickable="false"
                         app:boxStrokeColor="@color/primaryColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -142,8 +142,8 @@
                             android:layout_margin="0dp"
                             android:background="@android:color/transparent"
                             android:focusable="false"
-                            android:longClickable="false"
                             android:focusableInTouchMode="false"
+                            android:longClickable="false"
                             android:padding="0dp"
                             android:text="hh:mm AM"
                             android:textColor="#757575"
@@ -154,20 +154,19 @@
 
                 <ImageButton
                     android:id="@+id/advInfoButton"
-                    android:layout_height="110dp"
                     android:layout_width="match_parent"
+                    android:layout_height="110dp"
                     android:layout_centerVertical="true"
                     android:background="@android:color/transparent"
+                    android:clickable="true"
                     android:padding="0px"
                     android:scaleType="centerCrop"
                     android:src="@android:color/transparent"
-                    tools:ignore="SpeakableTextPresentCheck"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:clickable="true"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -186,6 +185,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_edit"
                 />
+
+            <TextView
+                android:id="@+id/sellingInfoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/advInfo"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

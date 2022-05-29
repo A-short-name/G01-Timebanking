@@ -62,6 +62,8 @@
     <string name="menu_show_profile">My Profile</string>
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_my_chats">My Chats</string>
+    <string name="menu_assigned_timeslots">Assigned timeslots</string>
+    <string name="menu_saved_timeslots">Saved timeslots</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>

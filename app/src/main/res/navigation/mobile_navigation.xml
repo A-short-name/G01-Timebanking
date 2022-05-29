@@ -9,7 +9,11 @@
         android:id="@+id/nav_show_time_slot"
         android:name="it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsFragment"
         android:label="@string/menu_show_time_slot"
-        tools:layout="@layout/fragment_time_slot_details">
+        tools:layout="@layout/fragment_time_slot_details"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim">
         <action
             android:id="@+id/action_nav_show_time_slot_to_nav_edit_time_slot"
             app:destination="@id/nav_edit_time_slot"
@@ -130,11 +134,22 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_nav_skills_list_to_nav_assigned_timeslots"
+            app:destination="@id/nav_assigned_timeslots"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/nav_adv_list_by_skill"
         android:name="it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillFragment"
-        android:label="@string/adv_list_by_skill">
+        android:label="@string/adv_list_by_skill"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim">
         <action
             android:id="@+id/action_nav_adv_list_by_skill_to_nav_show_time_slot"
             app:destination="@id/nav_show_time_slot"
@@ -205,5 +220,15 @@
         android:id="@+id/nav_write_review"
         android:name="it.polito.mad.g01_timebanking.ui.review.ReviewFragment"
         android:label="nav_write_review" />
+    <fragment
+        android:id="@+id/nav_assigned_timeslots"
+        android:name="it.polito.mad.g01_timebanking.ui.timeslotlistassigned.TimeSlotListAssignedFragment"
+        android:label="@string/menu_assigned_timeslots"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim">
+
+    </fragment>
 
 </navigation>
