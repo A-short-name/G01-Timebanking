@@ -51,6 +51,8 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var profilePictureButton : ImageButton
     private lateinit var actualAdvertisement : AdvertisementDetails
 
+    var favorite = true
+
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView
@@ -98,7 +100,7 @@ class TimeSlotDetailsFragment : Fragment() {
             textViewLocation.setText(advDet.location)
             textViewDuration.setText(advDet.duration)
             textViewDescription.setText(advDet.description)
-
+            var favorite : Boolean = true
             if(advDet.uid == Firebase.auth.currentUser!!.uid) {
                 openChatButton.visibility = View.GONE
             } else {
@@ -160,8 +162,11 @@ class TimeSlotDetailsFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        if(arguments?.getBoolean("HideOptionMenu") == true)
-            return
+        if(arguments?.getBoolean("HideOptionMenu") == true) {
+            inflater.inflate(R.menu.favourite_menu, menu)
+            if(favorite)
+                menu.findItem(R.id.app_bar_switch).setIcon(R.drawable.ic_favorite)
+        }
         else
             inflater.inflate(R.menu.options_menu, menu)
     }
@@ -173,10 +178,19 @@ class TimeSlotDetailsFragment : Fragment() {
          * and the fragment have identical ID values.)
          */
         timeSlotDetailsViewModel.clearTmpSkills()
-        return NavigationUI.onNavDestinationSelected(
-            item,
-            requireView().findNavController())
-                || super.onOptionsItemSelected(item)
+        when(item.itemId){
+            R.id.app_bar_switch -> {
+                favorite = !favorite
+                if(favorite)
+                    item.setIcon(R.drawable.ic_favorite)
+                else
+                    item.setIcon(R.drawable.ic_non_favorite)
+                Log.d("FAVORITE", "SWITCH CLICKED: $favorite")
+            }
+            R.id.nav_edit_time_slot -> NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onPause() {

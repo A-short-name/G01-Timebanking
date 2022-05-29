@@ -45,6 +45,7 @@ class MyChatsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+
         tabLayout = view.findViewById(R.id.myChatsTabLayout)
 
         tabLayout.addOnTabSelectedListener(MyOnTabSelectedListener(myChatsViewModel))
