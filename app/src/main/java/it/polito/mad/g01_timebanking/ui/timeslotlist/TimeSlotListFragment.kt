@@ -46,7 +46,9 @@ class TimeSlotListFragment : Fragment() {
         recyclerViewAdv.adapter = adapter
 
         timeSlotListViewModel.advList.observe(this.viewLifecycleOwner){
-            if (it.isEmpty()) {
+            val unsoldList  = it.toList().filter { el -> !el.sold }
+
+            if (unsoldList.isEmpty()) {
                 recyclerViewAdv.visibility = View.GONE
                 emptyAdvText.visibility = View.VISIBLE
             } else {
@@ -54,7 +56,6 @@ class TimeSlotListFragment : Fragment() {
                 emptyAdvText.visibility = View.GONE
             }
 
-            val unsoldList  = it.toList().filter { el -> !el.sold }
             adapter.setAdvertisements(unsoldList)
         }
 
