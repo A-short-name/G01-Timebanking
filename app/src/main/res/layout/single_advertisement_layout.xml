@@ -201,7 +201,7 @@
                 android:text="Prova"
                 android:textColor="@color/colorLightGray"
                 android:textSize="12sp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:chipMinHeight="18dp"
                 app:chipMinTouchTargetSize="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
