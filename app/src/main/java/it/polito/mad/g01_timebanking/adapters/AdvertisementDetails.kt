@@ -35,7 +35,8 @@ data class AdvertisementDetails (
     var uid: String = "",
     var sold: Boolean = false,
     var soldToUid: String = "",
-    var skills: MutableList<String> = mutableListOf()
+    var skills: MutableList<String> = mutableListOf(),
+    var skillsCleaned: Boolean = false
     ){
     override fun equals(other: Any?): Boolean {
         other as AdvertisementDetails

@@ -5,10 +5,14 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
+import java.util.*
 
 class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -56,6 +60,28 @@ class SkillsListViewModel(a: Application) : AndroidViewModel(a)  {
                     }
                 }
             }
+
+        db.collection("advertisements")
+            //Unluckily firebase doesn't accept something like this two where together
+            //.whereEqualTo("skillsCleaned", false)
+            .whereLessThan("calendar", Timestamp.now())
+            .get().addOnSuccessListener { expiredAdvsDoc ->
+                for(expiredAdvDoc in expiredAdvsDoc){
+                    val expiredAdv = expiredAdvDoc.toObject(AdvertisementDetails::class.java)
+                    if(!expiredAdv.skillsCleaned) {
+                        Log.i("Skill_cleaning", "Starting cleaning skill for expired advs")
+                        for (skill in expiredAdv.skills) {
+                            db.collection("suggestedSkills")
+                                .document(skill)
+                                .update("usage_in_adv", FieldValue.increment(-1L))
+                        }
+                        db.collection("advertisements")
+                            .document(expiredAdv.id)
+                            .update("skillsCleaned", true)
+                    }
+                }
+            }
+
     }
 
     private fun getSkillsList() {
