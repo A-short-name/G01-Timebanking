@@ -141,6 +141,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_nav_skills_list_to_nav_saved_timeslots"
+            app:destination="@id/nav_saved_timeslots"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/nav_adv_list_by_skill"
@@ -200,7 +207,7 @@
     <fragment
         android:id="@+id/nav_my_chats"
         android:name="it.polito.mad.g01_timebanking.ui.mychats.MyChatsFragment"
-        android:label="nav_my_chats" >
+        android:label="@string/menu_my_chats" >
         <action
             android:id="@+id/action_nav_my_chats_to_nav_chat_list"
             app:destination="@id/nav_chat_list"
@@ -230,5 +237,13 @@
         app:popExitAnim="@anim/nav_default_pop_exit_anim">
 
     </fragment>
+    <fragment
+        android:id="@+id/nav_saved_timeslots"
+        android:name="it.polito.mad.g01_timebanking.ui.timeslotlistsaved.TimeSlotListSavedFragment"
+        android:label="@string/menu_saved_timeslots"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
 </navigation>

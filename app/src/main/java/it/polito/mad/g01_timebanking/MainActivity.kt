@@ -32,6 +32,7 @@ import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListFragment
 import it.polito.mad.g01_timebanking.ui.timeslotlist.TimeSlotListViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlistassigned.TimeSlotListAssignedViewModel
 import it.polito.mad.g01_timebanking.ui.timeslotlistbyskill.TimeSlotListBySkillViewModel
+import it.polito.mad.g01_timebanking.ui.timeslotlistsaved.TimeSlotListSavedViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         val myChatsVM = ViewModelProvider(this)[MyChatsViewModel::class.java]
         val reviewVM = ViewModelProvider(this)[ReviewViewModel::class.java]
         val listAssignedVM = ViewModelProvider(this)[TimeSlotListAssignedViewModel::class.java]
+        val listSavedVM = ViewModelProvider(this)[TimeSlotListSavedViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
