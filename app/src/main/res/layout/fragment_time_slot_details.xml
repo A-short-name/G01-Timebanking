@@ -29,6 +29,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/titleShowText"
+                    android:inputType="textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
@@ -103,6 +104,7 @@
                             android:id="@+id/advUserFullNameShowText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:inputType="textNoSuggestions"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:textSize="20sp" />
@@ -123,6 +125,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/locationShowText"
+                    android:inputType="textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
@@ -140,6 +143,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/dateShowText"
+                    android:inputType="textNoSuggestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
@@ -197,6 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
+                    android:inputType="textNoSuggestions"
                     android:focusableInTouchMode="false" />
             </com.google.android.material.textfield.TextInputLayout>
 

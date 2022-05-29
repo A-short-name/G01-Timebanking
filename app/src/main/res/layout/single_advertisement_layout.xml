@@ -67,6 +67,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="textNoSuggestions"
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
                         android:focusable="false"
