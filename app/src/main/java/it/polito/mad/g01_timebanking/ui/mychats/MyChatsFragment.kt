@@ -44,8 +44,6 @@ class MyChatsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val toolbar = activity?.findViewById<Toolbar>(R.id.toolbar)
-        toolbar?.title = "My chats"
 
         tabLayout = view.findViewById(R.id.myChatsTabLayout)
 
