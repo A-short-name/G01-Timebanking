@@ -47,6 +47,7 @@ class MyChatsFragment : Fragment() {
         val toolbar = activity?.findViewById<Toolbar>(R.id.toolbar)
         toolbar?.title = "My chats"
 
+
         tabLayout = view.findViewById(R.id.myChatsTabLayout)
 
         tabLayout.addOnTabSelectedListener(MyOnTabSelectedListener(myChatsViewModel))

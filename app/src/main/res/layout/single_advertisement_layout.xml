@@ -31,6 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:paddingEnd="4dp"
             >
 
 
@@ -43,7 +44,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/editAdvButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingEnd="8dp">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/advTitleLayout"
@@ -176,16 +178,19 @@
                 android:id="@+id/editAdvButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
+                android:background="@drawable/rounded_back"
                 android:contentDescription="edit adv"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
+                android:minWidth="40dp"
+                android:elevation="8dp"
+                android:outlineAmbientShadowColor="@color/design_default_color_primary_dark"
+                android:minHeight="40dp"
+                android:paddingStart="5dp"
+                android:paddingBottom="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_edit"
-                />
+                app:srcCompat="@drawable/ic_edit" />
 
             <TextView
                 android:id="@+id/sellingInfoTextView"
@@ -195,7 +200,8 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/advInfo"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/editAdvButton"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
