@@ -50,8 +50,10 @@ class TimeSlotDetailsFragment : Fragment() {
     private lateinit var noSkills: TextView
     private lateinit var profilePictureButton : ImageButton
     private lateinit var actualAdvertisement : AdvertisementDetails
+    private lateinit var actualSavedByList: MutableList<String>
 
-    var favorite = true
+    private var favorite = false
+    private val auth = Firebase.auth
 
     private var _binding: FragmentTimeSlotDetailsBinding? = null
 
@@ -152,6 +154,11 @@ class TimeSlotDetailsFragment : Fragment() {
                 }
 
         }
+
+        timeSlotDetailsViewModel.savedByList.observe(this.viewLifecycleOwner) {
+            actualSavedByList = it
+            favorite = it.contains(auth.currentUser!!.uid)
+        }
     }
 
 
@@ -163,9 +170,11 @@ class TimeSlotDetailsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         if(arguments?.getBoolean("HideOptionMenu") == true) {
-            inflater.inflate(R.menu.favourite_menu, menu)
-            if(favorite)
-                menu.findItem(R.id.app_bar_switch).setIcon(R.drawable.ic_favorite)
+            if(arguments?.getBoolean("isOwner")!=true && arguments?.getBoolean("isAssigned")!=true){
+                inflater.inflate(R.menu.favourite_menu, menu)
+                if (favorite)   //Is empty in the layout
+                    menu.findItem(R.id.app_bar_switch).setIcon(R.drawable.ic_favorite)
+            }
         }
         else
             inflater.inflate(R.menu.options_menu, menu)
@@ -180,11 +189,17 @@ class TimeSlotDetailsFragment : Fragment() {
         timeSlotDetailsViewModel.clearTmpSkills()
         when(item.itemId){
             R.id.app_bar_switch -> {
-                favorite = !favorite
-                if(favorite)
-                    item.setIcon(R.drawable.ic_favorite)
-                else
+                if(favorite) {
+                    actualSavedByList.remove(auth.currentUser!!.uid)
+                    timeSlotDetailsViewModel.removeFromSavedList(actualSavedByList)
                     item.setIcon(R.drawable.ic_non_favorite)
+                }
+                else {
+                    actualSavedByList.add(auth.currentUser!!.uid)
+                    timeSlotDetailsViewModel.addToSavedList(actualSavedByList)
+                    item.setIcon(R.drawable.ic_favorite)
+                }
+
                 Log.d("FAVORITE", "SWITCH CLICKED: $favorite")
             }
             R.id.nav_edit_time_slot -> NavigationUI.onNavDestinationSelected(item, requireView().findNavController())

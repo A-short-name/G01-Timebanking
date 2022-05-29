@@ -3,8 +3,10 @@ package it.polito.mad.g01_timebanking.ui.timeslotdetails
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
@@ -14,6 +16,7 @@ import java.util.*
 
 class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val auth = Firebase.auth
     private lateinit var suggestedSkillsListener: ListenerRegistration
 
     private val _adv = AdvertisementDetails(
@@ -84,6 +87,11 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
     }
     val duration: LiveData<String> = pvtDuration
 
+    private val pvtSavedByList = MutableLiveData<MutableList<String>>().also {
+        it.value = mutableListOf()
+    }
+    val savedByList: LiveData<MutableList<String>> = pvtSavedByList
+
     fun setTitle(title: String) {
         pvtTitle.value = title
     }
@@ -109,7 +117,6 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
             set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
         }
     }
-
 
     private fun getSuggestedSkills() {
 
@@ -145,6 +152,22 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         pvtCalendar.value = calendar
         pvtSkills.value = adv.skills.toMutableSet()
         tmpSkills = adv.skills.toMutableSet()
+        pvtSavedByList.value = adv.savedBy.toMutableList()
+    }
+
+    fun addToSavedList(actual: MutableList<String>){
+        db.collection("advertisements")
+            .document(pvtId.value!!)
+            .update("savedBy",FieldValue.arrayUnion(auth.currentUser!!.uid) ).addOnSuccessListener {
+                pvtSavedByList.value = actual
+            }
+    }
+    fun removeFromSavedList(actual: MutableList<String>){
+        db.collection("advertisements")
+            .document(pvtId.value!!)
+            .update("savedBy",FieldValue.arrayRemove(auth.currentUser!!.uid) ).addOnSuccessListener {
+                pvtSavedByList.value = actual
+            }
 
     }
 
@@ -196,6 +219,7 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
         pvtCalendar.value = expTime
         pvtSkills.value = mutableSetOf()
         tmpSkills = mutableSetOf()
+        pvtSavedByList.value = mutableListOf()
     }
 
     fun clearTmpSkills(){

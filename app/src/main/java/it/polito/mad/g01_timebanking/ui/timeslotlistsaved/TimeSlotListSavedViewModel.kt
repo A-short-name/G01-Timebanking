@@ -54,7 +54,6 @@ class TimeSlotListSavedViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-
     override fun onCleared() {
         timeslotsListener.remove()
     }

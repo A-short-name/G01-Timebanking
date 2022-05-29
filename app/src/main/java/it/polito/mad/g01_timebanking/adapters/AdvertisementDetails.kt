@@ -36,7 +36,8 @@ data class AdvertisementDetails (
     var sold: Boolean = false,
     var soldToUid: String = "",
     var skills: MutableList<String> = mutableListOf(),
-    var skillsCleaned: Boolean = false
+    var skillsCleaned: Boolean = false,
+    var savedBy: MutableList<String> = mutableListOf()
     ){
     override fun equals(other: Any?): Boolean {
         other as AdvertisementDetails
@@ -139,11 +140,13 @@ class AdvertisementAdapter(
             if (pos != -1) {
                 tsDetailsViewModel.setAdvertisement(adv)
 
-                if(isAdvForVisualizationOnly) {
-                    val b = bundleOf("HideOptionMenu" to true)
-                    Navigation.findNavController(it).navigate(action, b)
-                } else
-                    Navigation.findNavController(it).navigate(action)
+                val b = bundleOf()
+                b.putBoolean("HideOptionMenu", isAdvForVisualizationOnly)
+                b.putBoolean("isOwner",adv.uid == Firebase.auth.currentUser!!.uid)
+                b.putBoolean("isAssigned", adv.sold)
+
+                Navigation.findNavController(it).navigate(action, b)
+
             }
         }
         return callback
