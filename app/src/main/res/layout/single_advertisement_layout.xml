@@ -196,13 +196,14 @@
                 android:id="@+id/sellingInfoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/primaryColor"
+                app:chipBackgroundColor="@color/primaryColor"
                 android:clickable="false"
                 android:text="Prova"
+                android:textColor="@color/colorLightGray"
                 android:textSize="12sp"
-                android:visibility="gone"
-                app:chipMinHeight="14dp"
-                app:chipMinTouchTargetSize="24dp"
+                android:visibility="visible"
+                app:chipMinHeight="18dp"
+                app:chipMinTouchTargetSize="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

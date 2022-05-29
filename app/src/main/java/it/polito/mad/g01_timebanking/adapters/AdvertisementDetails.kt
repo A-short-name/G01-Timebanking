@@ -1,6 +1,7 @@
 package it.polito.mad.g01_timebanking.adapters
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
@@ -90,11 +92,11 @@ class AdvertisementAdapter(
             if(adv.sold) {
                 if (uid.equals(adv.soldToUid)) {
                     advSellingInfo.text = "PURCHASED"
-                    advSellingInfo.background = ContextCompat.getDrawable(parent.context, R.drawable.rounded_badge_purchased)
+                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.colorBlue))
                     advSellingInfo.visibility = View.VISIBLE
                 } else if (uid.equals(adv.uid)) {
                     advSellingInfo.text = "SOLD"
-                    advSellingInfo.background = ContextCompat.getDrawable(parent.context, R.drawable.rounded_badge_sold)
+                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.red))
                     advSellingInfo.visibility = View.VISIBLE
                 }
             }
