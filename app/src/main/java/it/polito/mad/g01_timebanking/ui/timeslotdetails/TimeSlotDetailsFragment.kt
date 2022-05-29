@@ -86,6 +86,7 @@ class TimeSlotDetailsFragment : Fragment() {
         profilePictureButton = view.findViewById(R.id.advProfilePictureTransparentButton)
         openChatButton = view.findViewById(R.id.openChatButton)
 
+
         profileViewModel.pubUserTmpPath.observe(this.viewLifecycleOwner){
             if (it != UserKey.PROFILE_PICTURE_PATH_PLACEHOLDER)
                 FileHelper.readImage(it, imageViewAdvProfilePicture)
@@ -108,8 +109,6 @@ class TimeSlotDetailsFragment : Fragment() {
                     chatViewModel.setChat(advDet)
                     findNavController().navigate(R.id.action_nav_show_time_slot_to_nav_chat_list)
                 }
-
-
             }
 
             val calendar = Calendar.getInstance()
@@ -151,6 +150,7 @@ class TimeSlotDetailsFragment : Fragment() {
 
 
                 }
+
         }
     }
 
@@ -177,7 +177,7 @@ class TimeSlotDetailsFragment : Fragment() {
          * has the same ID as the menu item. (This code only works if the menu item
          * and the fragment have identical ID values.)
          */
-        Log.d("FAVORITE", "$item")
+        timeSlotDetailsViewModel.clearTmpSkills()
         when(item.itemId){
             R.id.app_bar_switch -> {
                 favorite = !favorite
