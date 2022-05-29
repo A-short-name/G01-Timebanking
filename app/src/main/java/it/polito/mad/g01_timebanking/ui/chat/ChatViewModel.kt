@@ -7,19 +7,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.adapters.AdvertisementDetails
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
 import it.polito.mad.g01_timebanking.adapters.MessageDetails
+import it.polito.mad.g01_timebanking.ui.timeslotdetails.TimeSlotDetailsViewModel
 import java.text.DecimalFormat
 import java.util.*
 
 class ChatViewModel(val a: Application) : AndroidViewModel(a) {
     private var _messagesCollection : MessageCollection = MessageCollection()
+
 
     private val pvtMessagesCollection = MutableLiveData<MessageCollection>().also {
         it.value = _messagesCollection
@@ -141,6 +141,7 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                                 // Check if it is possible to sell advertisement
                                 if (requesterInfo.balance.toAmountTime() >= collection.duration.toAmountTime()) {
                                     advInfo.sold = true
+                                    decreaseUsageOfSkills(advInfo.skills.toSet())
                                     advInfo.soldToUid = collection.requesterUid
                                     val newRequesterBalance =
                                         requesterInfo.balance.toAmountTime() - collection.duration.toAmountTime()
@@ -208,6 +209,32 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+    }
+
+    fun decreaseUsageOfSkills(removedSkills: Set<String>) {
+        removedSkills.forEach { removedSkill ->
+            db.collection("suggestedSkills").document(removedSkill)
+                .update(
+                    "usage_in_adv",
+                    FieldValue.increment(-1L)
+                ).addOnSuccessListener {
+                    Log.d("AdvSkill", "skill $removedSkill decremented")
+                }
+        }
+    }
+
+    fun increaseUsageOfSkills(addedSkills: Set<String>) {
+        addedSkills.forEach { addedSkill ->
+            db.collection("suggestedSkills").document(addedSkill)
+                .set(
+                    hashMapOf(
+                        "name" to addedSkill,
+                        "usage_in_adv" to FieldValue.increment(1L),
+                        "usage_in_user" to FieldValue.increment(0L)
+                    ),
+                    SetOptions.merge()
+                )
+        }
     }
 
     private fun DocumentSnapshot.toMessageCollection(): MessageCollection {

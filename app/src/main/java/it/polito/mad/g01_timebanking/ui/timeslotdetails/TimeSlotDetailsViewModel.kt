@@ -153,20 +153,33 @@ class TimeSlotDetailsViewModel(a: Application) : AndroidViewModel(a) {
 
         val addedSkills = newAdvSkillsName.toSet() subtract oldSkills
         val removedSkills = oldSkills subtract newAdvSkillsName.toSet()
-        addedSkills.forEach { addedSkill ->
-            db.collection("suggestedSkills").document(addedSkill)
-                .set(hashMapOf("name" to addedSkill,
-                    "usage_in_adv" to FieldValue.increment(1L),
-                    "usage_in_user" to FieldValue.increment(0L)
-                ),
-                    SetOptions.merge())
-        }
+        increaseUsageOfSkills(addedSkills)
+        decreaseUsageOfSkills(removedSkills)
+    }
+
+    fun decreaseUsageOfSkills(removedSkills: Set<String>) {
         removedSkills.forEach { removedSkill ->
             db.collection("suggestedSkills").document(removedSkill)
-                .update("usage_in_adv" ,
-                    FieldValue.increment(-1L)).addOnSuccessListener {
-                    Log.d("AdvSkill","skill $removedSkill decremented")
+                .update(
+                    "usage_in_adv",
+                    FieldValue.increment(-1L)
+                ).addOnSuccessListener {
+                    Log.d("AdvSkill", "skill $removedSkill decremented")
                 }
+        }
+    }
+
+     fun increaseUsageOfSkills(addedSkills: Set<String>) {
+        addedSkills.forEach { addedSkill ->
+            db.collection("suggestedSkills").document(addedSkill)
+                .set(
+                    hashMapOf(
+                        "name" to addedSkill,
+                        "usage_in_adv" to FieldValue.increment(1L),
+                        "usage_in_user" to FieldValue.increment(0L)
+                    ),
+                    SetOptions.merge()
+                )
         }
     }
 
