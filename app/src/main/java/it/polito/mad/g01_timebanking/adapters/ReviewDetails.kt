@@ -32,6 +32,7 @@ data class ReviewDetails (
     var rating : Int = -1,
     var text : String = "",
     var fromUid : String = "",
+    var reviewerFromName : String = "",
     var toUid : String = "",
     var advId : String = "",
     var reviewerToName : String = "",
@@ -49,6 +50,7 @@ data class ReviewDetails (
         if (rating != other.rating) return false
         if (text != other.text) return false
         if (fromUid != other.fromUid) return false
+        if (reviewerFromName != other.reviewerFromName) return false
         if (toUid != other.toUid) return false
         if (advId != other.advId) return false
         if (reviewerToName != other.reviewerToName) return false
@@ -64,6 +66,7 @@ data class ReviewDetails (
         result = 31 * result + rating
         result = 31 * result + text.hashCode()
         result = 31 * result + fromUid.hashCode()
+        result = 31 * result + reviewerFromName.hashCode()
         result = 31 * result + toUid.hashCode()
         result = 31 * result + advId.hashCode()
         result = 31 * result + reviewerToName.hashCode()
@@ -71,6 +74,7 @@ data class ReviewDetails (
         result = 31 * result + reviewerIsTheOwner.hashCode()
         return result
     }
+
 }
 
 class ReviewAdapter(
@@ -93,32 +97,11 @@ class ReviewAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(rev: ReviewDetails) {
-/*            title.text = adv.title
-            val calendar = Calendar.getInstance()
-            calendar.time = adv.calendar
-            date.text = "${calendar.fromDateToString()} | ${calendar.fromTimeToString(DateFormat.is24HourFormat(parent.context))}"
-            duration.text = adv.duration
-
-
-            if(!isAdvForVisualizationOnly) {
-                button.setOnClickListener(buttonAction)
-                button.visibility = View.VISIBLE
-            } else
-                button.visibility = View.GONE
-            if(adv.sold) {
-                if (uid.equals(adv.soldToUid)) {
-                    advSellingInfo.text = "PURCHASED"
-                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.colorBlue))
-                    advSellingInfo.visibility = View.VISIBLE
-                } else if (uid.equals(adv.uid)) {
-                    advSellingInfo.text = "SOLD"
-                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.red))
-                    advSellingInfo.visibility = View.VISIBLE
-                }
-            }
-
-            cardView.setOnClickListener(cardAction)
-            advInfoButton.setOnClickListener(cardAction)*/
+            advTitle.text = rev.advTitle
+            reviewerName.text = rev.reviewerFromName
+            rating.rating = rev.rating.toFloat()
+            reviewContent.text = rev.text
+            //cardView.setOnClickListener(cardAction)
         }
     }
 

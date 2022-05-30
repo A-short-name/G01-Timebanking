@@ -133,6 +133,7 @@ class MessageCollectionAdapter(
                             this.chatId = messageCollection.chatId
                             this.advId = messageCollection.advId
                             this.fromUid = Firebase.auth.currentUser!!.uid
+                            this.reviewerFromName = messageCollection.advOwnerName
                             this.toUid = messageCollection.requesterUid
                             this.reviewerIsTheOwner = true
                             this.reviewerToName = messageCollection.requesterName
@@ -153,6 +154,7 @@ class MessageCollectionAdapter(
                             this.chatId = messageCollection.chatId
                             this.advId = messageCollection.advId
                             this.fromUid = Firebase.auth.currentUser!!.uid
+                            this.reviewerFromName = messageCollection.requesterName
                             this.toUid = messageCollection.advOwnerUid
                             this.reviewerIsTheOwner = false
                             this.reviewerToName = messageCollection.advOwnerName
