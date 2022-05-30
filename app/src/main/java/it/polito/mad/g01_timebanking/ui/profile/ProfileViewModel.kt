@@ -18,8 +18,8 @@ import com.google.firebase.storage.ktx.storage
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
+import it.polito.mad.g01_timebanking.adapters.ReviewDetails
 import it.polito.mad.g01_timebanking.adapters.SkillDetails
-import it.polito.mad.g01_timebanking.ui.review.Review
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -326,7 +326,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     var ratesCount = 0
                     var nReviews = 0
                     for(doc in value) {
-                        val review = doc.toObject(Review::class.java)
+                        val review = doc.toObject(ReviewDetails::class.java)
                         ratesCount += review.rating
                         nReviews++
                     }
@@ -349,7 +349,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     var nReviews = 0
 
                     for(doc in value) {
-                        val review = doc.toObject(Review::class.java)
+                        val review = doc.toObject(ReviewDetails::class.java)
                         ratesCount += review.rating
                         nReviews++
                     }
@@ -372,7 +372,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     var nReviews = 0
 
                     for(doc in value) {
-                        val review = doc.toObject(Review::class.java)
+                        val review = doc.toObject(ReviewDetails::class.java)
                         ratesCount += review.rating
                         nReviews++
                     }
@@ -394,7 +394,7 @@ class ProfileViewModel(val a: Application) : AndroidViewModel(a) {
                     var ratesCount = 0
                     var nReviews = 0
                     for(doc in value) {
-                        val review = doc.toObject(Review::class.java)
+                        val review = doc.toObject(ReviewDetails::class.java)
                         ratesCount += review.rating
                         nReviews++
                     }

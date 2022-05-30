@@ -17,7 +17,6 @@ import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.ui.MessageCollectionDiffCallback
 import it.polito.mad.g01_timebanking.ui.chat.ChatViewModel
-import it.polito.mad.g01_timebanking.ui.review.Review
 import it.polito.mad.g01_timebanking.ui.review.ReviewViewModel
 import java.util.*
 
@@ -130,7 +129,7 @@ class MessageCollectionAdapter(
                 if((isTheOwner && !messageCollection.ownerHasReviewed)) {
                     reviewButton.visibility = View.VISIBLE
                     reviewButton.setOnClickListener {
-                        val newReview = Review().apply {
+                        val newReview = ReviewDetails().apply {
                             this.chatId = messageCollection.chatId
                             this.advId = messageCollection.advId
                             this.fromUid = Firebase.auth.currentUser!!.uid
@@ -150,7 +149,7 @@ class MessageCollectionAdapter(
                 if((!isTheOwner && !messageCollection.requesterHasReviewed)) {
                     reviewButton.visibility = View.VISIBLE
                     reviewButton.setOnClickListener {
-                        val newReview = Review().apply {
+                        val newReview = ReviewDetails().apply {
                             this.chatId = messageCollection.chatId
                             this.advId = messageCollection.advId
                             this.fromUid = Firebase.auth.currentUser!!.uid

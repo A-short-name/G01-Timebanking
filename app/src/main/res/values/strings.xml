@@ -67,6 +67,7 @@
     <string name="menu_logout">Logout</string>
     <string name="menu_show_time_slot">Show Time Slot Details</string>
     <string name="menu_edit_time_slot">Edit Time Slot Details</string>
+    <string name="menu_reviews_list">Your Reviews</string>
     <string name="adv_list_by_skill">Advertisements</string>
     <string name="adv_list_filters">Apply filters</string>
     <!-- Advertisements Hints -->
