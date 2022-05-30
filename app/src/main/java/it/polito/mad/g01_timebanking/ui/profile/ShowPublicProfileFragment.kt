@@ -117,7 +117,7 @@ class ShowPublicProfileFragment : Fragment() {
                     }.also{ noSkills.isVisible = false }
             val fullName = it.fullName
             reviewsButton.setOnClickListener {
-                reviewsListViewModel.setReviews(it.id.toString())
+                reviewsListViewModel.setReviews(profileViewModel.pubUserId.value!!)
                 findNavController().navigate(R.id.action_showPublicProfileFragment_to_nav_reviews_list, bundleOf("topAppBarName" to "$fullName review's") )
             }
         }

@@ -28,7 +28,7 @@ class ReviewsListViewModel(val a: Application) : AndroidViewModel(a) {
 
     fun setReviews(uid: String){
         reviewsListener = db.collection("reviews")
-            .whereEqualTo("toUid", auth.currentUser!!.uid)
+            .whereEqualTo("toUid", uid)
             .addSnapshotListener { value, e ->
                 if (e != null) {
                     Log.d("ReviewList_Listener", "Error retrieving data.")
