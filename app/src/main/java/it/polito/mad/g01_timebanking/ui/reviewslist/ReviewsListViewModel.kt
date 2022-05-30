@@ -26,6 +26,13 @@ class ReviewsListViewModel(val a: Application) : AndroidViewModel(a) {
 
     val revList : LiveData<List<ReviewDetails>> = pvtList
 
+    private val pvtSelectedTab = MutableLiveData<Int>().apply {
+        this.value = 0
+    }
+
+    val selectedTab : LiveData<Int> = pvtSelectedTab
+
+
     fun setReviews(uid: String){
         reviewsListener = db.collection("reviews")
             .whereEqualTo("toUid", uid)
@@ -43,9 +50,29 @@ class ReviewsListViewModel(val a: Application) : AndroidViewModel(a) {
                         reviews.add(doc.toObject(ReviewDetails::class.java))
                     }
                     mRevList = reviews
-                    pvtList.value = mRevList
+                    when(selectedTab.value!!) {
+                        0 -> showBuyerReviews()
+                        else -> showSellerReviews()
+                    }
+                    //pvtList.value = mRevList
                 }
             }
+    }
+
+    fun setSelectedTab(position: Int) {
+        pvtSelectedTab.value = position
+    }
+
+    fun showBuyerReviews(){
+        var localList = mRevList.toList()
+        localList = localList.filter { it.reviewerIsTheOwner }
+        pvtList.value = localList
+    }
+
+    fun showSellerReviews(){
+        var localList = mRevList.toList()
+        localList = localList.filter { !it.reviewerIsTheOwner }
+        pvtList.value = localList
     }
 
 
