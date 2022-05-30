@@ -47,7 +47,7 @@ class ReviewsListFragment : Fragment() {
 
         tabLayout.addOnTabSelectedListener(MyOnTabSelectedListener(reviewsListViewModel))
 
-        val recyclerViewRev = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerViewRev = view.findViewById<RecyclerView>(R.id.reviewsListRecyclerView)
         recyclerViewRev.layoutManager = LinearLayoutManager(context)
 
         val emptyRevText = view.findViewById<TextView>(R.id.emptyReviewsText)
@@ -57,10 +57,10 @@ class ReviewsListFragment : Fragment() {
 
         reviewsListViewModel.revList.observe(this.viewLifecycleOwner){
             if (it.isEmpty()) {
-                recyclerViewRev.visibility = View.GONE
+                //recyclerViewRev.visibility = View.GONE
                 emptyRevText.visibility = View.VISIBLE
             } else {
-                recyclerViewRev.visibility = View.VISIBLE
+                //recyclerViewRev.visibility = View.VISIBLE
                 emptyRevText.visibility = View.GONE
             }
 
