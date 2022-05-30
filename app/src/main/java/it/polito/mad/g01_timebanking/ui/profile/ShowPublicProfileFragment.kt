@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -32,7 +33,7 @@ class ShowPublicProfileFragment : Fragment() {
         private const val TAG = "ShowProfileActivity"
     }
     private lateinit var scrollView: ScrollView
-    private lateinit var frameView: FrameLayout
+    private lateinit var frameView: ConstraintLayout
     private lateinit var tvFullName: TextView
     private lateinit var tvNickname: TextView
     private lateinit var tvEmail: TextView
@@ -52,7 +53,7 @@ class ShowPublicProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_show_public_profile, container, false)
+        val root = inflater.inflate(R.layout.fragment_show_profile, container, false)
 
         setHasOptionsMenu(true)
 
