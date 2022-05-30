@@ -83,7 +83,7 @@ class ShowProfileFragment : Fragment() {
             tvEmail.text = it.email
             tvLocation.text = it.location
             tvBiography.text = it.biography
-            tvCurrentBalance.text = it.balance
+            tvCurrentBalance.text = it.balance.printBalance()
 
             skillGroup.removeAllViews()
 
@@ -153,6 +153,28 @@ class ShowProfileFragment : Fragment() {
                     cardView.radius = (relativeDimension/2).toFloat()
                 }
             })
+        }
+    }
+
+
+    fun CharSequence.printBalance() : String {
+        val split = this.split(":")
+        val result = 0
+
+        if(split.size != 2)
+            return "$result min"
+        try {
+            val hours = split[0].toInt()
+            val minutes = split[1].toInt()
+            if(hours == 0)
+                return "$minutes m"
+            return if(minutes == 0)
+                "$hours h"
+            else
+                "$hours h $minutes m"
+
+        } catch(e: Exception) {
+            return "$result min"
         }
     }
 }
