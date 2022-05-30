@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -84,7 +85,7 @@ class ReviewAdapter(
     class ReviewViewHolder(private val parent: ViewGroup, v: View): RecyclerView.ViewHolder(v) {
         private val advTitle: TextView = v.findViewById(R.id.reviewTitle)
         private val reviewerName: TextView = v.findViewById(R.id.reviewerName)
-        private val rating: TextView = v.findViewById(R.id.reviewRating)
+        private val rating: RatingBar = v.findViewById(R.id.reviewRating)
         private val reviewContent: TextView = v.findViewById(R.id.reviewContent)
         private val cardView: CardView = v.findViewById(R.id.reviewCardView)
 
