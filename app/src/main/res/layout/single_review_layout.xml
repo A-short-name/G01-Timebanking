@@ -23,30 +23,70 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/reviewTitle"
-            android:text="Title"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/reviewerName"
-            android:text="reviewerName"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/reviewRating"
-            android:text="reviewRating"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/reviewContent"
-            android:text="reviewContent"
-            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            >
+
+            <TextView
+                android:id="@+id/reviewTitle"
+                android:text="Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="2dp"
+                android:paddingEnd="8dp"
+                style="@style/TextAppearance.AppCompat.Display1"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/reviewerName"
+                android:text="reviewerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewTitle"
+                android:padding="2dp"
+                android:paddingEnd="8dp"
+                />
+
+            <RatingBar
+                android:id="@+id/reviewRating"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:isIndicator="true"
+                android:numStars="5"
+                app:layout_constraintBottom_toBottomOf="@id/reviewerName"
+                app:layout_constraintStart_toEndOf="@id/reviewerName"
+                app:layout_constraintTop_toTopOf="@id/reviewerName"
+                tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+            <TextView
+                android:id="@+id/reviewContent"
+                android:text="@string/long_text_placeholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewerName"
+                android:padding="2dp"
+                android:paddingEnd="8dp"
+                />
+
+            <ImageSwitcher
+                android:id="@+id/expandReviewButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.cardview.widget.CardView>
 
