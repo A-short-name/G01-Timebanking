@@ -7,17 +7,26 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
 import it.polito.mad.g01_timebanking.helpers.FileHelper
+import it.polito.mad.g01_timebanking.ui.reviewslist.ReviewsListViewModel
 
 class ShowPublicProfileFragment : Fragment() {
     private val profileViewModel : ProfileViewModel by activityViewModels()
+
+    private val reviewsListViewModel : ReviewsListViewModel by activityViewModels()
+
+    private val auth = Firebase.auth
 
     companion object {
         private const val TAG = "ShowProfileActivity"
@@ -34,6 +43,7 @@ class ShowPublicProfileFragment : Fragment() {
     private lateinit var rbRatingSeller: RatingBar
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
+    private lateinit var reviewsButton : Button
 
     private lateinit var actUserInfo : UserInfo
 
@@ -65,6 +75,7 @@ class ShowPublicProfileFragment : Fragment() {
         ivProfilePicture = view.findViewById(R.id.profilePicture)
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
+        reviewsButton = view.findViewById(R.id.openReviewsButton)
 
 
         profileViewModel.advOwnerBuyerRating.observe(this.viewLifecycleOwner) {
@@ -104,6 +115,11 @@ class ShowPublicProfileFragment : Fragment() {
                         chip.isClickable = true
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
+            val fullName = it.fullName
+            reviewsButton.setOnClickListener {
+                reviewsListViewModel.setReviews(it.id.toString())
+                findNavController().navigate(R.id.action_showPublicProfileFragment_to_nav_reviews_list, bundleOf("topAppBarName" to "$fullName review's") )
+            }
         }
 
 
