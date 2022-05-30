@@ -245,13 +245,13 @@
                         android:text="@string/skill3" />
                 </com.google.android.material.chip.ChipGroup>
 
-                <Button
-                    android:id="@+id/openReviewsButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reviews" />
-            </LinearLayout>
 
+            </LinearLayout>
+            <Button
+                android:id="@+id/openReviewsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reviews" />
         </LinearLayout>
 
     </ScrollView>
