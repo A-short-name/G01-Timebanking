@@ -169,7 +169,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ratingLayout"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:layout_editor_absoluteY="359dp">
+                    tools:layout_editor_absoluteY="359dp"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="wrap_content"

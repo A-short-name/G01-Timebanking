@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.api.Distribution
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.*
@@ -45,6 +46,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var buyerRatingBar: RatingBar
     private lateinit var sellerRatingBar: RatingBar
     private lateinit var tvCurrentBalance: TextView
+    private lateinit var tvCurrentBalanceLayout: LinearLayout
     private lateinit var reviewsButton : Button
 
     private lateinit var actUserInfo : UserInfo
@@ -78,7 +80,10 @@ class ShowProfileFragment : Fragment() {
         buyerRatingBar = view.findViewById(R.id.profileBuyerReviewRatingBar)
         sellerRatingBar = view.findViewById(R.id.profileSellerReviewRatingBar)
         tvCurrentBalance = view.findViewById(R.id.currentBalance)
+        tvCurrentBalanceLayout = view.findViewById(R.id.currentBalanceLayout)
         reviewsButton = view.findViewById(R.id.openReviewsButton)
+
+        tvCurrentBalanceLayout.visibility = View.VISIBLE
 
         profileViewModel.buyerRating.observe(this.viewLifecycleOwner) {
             buyerRatingBar.rating = it
