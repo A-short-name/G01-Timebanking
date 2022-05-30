@@ -10,18 +10,19 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.adapters.MessageCollection
+import it.polito.mad.g01_timebanking.adapters.ReviewDetails
 
 class ReviewViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth = Firebase.auth
 
-    private val pvtReview = MutableLiveData<Review>().also {
-        it.value = Review()
+    private val pvtReview = MutableLiveData<ReviewDetails>().also {
+        it.value = ReviewDetails()
     }
 
-    val review : LiveData<Review> = pvtReview
+    val review : LiveData<ReviewDetails> = pvtReview
 
-    fun sendReview(review: Review, reviewText: String, rating: Int) {
+    fun sendReview(review: ReviewDetails, reviewText: String, rating: Int) {
         review.text = reviewText
         review.rating = rating
         db.collection("reviews")
@@ -46,12 +47,12 @@ class ReviewViewModel(val a: Application) : AndroidViewModel(a) {
             }
     }
 
-    fun setReview(newReview: Review) {
+    fun setReview(newReview: ReviewDetails) {
         pvtReview.value = newReview
     }
 
 }
 
-private fun DocumentSnapshot.toReview(): Review {
-    return this.toObject(Review::class.java) ?: Review()
+private fun DocumentSnapshot.toReview(): ReviewDetails {
+    return this.toObject(ReviewDetails::class.java) ?: ReviewDetails()
 }
