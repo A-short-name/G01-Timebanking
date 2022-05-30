@@ -18,44 +18,58 @@
             android:orientation="vertical">
 
             <!--Dimension set programmatically-->
-            <FrameLayout
-                android:id="@+id/frameView1"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <!--Dimension set programmatically-->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/imageCard"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/frameView1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    app:cardElevation="10dp"
-                    android:innerRadius="0dp"
-                    android:shape="ring"
-                    app:cardCornerRadius="0dp">
+                    android:layout_height="300dp"
+                    android:layout_weight="1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/ratingLayout"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-                    <ImageView
-                        android:id="@+id/profilePicture"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="0px"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avatar" />
-                </androidx.cardview.widget.CardView>
-            </FrameLayout>
+                    <!--Dimension set programmatically-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/imageCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:innerRadius="0dp"
+                        android:shape="ring"
+                        app:cardCornerRadius="150dp"
+                        app:cardElevation="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="vertical"
-                android:padding="16dp">
+                        <ImageView
+                            android:id="@+id/profilePicture"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center"
+                            android:padding="0px"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/avatar" />
+                    </androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ratingLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="316dp"
+                    app:layout_constraintTop_toBottomOf="@id/frameView1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/currentBalanceLayout"
+                    android:padding="4dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/buyerLayout"
@@ -76,9 +90,9 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
+                            android:paddingHorizontal="4dp"
                             android:text="Buyer:"
                             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                            android:paddingHorizontal="4dp"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -120,10 +134,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
+                            android:paddingHorizontal="4dp"
                             android:text="Seller:"
                             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                             android:textSize="20sp"
-                            android:paddingHorizontal="4dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/profileSellerReviewRatingBar"
                             app:layout_constraintStart_toStartOf="parent"
@@ -144,24 +158,31 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
+                    android:id="@+id/currentBalanceLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|center_horizontal|center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ratingLayout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:layout_editor_absoluteY="359dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_time_cash"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_time_cash" />
 
                     <TextView
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
                         android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
                         android:gravity="center"
                         android:text="Current balance:" />
 
@@ -172,9 +193,18 @@
                         android:layout_marginStart="4dp"
                         android:text="X h  Y m"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                        android:textSize="14sp"
-                        />
+                        android:textSize="14sp" />
                 </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/fullNameTitle"
@@ -305,12 +335,21 @@
                         android:text="@string/skill3" />
                 </com.google.android.material.chip.ChipGroup>
 
+            </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="8dp">
                 <Button
                     android:id="@+id/openReviewsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reviews" />
-            </LinearLayout>
+                    android:text="Reviews"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -32,7 +33,7 @@ class ShowProfileFragment : Fragment() {
         private const val TAG = "ShowProfileActivity"
     }
     private lateinit var scrollView: ScrollView
-    private lateinit var frameView: FrameLayout
+    private lateinit var frameView: ConstraintLayout
     private lateinit var tvFullName: TextView
     private lateinit var tvNickname: TextView
     private lateinit var tvEmail: TextView
