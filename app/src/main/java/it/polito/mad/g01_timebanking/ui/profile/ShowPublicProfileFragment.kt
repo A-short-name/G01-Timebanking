@@ -44,7 +44,7 @@ class ShowPublicProfileFragment : Fragment() {
     private lateinit var rbRatingSeller: RatingBar
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
-    private lateinit var reviewsButton : Button
+    private lateinit var reviewsButton : CardView
 
     private lateinit var actUserInfo : UserInfo
 
