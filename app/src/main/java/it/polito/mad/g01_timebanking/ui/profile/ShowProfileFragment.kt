@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.api.Distribution
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.*
