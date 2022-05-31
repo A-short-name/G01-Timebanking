@@ -64,7 +64,6 @@ class ShowProfileFragment : Fragment() {
 
         // Fetch views
         scrollView = view.findViewById(R.id.sv)
-        //frameView = view.findViewById(R.id.frameView1)
         tvFullName = view.findViewById(R.id.fullname)
         tvNickname = view.findViewById(R.id.nickname)
         tvEmail = view.findViewById(R.id.email)
@@ -106,7 +105,7 @@ class ShowProfileFragment : Fragment() {
                 it.skills
                     .forEach{ content ->
                         val chip = Chip(context)
-                        chip.text = content
+                        chip.text = content[0].uppercase() + content.substring(1,content.length)
                         chip.isCheckable = false
                         chip.isClickable = true
                         skillGroup.addView(chip)
