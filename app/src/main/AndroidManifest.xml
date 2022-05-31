@@ -11,10 +11,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_timebanking_app_icon"
+        android:icon="@drawable/ic_timebanking"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/ic_timebanking_app_icon"
+        android:roundIcon="@drawable/ic_rounded_timebanking"
         android:supportsRtl="true"
         android:theme="@style/Theme.G01Timebanking">
         <activity
