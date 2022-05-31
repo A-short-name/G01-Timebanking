@@ -14,7 +14,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-
+        app:cardBackgroundColor="@color/secondaryColor"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
@@ -48,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:boxStrokeWidth="0px"
-                app:startIconDrawable="@drawable/ic_megaphone_facing_right">
+                app:startIconDrawable="@drawable/ic_briefcase">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/singleSkillTitle"
@@ -62,7 +62,9 @@
                     android:longClickable="false"
                     android:padding="0dp"
                     android:text="Title"
-                    android:textColor="#757575"
+                    android:inputType="textNoSuggestions"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/secondaryTextColor"
                     android:textSize="18sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -81,7 +83,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@id/singleSkillTitleLayout"
                 app:layout_constraintTop_toTopOf="parent"
-                app:startIconDrawable="@drawable/ic_trending_up"
+                app:startIconDrawable="@drawable/ic_cards"
                 app:boxStrokeWidth="0px"
                 >
 
@@ -97,7 +99,7 @@
                     android:longClickable="false"
                     android:padding="0dp"
                     android:text="0"
-                    android:textColor="#757575" />
+                    android:textColor="@color/secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

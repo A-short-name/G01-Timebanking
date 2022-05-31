@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_edit_profile"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_edit_on_primary"
         android:title="editButton"
-        android:menuCategory="secondary"
         app:showAsAction="always" />
 </menu>

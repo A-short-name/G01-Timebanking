@@ -14,13 +14,13 @@
 
     <color name="surfaceColor">#EEEEEE</color>
     <color name="red">#E4FF0000</color>
-    <color name="primaryColor">#69f0ae</color>
-    <color name="primaryLightColor">#9fffe0</color>
-    <color name="primaryDarkColor">#2bbd7e</color>
-    <color name="secondaryColor">#7986cb</color>
-    <color name="secondaryLightColor">#aab6fe</color>
-    <color name="secondaryDarkColor">#49599a</color>
-    <color name="primaryTextColor">#F3000000</color>
-    <color name="secondaryTextColor">#F3000000</color>
+    <color name="primaryColor">#e27a3f</color>
+    <color name="primaryLightColor">#ffaa6c</color>
+    <color name="primaryDarkColor">#ab4c11</color>
+    <color name="secondaryColor">#8ea3bb</color>
+    <color name="secondaryLightColor">#bfd4ed</color>
+    <color name="secondaryDarkColor">#60748b</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#000000</color>
 </resources>
 

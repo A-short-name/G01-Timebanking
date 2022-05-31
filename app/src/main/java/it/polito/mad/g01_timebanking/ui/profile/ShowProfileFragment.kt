@@ -1,13 +1,12 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
-import android.content.res.Configuration
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -16,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.api.Distribution
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.*
@@ -34,7 +32,6 @@ class ShowProfileFragment : Fragment() {
         private const val TAG = "ShowProfileActivity"
     }
     private lateinit var scrollView: ScrollView
-    private lateinit var frameView: ConstraintLayout
     private lateinit var tvFullName: TextView
     private lateinit var tvNickname: TextView
     private lateinit var tvEmail: TextView
@@ -46,8 +43,8 @@ class ShowProfileFragment : Fragment() {
     private lateinit var buyerRatingBar: RatingBar
     private lateinit var sellerRatingBar: RatingBar
     private lateinit var tvCurrentBalance: TextView
-    private lateinit var tvCurrentBalanceLayout: LinearLayout
-    private lateinit var reviewsButton : Button
+    private lateinit var tvCurrentBalanceLayout: CardView
+    private lateinit var reviewsButton : CardView
 
     private lateinit var actUserInfo : UserInfo
 
@@ -65,10 +62,8 @@ class ShowProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // Fetch views
         scrollView = view.findViewById(R.id.sv)
-        frameView = view.findViewById(R.id.frameView1)
         tvFullName = view.findViewById(R.id.fullname)
         tvNickname = view.findViewById(R.id.nickname)
         tvEmail = view.findViewById(R.id.email)
@@ -110,9 +105,11 @@ class ShowProfileFragment : Fragment() {
                 it.skills
                     .forEach{ content ->
                         val chip = Chip(context)
-                        chip.text = content
+                        chip.text = content[0].uppercase() + content.substring(1,content.length)
                         chip.isCheckable = false
                         chip.isClickable = true
+                        chip.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                        chip.elevation = 5F
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
 
@@ -129,8 +126,6 @@ class ShowProfileFragment : Fragment() {
         }
         //the only way to set height image to 1/3 of the screen is programmatically
         //This is ue to the fact that we use a scroll view with a bio with variable length
-        arrangeViewByRatio(view)
-
         if(!FileHelper.isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
 
@@ -138,46 +133,29 @@ class ShowProfileFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.user_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
-        return NavigationUI.onNavDestinationSelected(
-            item,
-            requireView().findNavController())
-                || super.onOptionsItemSelected(item)
+        return if(item.itemId == R.id.nav_edit_profile) {
+            requireView().findNavController().navigate(R.id.action_nav_show_profile_to_nav_edit_profile)
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+
+//        return NavigationUI.onNavDestinationSelected(
+//            item,
+//            requireView().findNavController())
+//                || super.onOptionsItemSelected(item)
     }
 
     override fun onPause() {
         // This updates ViewModel if the show is disappearing because the edit is being opened
         profileViewModel.setUserInfo(actUserInfo)
         super.onPause()
-    }
-
-    private fun arrangeViewByRatio(view: View) {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    frameView.post {
-                        frameView.layoutParams =
-                            LinearLayout.LayoutParams(scrollView.width, scrollView.height / 3)
-                    }
-                    scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    //Resize consequently cardView with image
-                    val cardView = view.findViewById<CardView>(R.id.imageCard)
-                    val relativeDimension = scrollView.height / 3 - 32
-                    //I want a square box for the image that doesn't fit all the space in the parent frameView
-                    cardView.layoutParams.width = relativeDimension
-                    cardView.layoutParams.height = relativeDimension
-                    //different from before because cardView doesn't work with LinearLayout.LayoutP....
-
-                    cardView.radius = (relativeDimension/2).toFloat()
-                }
-            })
-        }
     }
 
 
