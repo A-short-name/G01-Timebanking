@@ -145,7 +145,7 @@ class   EditProfileFragment: Fragment() {
                 chip.isClickable = false
                 chip.elevation = 5F
                 chip.setOnCloseIconClickListener {
-                    profileViewModel.removeSkill(chip.text.toString())
+                    profileViewModel.removeSkill(chip.text.toString().lowercase())
                 }
                 skillGroup.addView(chip)
                 noSkills.isVisible = false
