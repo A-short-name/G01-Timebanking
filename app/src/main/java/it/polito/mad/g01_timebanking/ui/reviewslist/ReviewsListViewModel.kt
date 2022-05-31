@@ -16,7 +16,7 @@ class ReviewsListViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth = Firebase.auth
 
-    private lateinit var reviewsListener: ListenerRegistration
+    private var reviewsListener: ListenerRegistration? = null
 
     private var mRevList : MutableList<ReviewDetails> = mutableListOf()
 
@@ -77,6 +77,6 @@ class ReviewsListViewModel(val a: Application) : AndroidViewModel(a) {
 
 
     override fun onCleared() {
-        reviewsListener.remove()
+        reviewsListener?.remove()
     }
 }
