@@ -15,8 +15,10 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/rounded_profile_background"
         android:padding="16dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="197dp">
+        app:layout_constraintEnd_toStartOf="@+id/sv"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/currentBalanceLayout"
