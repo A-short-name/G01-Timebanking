@@ -139,7 +139,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/advCalendarLayout"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:startIconDrawable="@drawable/ic_stopwatch">
+                        app:startIconDrawable="@drawable/ic_coin_hourglass">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/advClock"
@@ -182,15 +182,16 @@
                 android:id="@+id/editAdvButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/rounded_back"
                 android:contentDescription="edit adv"
-                android:minWidth="40dp"
                 android:elevation="8dp"
-                android:outlineAmbientShadowColor="@color/design_default_color_primary_dark"
+                android:minWidth="40dp"
                 android:minHeight="40dp"
+                android:outlineAmbientShadowColor="@color/design_default_color_primary_dark"
                 android:paddingStart="5dp"
                 android:paddingBottom="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintTop_toTopOf="parent"

@@ -12,14 +12,15 @@
 
     <color name="surfaceColor">#EEEEEE</color>
     <color name="red">#E4FF0000</color>
-    <color name="primaryColor">#e27a3f</color>
-    <color name="primaryLightColor">#ffaa6c</color>
-    <color name="primaryDarkColor">#ab4c11</color>
-    <color name="secondaryColor">#85aedb</color>
-    <color name="secondaryLightColor">#b7e0ff</color>
-    <color name="secondaryDarkColor">#547fa9</color>
-    <color name="primaryTextColor">#000000</color>
-    <color name="secondaryTextColor">#000000</color>
+    <color name="primaryColor">#8cc1cc</color>
+    <color name="primaryLightColor">#bef4ff</color>
+    <color name="primaryDarkColor">#5c919b</color>
+    <color name="secondaryColor">#c3c9e8</color>
+    <color name="secondaryLightColor">#f6fcff</color>
+    <color name="secondaryDarkColor">#9298b6</color>
+    <color name="primaryTextColor">#111111</color>
+    <color name="secondaryTextColor">#111111</color>
+    <color name="buttonOnSecondaryColor">#b3d3d3</color>
 
 </resources>
 
