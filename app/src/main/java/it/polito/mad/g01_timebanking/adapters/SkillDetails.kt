@@ -136,7 +136,12 @@ class SkillAdapter(
                         }
                     }
                     setSkills(dataMutable)
-                } else if (constraint == null) {
+                }
+                else if (results.count == 0){
+                    dataMutable.clear()
+                    setSkills(dataMutable)
+                }
+                else if (constraint == null) {
                     dataMutable.addAll(dataFull)
                     setSkills(dataMutable)
                 }
