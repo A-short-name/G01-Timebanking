@@ -109,6 +109,7 @@ class ShowProfileFragment : Fragment() {
                         chip.isCheckable = false
                         chip.isClickable = true
                         chip.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                        chip.elevation = 5F
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
 

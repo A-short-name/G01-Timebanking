@@ -109,6 +109,7 @@ class ShowPublicProfileFragment : Fragment() {
                         chip.text = content[0].uppercase() + content.substring(1,content.length)
                         chip.isCheckable = false
                         chip.isClickable = true
+                        chip.elevation = 5F
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
             val fullName = it.fullName

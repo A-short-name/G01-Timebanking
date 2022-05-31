@@ -143,6 +143,7 @@ class   EditProfileFragment: Fragment() {
                 chip.text = content[0].uppercase() + content.substring(1,content.length)
                 chip.isCheckable = false
                 chip.isClickable = false
+                chip.elevation = 5F
                 chip.setOnCloseIconClickListener {
                     profileViewModel.removeSkill(chip.text.toString())
                 }
