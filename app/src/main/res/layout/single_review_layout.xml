@@ -11,8 +11,6 @@
         android:id="@+id/reviewCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
@@ -22,6 +20,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:clickable="false"
+        android:longClickable="false"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
