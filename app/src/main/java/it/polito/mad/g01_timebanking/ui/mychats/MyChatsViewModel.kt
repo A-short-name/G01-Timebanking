@@ -89,8 +89,12 @@ class MyChatsViewModel(val a: Application) : AndroidViewModel(a) {
                     var counter = 0
                     for (doc in value) {
                         val chat = doc.toObject(MessageCollection::class.java)
-                        if(chat.requesterUid == auth.currentUser!!.uid || chat.advOwnerUid == auth.currentUser!!.uid)
-                            counter++
+                        if(chat.requesterUid == auth.currentUser!!.uid || chat.advOwnerUid == auth.currentUser!!.uid) {
+                            if (chat.messages.isNotEmpty() && !(chat.messages.last().readBy.contains(auth.currentUser!!.uid)))
+                                counter++
+                            else if (chat.advOwnerUid == auth.currentUser!!.uid && chat.buyerHasRequested && !chat.ownerHasDecided)
+                                counter++
+                        }
                         val index = _myChats.indexOf(chat)
                         if(index == -1)
                             _myChats.add(chat)

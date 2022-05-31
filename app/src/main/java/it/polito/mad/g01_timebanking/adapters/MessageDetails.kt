@@ -17,7 +17,8 @@ data class MessageDetails (
     var receiverUid: String = "",
     val senderUid: String = "",
     var timestamp: Date = Date(),
-    var content: String = ""
+    var content: String = "",
+    var readBy: MutableList<String> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         other as MessageDetails

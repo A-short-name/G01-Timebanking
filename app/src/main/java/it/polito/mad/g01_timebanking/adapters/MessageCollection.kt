@@ -35,7 +35,7 @@ data class MessageCollection (
     var ownerHasReviewed : Boolean = false,
     var requesterHasReviewed : Boolean = false,
     var accepted : Boolean = false,
-    val messages : MutableList<MessageDetails> = mutableListOf()
+    var messages : MutableList<MessageDetails> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

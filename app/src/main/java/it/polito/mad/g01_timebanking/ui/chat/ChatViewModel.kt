@@ -62,6 +62,10 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
                 if (e == null && value?.exists() == true) {
                     Log.d("Messages_Listener", "Data found on database. Updating!")
                     _messagesCollection = value.toMessageCollection()
+                    _messagesCollection.messages = _messagesCollection.messages.map {
+                        if(!it.readBy.contains(auth.currentUser!!.uid))
+                            it.readBy.add(auth.currentUser!!.uid)
+                        it }.toMutableList()
                     pvtMessagesCollection.value = _messagesCollection
                 } else if (e == null) {
                     Log.d("Messages_Listener", "Data not found on database.")
@@ -251,11 +255,17 @@ class ChatViewModel(val a: Application) : AndroidViewModel(a) {
             receiverUid.value!!,
             auth.currentUser!!.uid,
             Calendar.getInstance().time,
-            messageText.value!!)
+            messageText.value!!,
+            readBy = mutableListOf(auth.currentUser!!.uid)
+            )
 
         _messagesCollection.messages.add(message)
         addOrUpdateData(_messagesCollection, chatId)
         pvtMessageText.value = ""
+    }
+
+    fun markAsRead(){
+        addOrUpdateData(_messagesCollection, chatId.value!!)
     }
 
     fun setMessageText(text: String) {

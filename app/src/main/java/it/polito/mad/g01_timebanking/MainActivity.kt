@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener{ _, destination, _ ->
-            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot )
+            if (destination.id==R.id.nav_edit_profile || destination.id==R.id.nav_edit_time_slot || destination.id==R.id.nav_chat_list)
                 findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).navigationIcon= null
         }
     }
