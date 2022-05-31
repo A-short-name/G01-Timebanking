@@ -11,7 +11,10 @@
         android:id="@+id/reviewCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:foreground="?android:attr/selectableItemBackground"
+        android:longClickable="false"
+        app:cardBackgroundColor="@color/secondaryLightColor"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
@@ -19,42 +22,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:clickable="false"
-        android:longClickable="false"
-        app:cardBackgroundColor="@color/secondaryColor"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
-            >
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/reviewTitle"
-                android:text="Title"
+                style="@style/TextAppearance.AppCompat.Display1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 android:padding="2dp"
                 android:paddingEnd="8dp"
-                style="@style/TextAppearance.AppCompat.Display1"
-                android:textSize="20sp"
+                android:text="Title"
                 android:textColor="@color/secondaryTextColor"
-                />
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/reviewerName"
-                android:text="reviewerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reviewTitle"
                 android:padding="2dp"
                 android:paddingEnd="8dp"
+                android:text="reviewerName"
                 android:textColor="@color/secondaryTextColor"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewTitle" />
 
             <RatingBar
                 android:id="@+id/reviewRating"
@@ -64,7 +61,7 @@
                 android:layout_gravity="center"
                 android:isIndicator="true"
                 android:numStars="5"
-                android:progressTint="@color/primaryColor"
+                android:theme="@style/RatingBar"
                 app:layout_constraintBottom_toBottomOf="@id/reviewerName"
                 app:layout_constraintStart_toEndOf="@id/reviewerName"
                 app:layout_constraintTop_toTopOf="@id/reviewerName"
@@ -72,15 +69,14 @@
 
             <TextView
                 android:id="@+id/reviewContent"
-                android:text="@string/long_text_placeholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reviewerName"
                 android:padding="2dp"
                 android:paddingEnd="8dp"
+                android:text="@string/long_text_placeholder"
                 android:textColor="@color/secondaryTextColor"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewerName" />
 
             <ImageSwitcher
                 android:id="@+id/expandReviewButton"

@@ -94,11 +94,11 @@ class AdvertisementAdapter(
             if(adv.sold) {
                 if (uid.equals(adv.soldToUid)) {
                     advSellingInfo.text = "PURCHASED"
-                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.colorBlue))
+                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.colorPurchased))
                     advSellingInfo.visibility = View.VISIBLE
                 } else if (uid.equals(adv.uid)) {
                     advSellingInfo.text = "SOLD"
-                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.red))
+                    advSellingInfo.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(parent.context, R.color.colorSold))
                     advSellingInfo.visibility = View.VISIBLE
                 }
             }

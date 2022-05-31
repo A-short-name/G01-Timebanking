@@ -14,10 +14,10 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@color/secondaryColor"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
-        app:cardBackgroundColor="@color/secondaryColor"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,12 +28,11 @@
             android:id="@+id/advInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingEnd="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingEnd="4dp"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,12 +40,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:paddingEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/editAdvButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:paddingEnd="8dp">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/advTitleLayout"
@@ -101,8 +100,8 @@
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:longClickable="false"
-                        app:boxStrokeWidthFocused="0dp"
                         app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/advClockLayout"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -201,12 +200,12 @@
                 android:id="@+id/sellingInfoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/primaryColor"
                 android:clickable="false"
                 android:text="Prova"
-                android:textColor="@color/colorLightGray"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="12sp"
                 android:visibility="gone"
+                app:chipBackgroundColor="@color/primaryColor"
                 app:chipMinHeight="18dp"
                 app:chipMinTouchTargetSize="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
