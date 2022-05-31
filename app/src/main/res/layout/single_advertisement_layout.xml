@@ -50,7 +50,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/advTitleLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="37dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="0dp"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
@@ -60,7 +60,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:startIconDrawable="@drawable/ic_advertisement_title"
+                    app:startIconDrawable="@drawable/ic_megaphone_facing_right"
 
                     >
 
@@ -69,14 +69,15 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textNoSuggestions"
                         android:layout_margin="0dp"
                         android:background="@android:color/transparent"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
+                        android:inputType="textNoSuggestions"
                         android:longClickable="false"
                         android:padding="0dp"
                         android:text="Title"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="#757575" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -85,7 +86,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/advDateLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="37dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +100,8 @@
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:longClickable="false"
-                        app:boxStrokeColor="@color/primaryColor"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:boxStrokeWidth="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/advClockLayout"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -130,7 +132,8 @@
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:longClickable="false"
-                        app:boxStrokeColor="@color/primaryColor"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/advCalendarLayout"
