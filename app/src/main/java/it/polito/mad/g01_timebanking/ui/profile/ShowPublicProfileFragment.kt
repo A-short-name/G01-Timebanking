@@ -45,6 +45,7 @@ class ShowPublicProfileFragment : Fragment() {
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
     private lateinit var reviewsButton : CardView
+    private lateinit var tvCurrentBalanceLayout: LinearLayout
 
     private lateinit var actUserInfo : UserInfo
 
@@ -76,7 +77,9 @@ class ShowPublicProfileFragment : Fragment() {
         skillGroup = view.findViewById(R.id.skillgroup)
         noSkills = view.findViewById(R.id.noSkillsTextView)
         reviewsButton = view.findViewById(R.id.openReviewsButton)
+        tvCurrentBalanceLayout = view.findViewById(R.id.currentBalanceLayout)
 
+        tvCurrentBalanceLayout.visibility = View.GONE
 
         profileViewModel.advOwnerBuyerRating.observe(this.viewLifecycleOwner) {
             rbRatingBuyer.rating = it
