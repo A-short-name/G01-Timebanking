@@ -1,6 +1,7 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -61,7 +62,6 @@ class ShowProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // Fetch views
         scrollView = view.findViewById(R.id.sv)
         tvFullName = view.findViewById(R.id.fullname)
@@ -108,6 +108,7 @@ class ShowProfileFragment : Fragment() {
                         chip.text = content[0].uppercase() + content.substring(1,content.length)
                         chip.isCheckable = false
                         chip.isClickable = true
+                        chip.textAlignment = View.TEXT_ALIGNMENT_CENTER
                         skillGroup.addView(chip)
                     }.also{ noSkills.isVisible = false }
 
@@ -131,16 +132,23 @@ class ShowProfileFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.user_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
-        return NavigationUI.onNavDestinationSelected(
-            item,
-            requireView().findNavController())
-                || super.onOptionsItemSelected(item)
+        return if(item.itemId == R.id.nav_edit_profile) {
+            requireView().findNavController().navigate(R.id.action_nav_show_profile_to_nav_edit_profile)
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+
+//        return NavigationUI.onNavDestinationSelected(
+//            item,
+//            requireView().findNavController())
+//                || super.onOptionsItemSelected(item)
     }
 
     override fun onPause() {
