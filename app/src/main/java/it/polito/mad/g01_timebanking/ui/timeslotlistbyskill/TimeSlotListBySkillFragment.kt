@@ -96,8 +96,8 @@ class TimeSlotListBySkillFragment : Fragment() {
         when (item.itemId){
             R.id.filterFromAtoZ -> timeSlotListBySkillViewModel.sortAtoZ()
             R.id.filterFromZtoA -> timeSlotListBySkillViewModel.sortZtoA()
-            R.id.filterMostRecents -> timeSlotListBySkillViewModel.sortMostRecents()
-            R.id.filterLessRecents -> timeSlotListBySkillViewModel.sortLessRecents()
+            R.id.filterMostRecent -> timeSlotListBySkillViewModel.sortMostRecents()
+            R.id.filterLeastRecent -> timeSlotListBySkillViewModel.sortLessRecents()
             R.id.action_filter -> requireView().findNavController()
                 .navigate(R.id.action_nav_adv_list_by_skill_to_timeSlotFiltersFragment)
             else -> super.onOptionsItemSelected(item)

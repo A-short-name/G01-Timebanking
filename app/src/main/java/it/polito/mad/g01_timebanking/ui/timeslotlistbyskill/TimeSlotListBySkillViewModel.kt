@@ -98,13 +98,13 @@ class TimeSlotListBySkillViewModel(val a: Application) : AndroidViewModel(a) {
     fun sortMostRecents() {
         val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
         localList.sortBy { it.calendar.time }
-        pvtList.value = localList.reversed()
+        pvtList.value = localList
     }
 
     fun sortLessRecents() {
         val localList = if(!isFiltered) mAdvList else pvtList.value!!.toMutableList()
         localList.sortBy { it.calendar.time }
-        pvtList.value = localList
+        pvtList.value = localList.reversed()
     }
 
     fun setDateTime(isFromDate: Boolean, calendar: Calendar?) {

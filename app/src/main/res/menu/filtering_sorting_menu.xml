@@ -21,13 +21,13 @@
                 android:menuCategory="secondary"
                 android:title="Z-A" />
             <item
-                android:id="@+id/filterMostRecents"
+                android:id="@+id/filterMostRecent"
                 android:menuCategory="secondary"
-                android:title="Most Recents" />
+                android:title="Most Recent" />
             <item
-                android:id="@+id/filterLessRecents"
+                android:id="@+id/filterLeastRecent"
                 android:menuCategory="secondary"
-                android:title="Less Recents" />
+                android:title="Least Recent" />
         </menu>
     </item>
 </menu>
