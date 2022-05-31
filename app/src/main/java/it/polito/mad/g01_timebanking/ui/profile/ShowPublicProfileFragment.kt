@@ -1,21 +1,17 @@
 package it.polito.mad.g01_timebanking.ui.profile
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import it.polito.mad.g01_timebanking.R
 import it.polito.mad.g01_timebanking.UserInfo
 import it.polito.mad.g01_timebanking.UserKey
@@ -27,13 +23,10 @@ class ShowPublicProfileFragment : Fragment() {
 
     private val reviewsListViewModel : ReviewsListViewModel by activityViewModels()
 
-    private val auth = Firebase.auth
-
     companion object {
         private const val TAG = "ShowProfileActivity"
     }
     private lateinit var scrollView: ScrollView
-    //private lateinit var frameView: ConstraintLayout
     private lateinit var tvFullName: TextView
     private lateinit var tvNickname: TextView
     private lateinit var tvEmail: TextView
@@ -68,7 +61,7 @@ class ShowPublicProfileFragment : Fragment() {
         scrollView = view.findViewById(R.id.sv)
         tvFullName = view.findViewById(R.id.fullname)
         tvNickname = view.findViewById(R.id.nickname)
-        tvEmail = view.findViewById(R.id.location)
+        tvEmail = view.findViewById(R.id.email)
         tvLocation = view.findViewById(R.id.location)
         tvBiography = view.findViewById(R.id.biography)
         rbRatingSeller = view.findViewById(R.id.profileSellerReviewRatingBar)
