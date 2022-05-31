@@ -12,8 +12,7 @@
     <ScrollView
         android:id="@+id/sv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorGray">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,6 +26,48 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/rounded_profile_background"
                 android:padding="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/currentBalanceLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:padding="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintBottom_toBottomOf="@+id/openReviewsButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/openReviewsButton"
+                    app:layout_constraintTop_toTopOf="@+id/openReviewsButton">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="4dp"
+                            app:srcCompat="@drawable/ic_hourglass_balance" />
+
+                        <TextView
+                            android:id="@+id/currentBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/primaryTextColor"
+                            tools:text="X h  Y m" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <LinearLayout
                     android:id="@+id/linearLayout4"
@@ -50,27 +91,6 @@
                         android:textColor="@color/primaryTextColor"
                         android:textSize="20sp"
                         tools:text="Full Name" />
-
-                    <LinearLayout
-                        android:id="@+id/currentBalanceLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/imageView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_hourglass_balance" />
-
-                        <TextView
-                            android:id="@+id/currentBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/primaryTextColor"
-                            tools:text="X h  Y m" />
-                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/nickname"
@@ -117,13 +137,12 @@
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:padding="8dp"
-                    app:cardBackgroundColor="@color/colorGray"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="4dp"
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/currentBalanceLayout"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageCard">

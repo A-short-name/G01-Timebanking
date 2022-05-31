@@ -43,7 +43,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var buyerRatingBar: RatingBar
     private lateinit var sellerRatingBar: RatingBar
     private lateinit var tvCurrentBalance: TextView
-    private lateinit var tvCurrentBalanceLayout: LinearLayout
+    private lateinit var tvCurrentBalanceLayout: CardView
     private lateinit var reviewsButton : CardView
 
     private lateinit var actUserInfo : UserInfo

@@ -38,7 +38,7 @@ class ShowPublicProfileFragment : Fragment() {
     private lateinit var skillGroup: ChipGroup
     private lateinit var noSkills: TextView
     private lateinit var reviewsButton : CardView
-    private lateinit var tvCurrentBalanceLayout: LinearLayout
+    private lateinit var tvCurrentBalanceLayout: CardView
 
     private lateinit var actUserInfo : UserInfo
 
