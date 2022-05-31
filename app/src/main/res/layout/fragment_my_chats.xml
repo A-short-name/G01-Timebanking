@@ -14,7 +14,11 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintVertical_chainStyle="packed"
+        app:tabBackground="@color/surfaceColor"
+        app:tabIndicatorColor="@color/primaryColor"
+        app:tabSelectedTextColor="@color/primaryColor"
+        app:tabTextColor="@color/primaryTextColor">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

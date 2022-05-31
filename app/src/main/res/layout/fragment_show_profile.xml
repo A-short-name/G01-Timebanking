@@ -12,7 +12,8 @@
     <ScrollView
         android:id="@+id/sv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,6 +41,7 @@
                     app:cardElevation="4dp"
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true"
+                    app:cardBackgroundColor="@color/surfaceColor"
                     app:layout_constraintBottom_toBottomOf="@+id/openReviewsButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -65,6 +67,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/primaryTextColor"
+                            android:paddingStart="4dp"
                             tools:text="X h  Y m" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -137,6 +140,7 @@
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:padding="8dp"
+                    app:cardBackgroundColor="@color/surfaceColor"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="4dp"
                     app:cardPreventCornerOverlap="false"
@@ -181,7 +185,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:isIndicator="true"
-                                android:numStars="5" />
+                                android:numStars="5"
+                                android:progressTint="@color/primaryLightColor" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -211,7 +216,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:isIndicator="true"
-                                android:numStars="5" />
+                                android:numStars="5"
+                                android:progressTint="@color/primaryLightColor" />
                         </LinearLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

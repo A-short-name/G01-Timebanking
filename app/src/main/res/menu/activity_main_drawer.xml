@@ -22,7 +22,7 @@
             android:title="@string/menu_my_chats" />
         <item
             android:id="@+id/nav_assigned_timeslots"
-            android:icon="@drawable/ic_assigned_timeslots"
+            android:icon="@drawable/ic_assigned"
             android:title="@string/menu_assigned_timeslots" />
         <item
             android:id="@+id/nav_saved_timeslots"
