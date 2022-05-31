@@ -33,7 +33,7 @@ class ShowProfileFragment : Fragment() {
         private const val TAG = "ShowProfileActivity"
     }
     private lateinit var scrollView: ScrollView
-    private lateinit var frameView: ConstraintLayout
+    //private lateinit var frameView: ConstraintLayout
     private lateinit var tvFullName: TextView
     private lateinit var tvNickname: TextView
     private lateinit var tvEmail: TextView
@@ -46,7 +46,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var sellerRatingBar: RatingBar
     private lateinit var tvCurrentBalance: TextView
     private lateinit var tvCurrentBalanceLayout: LinearLayout
-    private lateinit var reviewsButton : Button
+    private lateinit var reviewsButton : CardView
 
     private lateinit var actUserInfo : UserInfo
 
@@ -67,10 +67,10 @@ class ShowProfileFragment : Fragment() {
 
         // Fetch views
         scrollView = view.findViewById(R.id.sv)
-        frameView = view.findViewById(R.id.frameView1)
+        //frameView = view.findViewById(R.id.frameView1)
         tvFullName = view.findViewById(R.id.fullname)
         tvNickname = view.findViewById(R.id.nickname)
-        tvEmail = view.findViewById(R.id.email)
+        tvEmail = view.findViewById(R.id.location)
         tvLocation = view.findViewById(R.id.location)
         tvBiography = view.findViewById(R.id.biography)
         ivProfilePicture = view.findViewById(R.id.profilePicture)
@@ -128,8 +128,6 @@ class ShowProfileFragment : Fragment() {
         }
         //the only way to set height image to 1/3 of the screen is programmatically
         //This is ue to the fact that we use a scroll view with a bio with variable length
-        arrangeViewByRatio(view)
-
         if(!FileHelper.isExternalStorageWritable())
             Log.e(TAG, "No external volume mounted")
 
@@ -153,30 +151,6 @@ class ShowProfileFragment : Fragment() {
         // This updates ViewModel if the show is disappearing because the edit is being opened
         profileViewModel.setUserInfo(actUserInfo)
         super.onPause()
-    }
-
-    private fun arrangeViewByRatio(view: View) {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            scrollView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    frameView.post {
-                        frameView.layoutParams =
-                            LinearLayout.LayoutParams(scrollView.width, scrollView.height / 3)
-                    }
-                    scrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    //Resize consequently cardView with image
-                    val cardView = view.findViewById<CardView>(R.id.imageCard)
-                    val relativeDimension = scrollView.height / 3 - 32
-                    //I want a square box for the image that doesn't fit all the space in the parent frameView
-                    cardView.layoutParams.width = relativeDimension
-                    cardView.layoutParams.height = relativeDimension
-                    //different from before because cardView doesn't work with LinearLayout.LayoutP....
-
-                    cardView.radius = (relativeDimension/2).toFloat()
-                }
-            })
-        }
     }
 
 
