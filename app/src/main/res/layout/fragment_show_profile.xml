@@ -28,10 +28,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_weight="1"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/ratingLayout"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <!--Dimension set programmatically-->
                     <androidx.cardview.widget.CardView
@@ -63,13 +63,13 @@
                     android:id="@+id/ratingLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="316dp"
-                    app:layout_constraintTop_toBottomOf="@id/frameView1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:padding="4dp"
                     app:layout_constraintBottom_toTopOf="@id/currentBalanceLayout"
-                    android:padding="4dp">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frameView1"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="316dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/buyerLayout"
@@ -159,44 +159,56 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <LinearLayout
-                    android:id="@+id/currentBalanceLayout"
-                    android:layout_width="match_parent"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center|center_horizontal|center_vertical"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ratingLayout"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/secondaryColor"
+                    android:backgroundTint="@color/secondaryColor"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:layout_editor_absoluteY="359dp"
-                    android:visibility="gone">
+                    app:layout_constraintEnd_toEndOf="@+id/ratingLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ratingLayout">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/currentBalanceLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_time_cash" />
+                        android:gravity="center|center_horizontal|center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ratingLayout"
+                        tools:layout_editor_absoluteY="359dp">
 
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:gravity="center"
-                        android:text="Current balance:" />
 
-                    <TextView
-                        android:id="@+id/currentBalance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="X h  Y m"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_time_cash" />
 
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:gravity="center"
+                            android:text="Current balance:" />
+
+                        <TextView
+                            android:id="@+id/currentBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="X h  Y m"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -337,19 +349,21 @@
                 </com.google.android.material.chip.ChipGroup>
 
             </LinearLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingBottom="8dp">
+
                 <Button
                     android:id="@+id/openReviewsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Reviews"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
