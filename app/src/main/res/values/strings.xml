@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">G01-Timebanking</string>
+    <string name="app_name">Piggy TimeBank</string>
     <string name="app_title">Piggy TimeBank</string>
     <!--    profile strings -->
     <string name="name">Full Name</string>
