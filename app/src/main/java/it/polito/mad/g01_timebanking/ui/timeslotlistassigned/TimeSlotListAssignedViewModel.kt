@@ -19,8 +19,8 @@ class TimeSlotListAssignedViewModel(val a: Application) : AndroidViewModel(a) {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth = Firebase.auth
 
-    private lateinit var timeslotsListener1: ListenerRegistration
-    private lateinit var timeslotsListener2: ListenerRegistration
+    private var timeslotsListener1: ListenerRegistration? = null
+    private var timeslotsListener2: ListenerRegistration? = null
 
     private var mAdvList : MutableList<AdvertisementDetails> = mutableListOf()
 
@@ -127,7 +127,7 @@ class TimeSlotListAssignedViewModel(val a: Application) : AndroidViewModel(a) {
     }
 
     override fun onCleared() {
-        timeslotsListener1.remove()
-        timeslotsListener2.remove()
+        timeslotsListener1?.remove()
+        timeslotsListener2?.remove()
     }
 }
