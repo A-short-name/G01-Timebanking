@@ -50,7 +50,7 @@
                         android:contentDescription="User profile picture"
                         android:padding="0px"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/ic_man_profile" />
                     <!--android:background="@null"-->
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>

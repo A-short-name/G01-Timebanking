@@ -31,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/nav_header_desc"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/avatar" />
+                app:srcCompat="@drawable/ic_man_profile" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
