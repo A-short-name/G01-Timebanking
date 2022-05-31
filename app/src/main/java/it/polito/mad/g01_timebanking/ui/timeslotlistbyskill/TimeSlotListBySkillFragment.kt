@@ -69,14 +69,16 @@ class TimeSlotListBySkillFragment : Fragment() {
         recyclerViewAdv.adapter = adapter
 
         timeSlotListBySkillViewModel.advList.observe(this.viewLifecycleOwner){
-            if (it.isEmpty()) {
+            val unsoldList  = it.toList().filter { el -> !el.sold }
+
+            if (unsoldList.isEmpty()) {
                 recyclerViewAdv.visibility = View.GONE
+                emptyAdvText.text = "No advertisements matching the filters."
                 emptyAdvText.visibility = View.VISIBLE
             } else {
                 recyclerViewAdv.visibility = View.VISIBLE
                 emptyAdvText.visibility = View.GONE
             }
-            val unsoldList  = it.toList().filter { el -> !el.sold }
             adapter.setAdvertisements(unsoldList)
         }
 
