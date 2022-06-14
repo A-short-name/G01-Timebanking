@@ -14,7 +14,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/secondaryColor"
+        app:cardBackgroundColor="?colorSecondary"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
@@ -78,7 +78,7 @@
                         android:padding="0dp"
                         android:text="Title"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/secondaryTextColor" />
+                        android:textColor="?colorOnSecondary" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -121,7 +121,7 @@
                             android:longClickable="false"
                             android:padding="0dp"
                             android:text="dd/MM/YYYY | hh:mm AM"
-                            android:textColor="@color/secondaryTextColor"
+                            android:textColor="?colorOnSecondary"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,7 +152,7 @@
                             android:longClickable="false"
                             android:padding="0dp"
                             android:text="hh:mm"
-                            android:textColor="@color/secondaryTextColor"
+                            android:textColor="?colorOnSecondary"
                             android:textSize="12sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,10 +202,10 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:text="Prova"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="?colorOnPrimary"
                 android:textSize="12sp"
                 android:visibility="gone"
-                app:chipBackgroundColor="@color/primaryColor"
+                app:chipBackgroundColor="?attr/colorPrimary"
                 app:chipMinHeight="18dp"
                 app:chipMinTouchTargetSize="30dp"
                 app:layout_constraintEnd_toEndOf="parent"

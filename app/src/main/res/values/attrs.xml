@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="iconColor" format="reference|color" />
+    <attr name="iconAppBarColor" format="reference|color" />
+    <attr name="iconOnCardColor" format="reference|color" />
+    <attr name="selectedTabColor" format="reference|color" />
+    <attr name="unselectedTabText" format="reference|color" />
+    <attr name="senderMessageColor" format="reference|color" />
+    <attr name="senderMessageIconColor" format="reference|color" />
+</resources>

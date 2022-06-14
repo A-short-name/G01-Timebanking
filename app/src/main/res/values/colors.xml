@@ -26,6 +26,11 @@
     <color name="colorSold">#ffab91</color>
     <color name="cardViewBackground">#dbe4f7</color>
     <color name="heart">#c04f4e</color>
+    <color name="messageBoxChatColor">#dedede</color>
+    <color name="selectedTabColor">#8CC1CC</color>
+    <color name="unselectedTabText">#111111</color>
+    <color name="senderMessageColor">#8cc1cc</color>
+    <color name="senderMessageIcon">#5c919b</color>
 
 </resources>
 

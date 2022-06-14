@@ -57,7 +57,7 @@
                     android:id="@+id/currentBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="?colorOnPrimary"
                     tools:text="X h  Y m" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -81,7 +81,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="?colorOnPrimary"
                 android:textSize="20sp"
                 tools:text="Full Name" />
 
@@ -89,7 +89,7 @@
                 android:id="@+id/nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/secondaryTextColor"
+                android:textColor="?colorOnSecondary"
                 tools:text="nickname" />
         </LinearLayout>
 
@@ -164,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:padding="4dp"
                         android:text="Seller"
-                        android:textColor="@color/secondaryTextColor" />
+                        android:textColor="?colorOnSecondary" />
 
                     <RatingBar
                         android:id="@+id/profileSellerReviewRatingBar"
@@ -195,7 +195,7 @@
                         android:layout_height="wrap_content"
                         android:padding="4dp"
                         android:text="Buyer"
-                        android:textColor="@color/secondaryTextColor" />
+                        android:textColor="?colorOnSecondary" />
 
                     <RatingBar
                         android:id="@+id/profileBuyerReviewRatingBar"
@@ -235,7 +235,7 @@
                 android:layout_margin="4dp"
                 android:text="About"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="?colorOnPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/location"
@@ -252,7 +252,7 @@
                 android:layout_margin="8dp"
                 android:text="TextView"
                 android:textAlignment="center"
-                android:textColor="@color/secondaryTextColor"
+                android:textColor="?colorOnSecondary"
                 android:textSize="20sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -285,7 +285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:text="No location"
-                    android:textColor="@color/secondaryTextColor"
+                    android:textColor="?colorOnSecondary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/locationIV"
@@ -319,7 +319,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:text="No email"
-                    android:textColor="@color/secondaryTextColor"
+                    android:textColor="?colorOnSecondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -338,7 +338,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
-                    android:textColor="@color/secondaryTextColor"
+                    android:textColor="?colorOnSecondary"
                     app:layout_constraintBottom_toTopOf="@+id/skillgroup"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"

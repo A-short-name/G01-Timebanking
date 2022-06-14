@@ -11,16 +11,16 @@
         android:id="@+id/myReviewsTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/reviewsListRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:tabBackground="@color/secondaryLightColor"
-        app:tabIndicatorColor="@color/primaryColor"
-        app:tabSelectedTextColor="@color/primaryColor"
-        app:tabTextColor="@color/secondaryTextColor">
+        app:tabBackground="@color/surfaceColor"
+        app:tabIndicatorColor="?attr/selectedTabColor"
+        app:tabSelectedTextColor="?attr/selectedTabColor"
+        app:tabTextColor="?unselectedTabText">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

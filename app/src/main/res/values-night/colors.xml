@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--    https://coolors.co/palette/696969-4f4f4f-333333-252525-0a0a0a-033933-024c42-017365-1e776d-->
 <resources>
-    <color name="surfaceColor">#092234</color>
+    <color name="surfaceColor">#252525</color>
     <color name="red">#E4FF0000</color>
-    <color name="secondaryColor">#34495e</color>
-    <color name="secondaryDarkColor">#092234</color>
-    <color name="secondaryLightColor">#60748b</color>
-    <color name="primaryColor">#bf530c</color>
-    <color name="primaryDarkColor">#882500</color>
-    <color name="primaryLightColor">#f8823e</color>
+    <color name="secondaryColor">#017365</color>
+    <color name="secondaryDarkColor">#024c42</color>
+    <color name="secondaryLightColor">#1e776d</color>
+    <color name="primaryColor">#4f4f4f</color>
+    <color name="primaryDarkColor">#333333</color>
+    <color name="primaryLightColor">#696969</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
+    <color name="buttonOnSecondaryColor">#696969</color>
+    <color name="colorPurchased">#123f7a</color>
+    <color name="colorSold">#502f4c</color>
+    <color name="cardViewBackground">#2f5e5e</color>
+    <color name="heart">#5f070d</color>
+    <color name="messageBoxChatColor">#696969</color>
+    <color name="selectedTabColor">#ffffff</color>
+    <color name="unselectedTabText">#4f4f4f</color>
+    <color name="senderMessageColor">#017365</color>
+    <color name="senderMessageIcon">#024c42</color>
 </resources>

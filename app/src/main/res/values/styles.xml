@@ -10,7 +10,7 @@
         <item name="android:textColorPrimary">@color/primaryTextColor</item>
         <item name="android:textColorSecondary">@color/secondaryTextColor</item>
         <item name="actionMenuTextColor">@color/primaryTextColor</item>
-        <item name="background">@color/primaryColor</item>
+        <item name="background">?attr/colorPrimary</item>
 <!--        <item name="actionOverflowButtonStyle">@style/ActionButtonOverflowStyle</item>-->
 <!--        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>-->
     </style>
@@ -19,4 +19,12 @@
         <item name="colorControlNormal">@color/colorDarkGray</item>
         <item name="colorControlActivated">@color/stars</item>
     </style>
+
+    <style name="TextView.InTheMainLayout" parent="Widget.AppCompat.TextView">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Display1</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
 </resources>
